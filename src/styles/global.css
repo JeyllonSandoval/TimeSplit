@@ -15,10 +15,28 @@ html[data-theme='dark'] {
 
 
 /* Flip clock core styles */
-.flip-container { position: relative; perspective: 1000px; }
+.flip-container {
+	position: relative;
+	perspective: 1000px;
+	background: var(--panel);
+	border: 1px solid var(--panel-border);
+	border-radius: 8px;
+	overflow: hidden;
+	box-shadow: 0 1px 1px rgb(0 0 0 / 0.05);
+}
+/* Contenedor estático: una sola capa centrada */
+.flip-container .static-card{
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    font-size: 2.5rem;
+}
 /* Evita solapamiento de múltiples números durante la animación */
 .flip-container.is-flipping .upper-card,
-.flip-container.is-flipping .lower-card { visibility: hidden; }
+.flip-container.is-flipping .lower-card,
+.flip-container.is-flipping .static-card { visibility: hidden; }
 
 .upper-card, .lower-card, .flip-front, .flip-back {
 	position: absolute;
@@ -30,7 +48,8 @@ html[data-theme='dark'] {
 	justify-content: center;
 	font-size: 2.5rem;
 	backface-visibility: hidden;
-	border-radius: 6px;
+	/* Las mitades no deben tener bordes ni fondo para evitar cuadriculas */
+	border-radius: 0;
 	overflow: hidden; /* importante para que solo se vea media cifra */
 }
 

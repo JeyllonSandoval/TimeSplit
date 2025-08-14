@@ -28,18 +28,16 @@ export default function FlipDigit({ value, previousValue, className }: FlipDigit
 
 	return (
 		<div className={containerClass} aria-hidden="true">
-			<div className="upper-card panel border shadow-sm text-slate-900 dark:text-slate-100">
-				<span className="font-mono tabular-nums font-extrabold">{isFlipping ? prev : value}</span>
-			</div>
-			<div className="lower-card panel border shadow-sm text-slate-900 dark:text-slate-100">
+			{/* Vista estática de un solo número para evitar duplicados */}
+			<div className="static-card text-slate-900 dark:text-slate-100">
 				<span className="font-mono tabular-nums font-extrabold">{value}</span>
 			</div>
 			{isFlipping && (
 				<>
-					<div className="flip-front panel border shadow-sm text-slate-900 dark:text-slate-100">
+					<div className="flip-front text-slate-900 dark:text-slate-100">
 						<span className="font-mono tabular-nums font-extrabold">{prev}</span>
 					</div>
-					<div className="flip-back panel border shadow-sm text-slate-900 dark:text-slate-100">
+					<div className="flip-back text-slate-900 dark:text-slate-100">
 						<span className="font-mono tabular-nums font-extrabold">{value}</span>
 					</div>
 				</>
