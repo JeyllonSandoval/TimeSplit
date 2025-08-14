@@ -114,51 +114,66 @@ function UnitBox({ label, value, previousValue, highlight }: { label: string; va
     );
 }
 
-function FlipBlock({ value, previousValue, className }: { value: string; previousValue?: string; className?: string }) {
-    const [isFlipping, setIsFlipping] = useState(false);
-    const [prev, setPrev] = useState(previousValue ?? value);
-    const [phase, setPhase] = useState<'idle' | 'front' | 'back'>('idle');
+function FlipBlock({ value, className }: { value: string; previousValue?: string; className?: string }) {
+    const DURATION_MS = 350;
+    const [displayValue, setDisplayValue] = useState(value);
+    const [isAnimating, setIsAnimating] = useState(false);
+    const [fromTo, setFromTo] = useState<{ from: string; to: string }>({ from: value, to: value });
+    const [animKey, setAnimKey] = useState(0);
+    const trackRef = useRef<HTMLDivElement | null>(null);
 
+    // Reaccionar a cambios de valor y disparar animación
     useEffect(() => {
-        if (value !== prev) {
-            const FRONT_MS = 300;
-            const BACK_MS = 300;
-            setIsFlipping(true);
-            setPhase('front');
-            const t1 = setTimeout(() => {
-                setPhase('back');
-            }, FRONT_MS);
-            const t2 = setTimeout(() => {
-                setIsFlipping(false);
-                setPrev(value);
-                setPhase('idle');
-            }, FRONT_MS + BACK_MS);
-            return () => {
-                clearTimeout(t1);
-                clearTimeout(t2);
-            };
+        if (value !== displayValue) {
+            setFromTo({ from: displayValue, to: value });
+            setIsAnimating(true);
+            // fuerza reinicio de animación cambiando key
+            setAnimKey((k) => k + 1);
         }
-    }, [value, prev]);
+    }, [value, displayValue]);
 
-    const containerClass = `flip-container ${isFlipping ? 'is-flipping' : ''} ${className ?? ''}`.trim();
+    // Al terminar la animación, fija el valor final
+    useEffect(() => {
+        if (!isAnimating) return;
+        const el = trackRef.current;
+        if (!el) return;
+        const onEnd = () => {
+            setDisplayValue(value);
+            setIsAnimating(false);
+        };
+        el.addEventListener('animationend', onEnd);
+        const t = window.setTimeout(onEnd, DURATION_MS + 50);
+        return () => {
+            el.removeEventListener('animationend', onEnd);
+            window.clearTimeout(t);
+        };
+    }, [isAnimating, value]);
+
+    const containerClass = `flip-container roller-container ${className ?? ''}`.trim();
 
     return (
         <div className={containerClass} aria-hidden="true">
-            {!isFlipping && (
-                <div className="static-card text-slate-900 dark:text-slate-100">
-                    <span className="font-mono tabular-nums font-extrabold">{value}</span>
-                </div>
-            )}
-            {isFlipping && phase === 'front' && (
-                <div className="flip-front text-slate-900 dark:text-slate-100">
-                    <span className="font-mono tabular-nums font-extrabold">{prev}</span>
-                </div>
-            )}
-            {isFlipping && phase === 'back' && (
-                <div className="flip-back text-slate-900 dark:text-slate-100">
-                    <span className="font-mono tabular-nums font-extrabold">{value}</span>
-                </div>
-            )}
+            <div
+                key={animKey}
+                ref={trackRef}
+                className={`roller-track ${isAnimating ? 'roller-animate' : ''}`}
+                style={{ ['--roller-duration' as any]: `${DURATION_MS}ms` }}
+            >
+                {isAnimating ? (
+                    <>
+                        <div className="roller-item text-slate-100">
+                            <span className="font-mono tabular-nums">{fromTo.from}</span>
+                        </div>
+                        <div className="roller-item text-slate-100">
+                            <span className="font-mono tabular-nums">{fromTo.to}</span>
+                        </div>
+                    </>
+                ) : (
+                    <div className="roller-item text-slate-100">
+                        <span className="font-mono tabular-nums">{displayValue}</span>
+                    </div>
+                )}
+            </div>
         </div>
     );
 }

@@ -17,13 +17,11 @@ html[data-theme='dark'] {
 /* Flip clock core styles */
 .flip-container {
     position: relative;
-    z-index: 10; /* Prioriza el número sobre decoraciones */
-    perspective: 1200px;
-    background: transparent; /* un solo borde: el del contenedor externo */
+    z-index: 10;
+    background: transparent;
     border: none;
     border-radius: 8px;
     overflow: hidden;
-    transform-style: preserve-3d;
 }
 /* Contenedor estático: una sola capa centrada */
 .flip-container .static-card{
@@ -36,7 +34,7 @@ html[data-theme='dark'] {
     font-weight: 800;
 }
 /* Evita solapamiento de múltiples números durante la animación */
-/* Durante la animación mostramos solo la fase correspondiente */
+/* Durante la animación flip (si se llega a usar) mostramos solo la fase correspondiente */
 .flip-container.is-flipping .static-card { visibility: hidden; }
 
 .upper-card, .lower-card, .flip-front, .flip-back {
@@ -90,5 +88,37 @@ html[data-theme='dark'] {
     40% { opacity: 1; }
     100% { transform: rotateX(0deg); }
 }
+
+/* Roller styles (rotador vertical tipo mobile) */
+.roller-container {
+    position: relative;
+    overflow: hidden;
+}
+.roller-track {
+    display: grid;
+    grid-auto-rows: 100%;
+    width: 100%;
+    height: 100%;
+    will-change: transform;
+}
+.roller-item {
+    height: 100%;
+    display: grid;
+    place-items: center;
+    font-size: clamp(2.6rem, 6.5vw, 3.8rem);
+    font-weight: 800;
+}
+
+/* Animación del rotador: desplaza una altura de item (50% del track) */
+.roller-animate {
+    animation: rollerSlide var(--roller-duration, 320ms) cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+@keyframes rollerSlide {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-100%); }
+}
+
+/* Garantiza que la tipografía no agregue espacio extra vertical */
+.roller-item span { line-height: 1; }
 
 
