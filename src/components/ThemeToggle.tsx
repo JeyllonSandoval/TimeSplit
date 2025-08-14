@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { FiMoon, FiSun } from 'react-icons/fi';
 
 type Theme = 'light' | 'dark';
 
@@ -42,8 +43,10 @@ export default function ThemeToggle() {
 			onClick={toggle}
 			className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
 			aria-label="Cambiar tema"
+			type="button"
 		>
-			{theme === 'light' ? 'Modo oscuro' : 'Modo claro'}
+			{theme === 'light' ? <FiMoon className="h-4 w-4" /> : <FiSun className="h-4 w-4" />}
+			<span className="hidden sm:inline">{theme === 'light' ? 'Modo oscuro' : 'Modo claro'}</span>
 		</button>
 	);
 }
