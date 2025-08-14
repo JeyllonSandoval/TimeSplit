@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { getCountdownTargetDate } from "~/config/countdown";
-import FlipDigit from "./FlipDigit";
 
 type TimeLeft = {
     months: number;
@@ -66,9 +65,9 @@ function daysInMonth(year: number, monthZeroBased: number): number {
 
 export default function Countdown() {
 	const targetDate = useMemo(() => getCountdownTargetDate(), []);
-	const [timeLeft, setTimeLeft] = useState<TimeLeft>(() => calculateTimeLeft(targetDate));
-	const isElapsed = timeLeft.months === 0 && timeLeft.weeks === 0 && timeLeft.days === 0 && timeLeft.hours === 0 && timeLeft.minutes === 0 && timeLeft.seconds === 0;
-	const prevHmsRef = useRef<{h: string; m: string; s: string}>({ h: '00', m: '00', s: '00' });
+    const [timeLeft, setTimeLeft] = useState<TimeLeft>(() => calculateTimeLeft(targetDate));
+    const isElapsed = timeLeft.months === 0 && timeLeft.weeks === 0 && timeLeft.days === 0 && timeLeft.hours === 0 && timeLeft.minutes === 0 && timeLeft.seconds === 0;
+    const prevRef = useRef<{mo: string; wk: string; d: string; h: string; m: string; s: string}>({ mo: '00', wk: '00', d: '00', h: '00', m: '00', s: '00' });
 
 	useEffect(() => {
 		const intervalId = setInterval(() => {
@@ -77,72 +76,78 @@ export default function Countdown() {
 		return () => clearInterval(intervalId);
 	}, [targetDate]);
 
-	const h = timeLeft.hours.toString().padStart(2, '0');
-	const m = timeLeft.minutes.toString().padStart(2, '0');
-	const s = timeLeft.seconds.toString().padStart(2, '0');
-	const prev = prevHmsRef.current;
-	prevHmsRef.current = { h, m, s };
+    const mo = timeLeft.months.toString().padStart(2, '0');
+    const wk = timeLeft.weeks.toString().padStart(2, '0');
+    const d = timeLeft.days.toString().padStart(2, '0');
+    const h = timeLeft.hours.toString().padStart(2, '0');
+    const m = timeLeft.minutes.toString().padStart(2, '0');
+    const s = timeLeft.seconds.toString().padStart(2, '0');
+    const prev = prevRef.current;
+    prevRef.current = { mo, wk, d, h, m, s };
 
 	return (
-		<div className="grid grid-cols-2 gap-4 p-6 sm:grid-cols-3 md:grid-cols-6">
-			<TimeBoxStatic label="Meses" value={timeLeft.months} blink={isElapsed} />
-			<TimeBoxStatic label="Semanas" value={timeLeft.weeks} blink={isElapsed} />
-			<TimeBoxStatic label="Días" value={timeLeft.days} blink={isElapsed} />
-
-			<div className="text-center">
-				<div className={`relative rounded-lg border shadow-sm panel ${isElapsed ? 'border-red-400' : 'border-slate-200'} dark:border-slate-700 p-3`}> 
-					<div className="flex gap-2 justify-center">
-						<FlipDigit value={h[0]} previousValue={prev.h[0]} className="w-14 h-20 sm:w-16 sm:h-24" />
-						<FlipDigit value={h[1]} previousValue={prev.h[1]} className="w-14 h-20 sm:w-16 sm:h-24" />
-					</div>
-					<div className="pointer-events-none absolute inset-x-0 top-1/2 h-px bg-black/20 dark:bg-white/15"></div>
-					<div className="pointer-events-none absolute left-1/2 top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-black/10 dark:bg-white/10"></div>
-				</div>
-				<div className="mt-2 text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">Horas</div>
-			</div>
-
-			<div className="text-center">
-				<div className={`relative rounded-lg border shadow-sm panel ${isElapsed ? 'border-red-400' : 'border-slate-200'} dark:border-slate-700 p-3`}> 
-					<div className="flex gap-2 justify-center">
-						<FlipDigit value={m[0]} previousValue={prev.m[0]} className="w-14 h-20 sm:w-16 sm:h-24" />
-						<FlipDigit value={m[1]} previousValue={prev.m[1]} className="w-14 h-20 sm:w-16 sm:h-24" />
-					</div>
-					<div className="pointer-events-none absolute inset-x-0 top-1/2 h-px bg-black/20 dark:bg-white/15"></div>
-					<div className="pointer-events-none absolute left-1/2 top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-black/10 dark:bg-white/10"></div>
-				</div>
-				<div className="mt-2 text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">Minutos</div>
-			</div>
-
-			<div className="text-center">
-				<div className={`relative rounded-lg border shadow-sm panel ${isElapsed ? 'border-red-400' : 'border-slate-200'} dark:border-slate-700 p-3`}> 
-					<div className="flex gap-2 justify-center">
-						<FlipDigit value={s[0]} previousValue={prev.s[0]} className="w-14 h-20 sm:w-16 sm:h-24" />
-						<FlipDigit value={s[1]} previousValue={prev.s[1]} className="w-14 h-20 sm:w-16 sm:h-24" />
-					</div>
-					<div className="pointer-events-none absolute inset-x-0 top-1/2 h-px bg-black/20 dark:bg-white/15"></div>
-					<div className="pointer-events-none absolute left-1/2 top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-black/10 dark:bg-white/10"></div>
-				</div>
-				<div className="mt-2 text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">Segundos</div>
-			</div>
-		</div>
+        <div className="grid grid-cols-2 gap-4 p-6 sm:grid-cols-3 md:grid-cols-6">
+            <UnitBox label="Meses" value={mo} previousValue={prev.mo} highlight={isElapsed} />
+            <UnitBox label="Semanas" value={wk} previousValue={prev.wk} highlight={isElapsed} />
+            <UnitBox label="Días" value={d} previousValue={prev.d} highlight={isElapsed} />
+            <UnitBox label="Horas" value={h} previousValue={prev.h} highlight={isElapsed} />
+            <UnitBox label="Minutos" value={m} previousValue={prev.m} highlight={isElapsed} />
+            <UnitBox label="Segundos" value={s} previousValue={prev.s} highlight={isElapsed} />
+        </div>
 	);
 }
 
-function TimeBoxStatic({ label, value, blink }: { label: string; value: number; blink?: boolean }) {
-	const padded = value.toString().padStart(2, '0');
-	const digitClass = `tabular-nums font-mono text-5xl sm:text-6xl font-extrabold leading-none tracking-tight ${blink ? 'text-red-600 animate-blink' : ''}`;
-	return (
-		<div className="text-center">
-			<div className={`relative overflow-hidden rounded-lg border shadow-sm ${blink ? 'border-red-400' : 'border-slate-200'} panel dark:border-slate-700`}>
-				<div className="h-28 sm:h-32 grid place-items-center">
-					<span className={digitClass}>{padded}</span>
-				</div>
-				<div className="pointer-events-none absolute inset-x-0 top-1/2 h-px bg-black/20 dark:bg-white/15"></div>
-				<div className="pointer-events-none absolute left-1/2 top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-black/10 dark:bg-white/10"></div>
-			</div>
-			<div className="mt-2 text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{label}</div>
-		</div>
-	);
+function UnitBox({ label, value, previousValue, highlight }: { label: string; value: string; previousValue?: string; highlight?: boolean }) {
+    return (
+        <div className="text-center">
+            {/* Un solo borde: lo aporta este contenedor */}
+            <div className={`relative overflow-hidden rounded-lg border panel ${highlight ? 'border-red-400' : 'border-slate-200'} dark:border-slate-700 p-3`}> 
+                <div className="flex justify-center">
+                    <FlipBlock value={value} previousValue={previousValue} className="w-28 h-24 sm:w-32 sm:h-28" />
+                </div>
+                {/* Línea y punto decorativos como elementos de fondo */}
+                <div className="pointer-events-none absolute inset-x-3 top-1/2 h-px bg-black/10 dark:bg-white/10"></div>
+                <div className="pointer-events-none absolute left-1/2 top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-black/15 dark:bg-white/10"></div>
+            </div>
+            <div className="mt-2 text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{label}</div>
+        </div>
+    );
+}
+
+function FlipBlock({ value, previousValue, className }: { value: string; previousValue?: string; className?: string }) {
+    const [isFlipping, setIsFlipping] = useState(false);
+    const [prev, setPrev] = useState(previousValue ?? value);
+
+    useEffect(() => {
+        if (value !== prev) {
+            setIsFlipping(true);
+            const timeout = setTimeout(() => {
+                setIsFlipping(false);
+                setPrev(value);
+            }, 600);
+            return () => clearTimeout(timeout);
+        }
+    }, [value, prev]);
+
+    const containerClass = `flip-container ${isFlipping ? 'is-flipping' : ''} ${className ?? ''}`.trim();
+
+    return (
+        <div className={containerClass} aria-hidden="true">
+            <div className="static-card text-slate-900 dark:text-slate-100">
+                <span className="font-mono tabular-nums font-extrabold">{value}</span>
+            </div>
+            {isFlipping && (
+                <>
+                    <div className="flip-front text-slate-900 dark:text-slate-100">
+                        <span className="font-mono tabular-nums font-extrabold">{prev}</span>
+                    </div>
+                    <div className="flip-back text-slate-900 dark:text-slate-100">
+                        <span className="font-mono tabular-nums font-extrabold">{value}</span>
+                    </div>
+                </>
+            )}
+        </div>
+    );
 }
 
 
