@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { getCountdownTargetDate } from "~/config/countdown";
+import FlipDigit from "./FlipDigit";
 
 type TimeLeft = {
     months: number;
@@ -66,6 +67,8 @@ function daysInMonth(year: number, monthZeroBased: number): number {
 export default function Countdown() {
 	const targetDate = useMemo(() => getCountdownTargetDate(), []);
 	const [timeLeft, setTimeLeft] = useState<TimeLeft>(() => calculateTimeLeft(targetDate));
+	const isElapsed = timeLeft.months === 0 && timeLeft.weeks === 0 && timeLeft.days === 0 && timeLeft.hours === 0 && timeLeft.minutes === 0 && timeLeft.seconds === 0;
+	const prevHmsRef = useRef<{h: string; m: string; s: string}>({ h: '00', m: '00', s: '00' });
 
 	useEffect(() => {
 		const intervalId = setInterval(() => {
@@ -74,25 +77,72 @@ export default function Countdown() {
 		return () => clearInterval(intervalId);
 	}, [targetDate]);
 
-    return (
-        <div className="grid grid-cols-2 gap-3 p-6 sm:grid-cols-3 md:grid-cols-6 md:gap-4">
-            <TimeBox label="Meses" value={timeLeft.months} />
-            <TimeBox label="Semanas" value={timeLeft.weeks} />
-            <TimeBox label="Días" value={timeLeft.days} />
-            <TimeBox label="Horas" value={timeLeft.hours} />
-            <TimeBox label="Minutos" value={timeLeft.minutes} />
-            <TimeBox label="Segundos" value={timeLeft.seconds} />
-        </div>
-    );
+	const h = timeLeft.hours.toString().padStart(2, '0');
+	const m = timeLeft.minutes.toString().padStart(2, '0');
+	const s = timeLeft.seconds.toString().padStart(2, '0');
+	const prev = prevHmsRef.current;
+	prevHmsRef.current = { h, m, s };
+
+	return (
+		<div className="grid grid-cols-2 gap-4 p-6 sm:grid-cols-3 md:grid-cols-6">
+			<TimeBoxStatic label="Meses" value={timeLeft.months} blink={isElapsed} />
+			<TimeBoxStatic label="Semanas" value={timeLeft.weeks} blink={isElapsed} />
+			<TimeBoxStatic label="Días" value={timeLeft.days} blink={isElapsed} />
+
+			<div className="text-center">
+				<div className={`relative rounded-lg border shadow-sm panel ${isElapsed ? 'border-red-400' : 'border-slate-200'} dark:border-slate-700 p-3`}> 
+					<div className="flex gap-2 justify-center">
+						<FlipDigit value={h[0]} previousValue={prev.h[0]} className="w-14 h-20 sm:w-16 sm:h-24" />
+						<FlipDigit value={h[1]} previousValue={prev.h[1]} className="w-14 h-20 sm:w-16 sm:h-24" />
+					</div>
+					<div className="pointer-events-none absolute inset-x-0 top-1/2 h-px bg-black/20 dark:bg-white/15"></div>
+					<div className="pointer-events-none absolute left-1/2 top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-black/10 dark:bg-white/10"></div>
+				</div>
+				<div className="mt-2 text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">Horas</div>
+			</div>
+
+			<div className="text-center">
+				<div className={`relative rounded-lg border shadow-sm panel ${isElapsed ? 'border-red-400' : 'border-slate-200'} dark:border-slate-700 p-3`}> 
+					<div className="flex gap-2 justify-center">
+						<FlipDigit value={m[0]} previousValue={prev.m[0]} className="w-14 h-20 sm:w-16 sm:h-24" />
+						<FlipDigit value={m[1]} previousValue={prev.m[1]} className="w-14 h-20 sm:w-16 sm:h-24" />
+					</div>
+					<div className="pointer-events-none absolute inset-x-0 top-1/2 h-px bg-black/20 dark:bg-white/15"></div>
+					<div className="pointer-events-none absolute left-1/2 top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-black/10 dark:bg-white/10"></div>
+				</div>
+				<div className="mt-2 text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">Minutos</div>
+			</div>
+
+			<div className="text-center">
+				<div className={`relative rounded-lg border shadow-sm panel ${isElapsed ? 'border-red-400' : 'border-slate-200'} dark:border-slate-700 p-3`}> 
+					<div className="flex gap-2 justify-center">
+						<FlipDigit value={s[0]} previousValue={prev.s[0]} className="w-14 h-20 sm:w-16 sm:h-24" />
+						<FlipDigit value={s[1]} previousValue={prev.s[1]} className="w-14 h-20 sm:w-16 sm:h-24" />
+					</div>
+					<div className="pointer-events-none absolute inset-x-0 top-1/2 h-px bg-black/20 dark:bg-white/15"></div>
+					<div className="pointer-events-none absolute left-1/2 top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-black/10 dark:bg-white/10"></div>
+				</div>
+				<div className="mt-2 text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">Segundos</div>
+			</div>
+		</div>
+	);
 }
 
-function TimeBox({ label, value }: { label: string; value: number }) {
-    return (
-        <div className="rounded-xl border border-slate-200 bg-white p-4 text-center shadow-sm dark:border-slate-700 dark:bg-slate-800">
-            <div className="text-4xl font-extrabold leading-none tracking-tight sm:text-5xl">{value.toString().padStart(2, '0')}</div>
-            <div className="mt-1 text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{label}</div>
-        </div>
-    );
+function TimeBoxStatic({ label, value, blink }: { label: string; value: number; blink?: boolean }) {
+	const padded = value.toString().padStart(2, '0');
+	const digitClass = `tabular-nums font-mono text-5xl sm:text-6xl font-extrabold leading-none tracking-tight ${blink ? 'text-red-600 animate-blink' : ''}`;
+	return (
+		<div className="text-center">
+			<div className={`relative overflow-hidden rounded-lg border shadow-sm ${blink ? 'border-red-400' : 'border-slate-200'} panel dark:border-slate-700`}>
+				<div className="h-28 sm:h-32 grid place-items-center">
+					<span className={digitClass}>{padded}</span>
+				</div>
+				<div className="pointer-events-none absolute inset-x-0 top-1/2 h-px bg-black/20 dark:bg-white/15"></div>
+				<div className="pointer-events-none absolute left-1/2 top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-black/10 dark:bg-white/10"></div>
+			</div>
+			<div className="mt-2 text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{label}</div>
+		</div>
+	);
 }
 
 

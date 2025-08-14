@@ -41,12 +41,11 @@ export default function ThemeToggle() {
 	return (
 		<button
 			onClick={toggle}
-			className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
-			aria-label="Cambiar tema"
+			className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-sm hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+			aria-label={theme === 'light' ? 'Activar modo oscuro' : 'Activar modo claro'}
 			type="button"
 		>
-			{theme === 'light' ? <FiMoon className="h-4 w-4" /> : <FiSun className="h-4 w-4" />}
-			<span className="hidden sm:inline">{theme === 'light' ? 'Modo oscuro' : 'Modo claro'}</span>
+			{theme === 'light' ? <FiMoon className="h-5 w-5" /> : <FiSun className="h-5 w-5" />}
 		</button>
 	);
 }
