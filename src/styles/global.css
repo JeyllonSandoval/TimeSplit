@@ -36,8 +36,7 @@ html[data-theme='dark'] {
     font-weight: 800;
 }
 /* Evita solapamiento de múltiples números durante la animación */
-.flip-container.is-flipping .upper-card,
-.flip-container.is-flipping .lower-card,
+/* Durante la animación mostramos solo la fase correspondiente */
 .flip-container.is-flipping .static-card { visibility: hidden; }
 
 .upper-card, .lower-card, .flip-front, .flip-back {
@@ -62,7 +61,7 @@ html[data-theme='dark'] {
 .flip-front {
 	top: 0;
 	transform-origin: bottom;
-    animation: flipFront 500ms cubic-bezier(0.22, 1, 0.36, 1) forwards; /* ease-out suave */
+    animation: flipFront 300ms cubic-bezier(0.22, 1, 0.36, 1) forwards; /* Fase A */
 	align-items: flex-end;
 	z-index: 20;
 }
@@ -71,7 +70,7 @@ html[data-theme='dark'] {
 	bottom: 0;
 	transform-origin: top;
 	transform: rotateX(90deg);
-    animation: flipBack 500ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation: flipBack 300ms cubic-bezier(0.22, 1, 0.36, 1) forwards; /* Fase B */
 	align-items: flex-start;
 	z-index: 10;
 }

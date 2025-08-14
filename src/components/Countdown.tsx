@@ -117,15 +117,26 @@ function UnitBox({ label, value, previousValue, highlight }: { label: string; va
 function FlipBlock({ value, previousValue, className }: { value: string; previousValue?: string; className?: string }) {
     const [isFlipping, setIsFlipping] = useState(false);
     const [prev, setPrev] = useState(previousValue ?? value);
+    const [phase, setPhase] = useState<'idle' | 'front' | 'back'>('idle');
 
     useEffect(() => {
         if (value !== prev) {
+            const FRONT_MS = 300;
+            const BACK_MS = 300;
             setIsFlipping(true);
-            const timeout = setTimeout(() => {
+            setPhase('front');
+            const t1 = setTimeout(() => {
+                setPhase('back');
+            }, FRONT_MS);
+            const t2 = setTimeout(() => {
                 setIsFlipping(false);
                 setPrev(value);
-            }, 600);
-            return () => clearTimeout(timeout);
+                setPhase('idle');
+            }, FRONT_MS + BACK_MS);
+            return () => {
+                clearTimeout(t1);
+                clearTimeout(t2);
+            };
         }
     }, [value, prev]);
 
@@ -133,18 +144,20 @@ function FlipBlock({ value, previousValue, className }: { value: string; previou
 
     return (
         <div className={containerClass} aria-hidden="true">
-            <div className="static-card text-slate-900 dark:text-slate-100">
-                <span className="font-mono tabular-nums font-extrabold">{value}</span>
-            </div>
-            {isFlipping && (
-                <>
-                    <div className="flip-front text-slate-900 dark:text-slate-100">
-                        <span className="font-mono tabular-nums font-extrabold">{prev}</span>
-                    </div>
-                    <div className="flip-back text-slate-900 dark:text-slate-100">
-                        <span className="font-mono tabular-nums font-extrabold">{value}</span>
-                    </div>
-                </>
+            {!isFlipping && (
+                <div className="static-card text-slate-900 dark:text-slate-100">
+                    <span className="font-mono tabular-nums font-extrabold">{value}</span>
+                </div>
+            )}
+            {isFlipping && phase === 'front' && (
+                <div className="flip-front text-slate-900 dark:text-slate-100">
+                    <span className="font-mono tabular-nums font-extrabold">{prev}</span>
+                </div>
+            )}
+            {isFlipping && phase === 'back' && (
+                <div className="flip-back text-slate-900 dark:text-slate-100">
+                    <span className="font-mono tabular-nums font-extrabold">{value}</span>
+                </div>
             )}
         </div>
     );
