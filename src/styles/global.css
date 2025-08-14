@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base theme bridge */
+:root {
+	color-scheme: light dark;
+}
+
+html[data-theme='dark'] {
+	/* Tailwind dark mode uses the class selector. We'll control via data-theme */
+}
+
+

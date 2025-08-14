@@ -33,14 +33,7 @@ export default function Countdown() {
 	}, [targetDate]);
 
 	return (
-		<div style={{
-			display: 'flex',
-			gap: '1rem',
-			justifyContent: 'center',
-			alignItems: 'center',
-			fontFamily: 'system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, sans-serif',
-			padding: '2rem'
-		}}>
+		<div className="flex items-center justify-center gap-4 p-8">
 			<TimeBox label="Días" value={timeLeft.days} />
 			<TimeBox label="Horas" value={timeLeft.hours} />
 			<TimeBox label="Minutos" value={timeLeft.minutes} />
@@ -51,19 +44,9 @@ export default function Countdown() {
 
 function TimeBox({ label, value }: { label: string; value: number }) {
 	return (
-		<div style={{
-			minWidth: '90px',
-			textAlign: 'center',
-			padding: '1rem',
-			border: '1px solid #e5e7eb',
-			borderRadius: '0.75rem',
-			background: '#fff',
-			boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
-		}}>
-			<div style={{ fontSize: '2rem', fontWeight: 700, lineHeight: 1 }}>
-				{value.toString().padStart(2, '0')}
-			</div>
-			<div style={{ marginTop: '0.25rem', color: '#6b7280', fontSize: '0.9rem' }}>{label}</div>
+		<div className="min-w-[90px] rounded-xl border border-slate-200 bg-white p-4 text-center shadow-sm dark:border-slate-700 dark:bg-slate-800">
+			<div className="text-4xl font-bold leading-none">{value.toString().padStart(2, '0')}</div>
+			<div className="mt-1 text-sm text-slate-500 dark:text-slate-400">{label}</div>
 		</div>
 	);
 }
