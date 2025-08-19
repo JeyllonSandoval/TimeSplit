@@ -12,22 +12,23 @@ interface TimeUnits {
   months: number;
 }
 
-// Componente TimeDigit definido fuera de la función principal
+// Componente TimeDigit con efecto de rueda limpio
 const TimeDigit = ({ 
   value, 
   unit,
   isDarkTheme,
-  showLabels
+  showLabels,
+  previousValue
 }: { 
   value: number; 
   unit: string;
   isDarkTheme: boolean;
   showLabels: boolean;
+  previousValue: number;
 }) => {
-  // Calcular el valor anterior correcto
+  // Calcular el valor anterior y siguiente correctos
   const getPreviousValue = () => {
     if (value === 0) {
-      // Si el valor actual es 0, el anterior depende de la unidad
       switch (unit.toLowerCase()) {
         case 'segundos':
         case 'minutos':
@@ -47,12 +48,36 @@ const TimeDigit = ({
     return value - 1;
   };
 
-  const nextValue = value === 59 ? 0 : value + 1;
-  const previousValue = getPreviousValue();
+  const getNextValue = () => {
+    if (value === 59) {
+      switch (unit.toLowerCase()) {
+        case 'segundos':
+        case 'minutos':
+          return 0;
+        case 'horas':
+          return 0;
+        case 'días':
+          return 0;
+        case 'semanas':
+          return 0;
+        case 'meses':
+          return 0;
+        default:
+          return 0;
+      }
+    }
+    return value + 1;
+  };
+
+  const nextValue = getNextValue();
+  const prevValue = getPreviousValue();
 
   const formatNumber = (num: number) => {
     return num.toString().padStart(2, '0');
   };
+
+  // Detectar si el valor cambió para animar
+  const hasChanged = value !== previousValue;
 
   return (
     <motion.div 
@@ -62,65 +87,76 @@ const TimeDigit = ({
       transition={{ duration: 0.6, ease: "easeOut" }}
       whileHover={{ scale: 1.02 }}
     >
-      <div className="flex flex-col items-center relative overflow-hidden">
+      <div className="flex flex-col items-center relative h-48">
         {/* Fila superior - Número siguiente */}
         <motion.div 
-          className={`text-7xl font-bold mb-1 ${
+          className={`text-7xl font-bold mb-2 ${
             isDarkTheme ? 'text-gray-600' : 'text-gray-300'
           }`}
-          initial={{ y: 20, opacity: 0.7, scale: 0.9 }}
+          initial={{ y: 0, opacity: 0.7, scale: 0.9 }}
           animate={{ y: 0, opacity: 0.7, scale: 0.9 }}
-          transition={{ 
-            duration: 0.8, 
-            ease: "easeOut",
-            delay: 0.1
-          }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
         >
           {formatNumber(nextValue)}
         </motion.div>
         
-        {/* Fila central - Número actual */}
-        <motion.div 
-          className={`text-8xl font-bold mb-1 ${
-            isDarkTheme ? 'text-white' : 'text-gray-900'
-          }`}
-          key={value}
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.4, ease: "easeOut" }}
-        >
-          {formatNumber(value)}
-        </motion.div>
+        {/* Fila central - Número actual con AnimatePresence */}
+        <div className="relative h-36 flex items-center justify-center mb-2">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={value}
+              className={`text-8xl font-bold ${
+                isDarkTheme ? 'text-white' : 'text-gray-900'
+              }`}
+              initial={{ y: 40, opacity: 0, scale: 0.8 }}
+              animate={{ y: 0, opacity: 1, scale: 1 }}
+              exit={{ y: -40, opacity: 0, scale: 0.8 }}
+              transition={{ 
+                duration: 0.05, 
+                ease: [0.25, 0.46, 0.45, 0.94],
+                delay: 0.1
+              }}
+            >
+              {formatNumber(value)}
+            </motion.div>
+          </AnimatePresence>
+        </div>
         
-        {/* Fila inferior - Número anterior */}
-        <motion.div 
-          className={`text-7xl font-bold ${
-            isDarkTheme ? 'text-gray-600' : 'text-gray-300'
-          }`}
-          initial={{ y: -20, opacity: 0.7, scale: 0.9 }}
-          animate={{ y: 0, opacity: 0.7, scale: 0.9 }}
-          transition={{ 
-            duration: 0.8, 
-            ease: "easeOut",
-            delay: 0.1
-          }}
-        >
-          {formatNumber(previousValue)}
-        </motion.div>
+        {/* Fila inferior - Número anterior con animación coordinada */}
+        <div className="relative h-16 flex items-center justify-center">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={prevValue}
+              className={`text-7xl font-bold ${
+                isDarkTheme ? 'text-gray-600' : 'text-gray-300'
+              }`}
+              initial={{ y: 40, opacity: 0, scale: 0.8 }}
+              animate={{ y: 0, opacity: 0.7, scale: 0.9 }}
+              exit={{ y: -40, opacity: 0, scale: 0.8 }}
+              transition={{ 
+                duration: 0.05, 
+                ease: [0.25, 0.46, 0.45, 0.94],
+                delay: 0.05
+              }}
+            >
+              {formatNumber(prevValue)}
+            </motion.div>
+          </AnimatePresence>
+        </div>
         
         {/* Etiqueta con animación */}
         <AnimatePresence>
           {showLabels && (
             <motion.div 
-              className={`text-lg font-medium mt-2 ${
+              className={`text-lg font-medium mt-3 ${
                 isDarkTheme ? 'text-gray-400' : 'text-gray-600'
               }`}
               initial={{ opacity: 0, y: 10, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 10, scale: 0.9 }}
               transition={{ 
-                duration: 0.3, 
-                ease: "easeOut"
+                duration: 0.4, 
+                ease: [0.25, 0.46, 0.45, 0.94]
               }}
             >
               {unit}
@@ -144,6 +180,14 @@ export default function UnixCounter() {
     weeks: 0,
     months: 0
   });
+  const [previousTimeUnits, setPreviousTimeUnits] = useState<TimeUnits>({
+    seconds: 0,
+    minutes: 0,
+    hours: 0,
+    days: 0,
+    weeks: 0,
+    months: 0
+  });
   const [startTimestamp] = useState<number>(Math.floor(new Date(TARGET_DATE).getTime() / 1000));
   const [showLabels, setShowLabels] = useState(false);
   const [isDarkTheme, setIsDarkTheme] = useState(false);
@@ -155,6 +199,7 @@ export default function UnixCounter() {
       
       if (elapsed > 0) {
         const units = calculateTimeUnits(elapsed);
+        setPreviousTimeUnits(timeUnits);
         setTimeUnits(units);
       } else {
         setTimeUnits({
@@ -171,7 +216,7 @@ export default function UnixCounter() {
     updateTime();
     const interval = setInterval(updateTime, 1000);
     return () => clearInterval(interval);
-  }, [startTimestamp]);
+  }, [startTimestamp, timeUnits]);
 
   const calculateTimeUnits = (totalSeconds: number): TimeUnits => {
     const seconds = totalSeconds % 60;
@@ -286,6 +331,7 @@ export default function UnixCounter() {
           unit="MESES"
           isDarkTheme={isDarkTheme}
           showLabels={showLabels}
+          previousValue={previousTimeUnits.months}
         />
         
         <TimeDigit 
@@ -293,6 +339,7 @@ export default function UnixCounter() {
           unit="SEMANAS"
           isDarkTheme={isDarkTheme}
           showLabels={showLabels}
+          previousValue={previousTimeUnits.weeks}
         />
         
         <TimeDigit 
@@ -300,6 +347,7 @@ export default function UnixCounter() {
           unit="DÍAS"
           isDarkTheme={isDarkTheme}
           showLabels={showLabels}
+          previousValue={previousTimeUnits.days}
         />
         
         <TimeDigit 
@@ -307,6 +355,7 @@ export default function UnixCounter() {
           unit="HORAS"
           isDarkTheme={isDarkTheme}
           showLabels={showLabels}
+          previousValue={previousTimeUnits.hours}
         />
         
         <TimeDigit 
@@ -314,6 +363,7 @@ export default function UnixCounter() {
           unit="MINUTOS"
           isDarkTheme={isDarkTheme}
           showLabels={showLabels}
+          previousValue={previousTimeUnits.minutes}
         />
         
         <TimeDigit 
@@ -321,6 +371,7 @@ export default function UnixCounter() {
           unit="SEGUNDOS"
           isDarkTheme={isDarkTheme}
           showLabels={showLabels}
+          previousValue={previousTimeUnits.seconds}
         />
       </motion.div>
     </motion.div>
