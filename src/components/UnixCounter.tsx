@@ -75,87 +75,105 @@ export default function UnixCounter() {
 
   return (
     <div className="min-h-screen bg-white flex items-center justify-center p-4">
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 max-w-6xl w-full">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 max-w-7xl w-full">
         <div className="text-center">
-          <div className="relative">
-            <div className="text-8xl font-bold text-gray-300 mb-2">
-              {formatNumber(timeUnits.months === 0 ? 0 : timeUnits.months - 1)}
-            </div>
-            <div className="text-8xl font-bold text-gray-900 mb-2 absolute top-0 left-0 w-full">
-              {formatNumber(timeUnits.months)}
-            </div>
-            <div className="text-8xl font-bold text-gray-300 mb-2">
+          <div className="flex flex-col items-center">
+            {/* Fila superior - Número siguiente */}
+            <div className="text-7xl font-bold text-gray-300 mb-1">
               {formatNumber(timeUnits.months + 1)}
             </div>
+            {/* Fila central - Número actual */}
+            <div className="text-8xl font-bold text-gray-900 mb-1">
+              {formatNumber(timeUnits.months)}
+            </div>
+            {/* Fila inferior - Número anterior */}
+            <div className="text-7xl font-bold text-gray-300">
+              {formatNumber(timeUnits.months === 0 ? 0 : timeUnits.months - 1)}
+            </div>
           </div>
         </div>
 
         <div className="text-center">
-          <div className="relative">
-            <div className="text-8xl font-bold text-gray-300 mb-2">
-              {formatNumber(timeUnits.weeks === 0 ? 0 : timeUnits.weeks - 1)}
-            </div>
-            <div className="text-8xl font-bold text-gray-900 mb-2 absolute top-0 left-0 w-full">
-              {formatNumber(timeUnits.weeks)}
-            </div>
-            <div className="text-8xl font-bold text-gray-300 mb-2">
+          <div className="flex flex-col items-center">
+            {/* Fila superior - Número siguiente */}
+            <div className="text-7xl font-bold text-gray-300 mb-1">
               {formatNumber(timeUnits.weeks + 1)}
             </div>
+            {/* Fila central - Número actual */}
+            <div className="text-8xl font-bold text-gray-900 mb-1">
+              {formatNumber(timeUnits.weeks)}
+            </div>
+            {/* Fila inferior - Número anterior */}
+            <div className="text-7xl font-bold text-gray-300">
+              {formatNumber(timeUnits.weeks === 0 ? 0 : timeUnits.weeks - 1)}
+            </div>
           </div>
         </div>
 
         <div className="text-center">
-          <div className="relative">
-            <div className="text-8xl font-bold text-gray-300 mb-2">
-              {formatNumber(timeUnits.days === 0 ? 0 : timeUnits.days - 1)}
-            </div>
-            <div className="text-8xl font-bold text-gray-900 mb-2 absolute top-0 left-0 w-full">
-              {formatNumber(timeUnits.days)}
-            </div>
-            <div className="text-8xl font-bold text-gray-300 mb-2">
+          <div className="flex flex-col items-center">
+            {/* Fila superior - Número siguiente */}
+            <div className="text-7xl font-bold text-gray-300 mb-1">
               {formatNumber(timeUnits.days + 1)}
             </div>
+            {/* Fila central - Número actual */}
+            <div className="text-8xl font-bold text-gray-900 mb-1">
+              {formatNumber(timeUnits.days)}
+            </div>
+            {/* Fila inferior - Número anterior */}
+            <div className="text-7xl font-bold text-gray-300">
+              {formatNumber(timeUnits.days === 0 ? 0 : timeUnits.days - 1)}
+            </div>
           </div>
         </div>
 
         <div className="text-center">
-          <div className="relative">
-            <div className="text-8xl font-bold text-gray-300 mb-2">
-              {formatNumber(timeUnits.hours === 0 ? 0 : timeUnits.hours - 1)}
-            </div>
-            <div className="text-8xl font-bold text-gray-900 mb-2 absolute top-0 left-0 w-full">
-              {formatNumber(timeUnits.hours)}
-            </div>
-            <div className="text-8xl font-bold text-gray-300 mb-2">
+          <div className="flex flex-col items-center">
+            {/* Fila superior - Número siguiente */}
+            <div className="text-7xl font-bold text-gray-300 mb-1">
               {formatNumber(timeUnits.hours + 1)}
             </div>
+            {/* Fila central - Número actual */}
+            <div className="text-8xl font-bold text-gray-900 mb-1">
+              {formatNumber(timeUnits.hours)}
+            </div>
+            {/* Fila inferior - Número anterior */}
+            <div className="text-7xl font-bold text-gray-300">
+              {formatNumber(timeUnits.hours === 0 ? 0 : timeUnits.hours - 1)}
+            </div>
           </div>
         </div>
 
         <div className="text-center">
-          <div className="relative">
-            <div className="text-8xl font-bold text-gray-300 mb-2">
-              {formatNumber(timeUnits.minutes === 0 ? 0 : timeUnits.minutes - 1)}
-            </div>
-            <div className="text-8xl font-bold text-gray-900 mb-2 absolute top-0 left-0 w-full">
-              {formatNumber(timeUnits.minutes)}
-            </div>
-            <div className="text-8xl font-bold text-gray-300 mb-2">
+          <div className="flex flex-col items-center">
+            {/* Fila superior - Número siguiente */}
+            <div className="text-7xl font-bold text-gray-300 mb-1">
               {formatNumber(timeUnits.minutes + 1)}
             </div>
+            {/* Fila central - Número actual */}
+            <div className="text-8xl font-bold text-gray-900 mb-1">
+              {formatNumber(timeUnits.minutes)}
+            </div>
+            {/* Fila inferior - Número anterior */}
+            <div className="text-7xl font-bold text-gray-300">
+              {formatNumber(timeUnits.minutes === 0 ? 0 : timeUnits.minutes - 1)}
+            </div>
           </div>
         </div>
 
         <div className="text-center">
-          <div className="relative">
-            <div className="text-8xl font-bold text-gray-300 mb-2">
-              {formatNumber(timeUnits.seconds === 0 ? 0 : timeUnits.seconds - 1)}
+          <div className="flex flex-col items-center">
+            {/* Fila superior - Número siguiente */}
+            <div className="text-7xl font-bold text-gray-300 mb-1">
+              {formatNumber(timeUnits.seconds + 1)}
             </div>
-            <div className="text-8xl font-bold text-gray-900 mb-2 absolute top-0 left-0 w-full">
+            {/* Fila central - Número actual */}
+            <div className="text-8xl font-bold text-gray-900 mb-1">
               {formatNumber(timeUnits.seconds)}
             </div>
-            <div className="text-8xl font-bold text-gray-300 mb-2">
-              {formatNumber(timeUnits.seconds + 1)}
+            {/* Fila inferior - Número anterior */}
+            <div className="text-7xl font-bold text-gray-300">
+              {formatNumber(timeUnits.seconds === 0 ? 0 : timeUnits.seconds - 1)}
             </div>
           </div>
         </div>
