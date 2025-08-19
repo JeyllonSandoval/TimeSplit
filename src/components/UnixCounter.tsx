@@ -284,7 +284,7 @@ export default function UnixCounter() {
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:shadow-md'
           }`}
           title={showLabels ? 'Ocultar etiquetas' : 'Mostrar etiquetas'}
-          whileHover={{ scale: 1.1, rotate: 5 }}
+          whileHover={{ scale: 1.1, rotate: -90 }}
           whileTap={{ scale: 0.95 }}
           transition={{ duration: 0.2, ease: "easeOut" }}
         >
@@ -304,7 +304,7 @@ export default function UnixCounter() {
               : 'bg-gray-800 text-white hover:bg-gray-700 hover:shadow-lg'
           }`}
           title={isDarkTheme ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'}
-          whileHover={{ scale: 1.1, rotate: 180 }}
+          whileHover={{ scale: 1.1, rotate: 360 }}
           whileTap={{ scale: 0.95 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
         >
