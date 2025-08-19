@@ -234,11 +234,11 @@ export default function UnixCounter() {
             {formatNumber(getPreviousValue())}
           </div>
           
-          {/* Etiqueta con animación mejorada */}
+          {/* Etiqueta sin animación */}
           {showLabels && (
             <div className={`text-lg font-medium mt-2 transition-all duration-200 ease-out ${
               isDarkTheme ? 'text-gray-400' : 'text-gray-600'
-            } ${wheelRotation > 0 ? 'transform scale-110 translate-y-1' : 'transform scale-100 translate-y-0'}`}>
+            }`}>
               {unit}
             </div>
           )}
@@ -251,16 +251,31 @@ export default function UnixCounter() {
     <div className={`min-h-screen flex items-center justify-center p-4 transition-all duration-500 ${
       isDarkTheme ? 'bg-gray-900' : 'bg-white'
     }`}>
+      {/* Título en la parte izquierda superior */}
+      {showLabels && (
+        <div className="absolute top-6 left-6">
+          <h1 className={`text-2xl font-bold transition-all duration-300 ${
+            isDarkTheme ? 'text-white' : 'text-gray-900'
+          }`}>
+            Doble sueldo
+          </h1>
+        </div>
+      )}
+
       {/* Botones en la parte superior derecha */}
       <div className="absolute top-6 right-6 flex gap-4">
         {/* Botón para mostrar/ocultar etiquetas */}
         <button
           onClick={toggleLabels}
           className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 ${
-            showLabels 
-              ? 'bg-gray-800 text-white shadow-lg' 
-              : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:shadow-md'
-          } ${isDarkTheme ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : ''}`}
+            isDarkTheme 
+              ? showLabels 
+                ? 'bg-gray-800 text-white shadow-lg hover:bg-gray-700' 
+                : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+              : showLabels 
+                ? 'bg-gray-800 text-white shadow-lg hover:bg-gray-700' 
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:shadow-md'
+          }`}
           title={showLabels ? 'Ocultar etiquetas' : 'Mostrar etiquetas'}
         >
           {showLabels ? (
