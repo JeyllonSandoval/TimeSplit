@@ -244,7 +244,7 @@ export default function UnixCounter() {
   return (
     <motion.div 
       className={`min-h-screen flex items-center justify-center p-2 sm:p-4 ${
-        isDarkTheme ? 'bg-gray-900' : 'bg-white'
+        isDarkTheme ? 'bg-[#121212]' : 'bg-white'
       }`}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
