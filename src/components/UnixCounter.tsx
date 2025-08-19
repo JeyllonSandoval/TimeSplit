@@ -24,15 +24,32 @@ export default function UnixCounter() {
   const [startTimestamp] = useState<number>(Math.floor(new Date(TARGET_DATE).getTime() / 1000));
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    const updateTime = () => {
       const now = Math.floor(Date.now() / 1000);
-      const elapsed = now - startTimestamp;
+      const elapsed = startTimestamp - now; // Tiempo restante hasta la fecha objetivo
       
-      if (elapsed >= 0) {
+      if (elapsed > 0) {
+        // Si aún no ha llegado la fecha, calculamos el tiempo restante
         const units = calculateTimeUnits(elapsed);
         setTimeUnits(units);
+      } else {
+        // Si ya pasó la fecha, mostramos ceros
+        setTimeUnits({
+          seconds: 0,
+          minutes: 0,
+          hours: 0,
+          days: 0,
+          weeks: 0,
+          months: 0
+        });
       }
-    }, 1000);
+    };
+
+    // Actualizar inmediatamente
+    updateTime();
+    
+    // Actualizar cada segundo
+    const interval = setInterval(updateTime, 1000);
 
     return () => clearInterval(interval);
   }, [startTimestamp]);
@@ -57,12 +74,7 @@ export default function UnixCounter() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col items-center justify-center p-4">
-      <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">TimeSplit</h1>
-        <p className="text-lg text-gray-600">1 de diciembre de 2025, 3:00 PM</p>
-      </div>
-
+    <div className="min-h-screen bg-white flex items-center justify-center p-4">
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 max-w-6xl w-full">
         <div className="text-center">
           <div className="relative">
@@ -75,9 +87,6 @@ export default function UnixCounter() {
             <div className="text-8xl font-bold text-gray-300 mb-2">
               {formatNumber(timeUnits.months + 1)}
             </div>
-          </div>
-          <div className="text-xl text-gray-600 uppercase tracking-wider font-medium">
-            Meses
           </div>
         </div>
 
@@ -93,9 +102,6 @@ export default function UnixCounter() {
               {formatNumber(timeUnits.weeks + 1)}
             </div>
           </div>
-          <div className="text-xl text-gray-600 uppercase tracking-wider font-medium">
-            Semanas
-          </div>
         </div>
 
         <div className="text-center">
@@ -109,9 +115,6 @@ export default function UnixCounter() {
             <div className="text-8xl font-bold text-gray-300 mb-2">
               {formatNumber(timeUnits.days + 1)}
             </div>
-          </div>
-          <div className="text-xl text-gray-600 uppercase tracking-wider font-medium">
-            Días
           </div>
         </div>
 
@@ -127,9 +130,6 @@ export default function UnixCounter() {
               {formatNumber(timeUnits.hours + 1)}
             </div>
           </div>
-          <div className="text-xl text-gray-600 uppercase tracking-wider font-medium">
-            Horas
-          </div>
         </div>
 
         <div className="text-center">
@@ -144,9 +144,6 @@ export default function UnixCounter() {
               {formatNumber(timeUnits.minutes + 1)}
             </div>
           </div>
-          <div className="text-xl text-gray-600 uppercase tracking-wider font-medium">
-            Minutos
-          </div>
         </div>
 
         <div className="text-center">
@@ -160,9 +157,6 @@ export default function UnixCounter() {
             <div className="text-8xl font-bold text-gray-300 mb-2">
               {formatNumber(timeUnits.seconds + 1)}
             </div>
-          </div>
-          <div className="text-xl text-gray-600 uppercase tracking-wider font-medium">
-            Segundos
           </div>
         </div>
       </div>
