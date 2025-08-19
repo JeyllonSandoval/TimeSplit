@@ -87,10 +87,10 @@ const TimeDigit = ({
       transition={{ duration: 0.6, ease: "easeOut" }}
       whileHover={{ scale: 1.02 }}
     >
-      <div className="flex flex-col items-center relative h-48">
+      <div className="flex flex-col items-center relative h-32 sm:h-36 md:h-40 lg:h-48">
         {/* Fila superior - Número siguiente */}
         <motion.div 
-          className={`text-7xl font-bold mb-2 ${
+          className={`text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold mb-1 sm:mb-2 ${
             isDarkTheme ? 'text-gray-600' : 'text-gray-300'
           }`}
           initial={{ y: 0, opacity: 0.7, scale: 0.9 }}
@@ -101,11 +101,11 @@ const TimeDigit = ({
         </motion.div>
         
         {/* Fila central - Número actual con AnimatePresence */}
-        <div className="relative h-36 flex items-center justify-center mb-2">
+        <div className="relative h-20 sm:h-24 md:h-28 lg:h-36 flex items-center justify-center mb-1 sm:mb-2">
           <AnimatePresence mode="wait">
             <motion.div
               key={value}
-              className={`text-8xl font-bold ${
+              className={`text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-bold ${
                 isDarkTheme ? 'text-white' : 'text-gray-900'
               }`}
               initial={{ y: 40, opacity: 0, scale: 0.8 }}
@@ -123,11 +123,11 @@ const TimeDigit = ({
         </div>
         
         {/* Fila inferior - Número anterior con animación coordinada */}
-        <div className="relative h-16 flex items-center justify-center">
+        <div className="relative h-12 sm:h-14 md:h-16 lg:h-16 flex items-center justify-center">
           <AnimatePresence mode="wait">
             <motion.div
               key={prevValue}
-              className={`text-7xl font-bold ${
+              className={`text-2xl sm:text-3xl md:text-4xl lg:text-7xl font-bold ${
                 isDarkTheme ? 'text-gray-600' : 'text-gray-300'
               }`}
               initial={{ y: 40, opacity: 0, scale: 0.8 }}
@@ -148,7 +148,7 @@ const TimeDigit = ({
         <AnimatePresence>
           {showLabels && (
             <motion.div 
-              className={`text-lg font-medium mt-3 ${
+              className={`text-sm sm:text-base md:text-lg font-medium mt-2 sm:mt-3 ${
                 isDarkTheme ? 'text-gray-400' : 'text-gray-600'
               }`}
               initial={{ opacity: 0, y: 10, scale: 0.9 }}
@@ -243,7 +243,7 @@ export default function UnixCounter() {
 
   return (
     <motion.div 
-      className={`min-h-screen flex items-center justify-center p-4 ${
+      className={`min-h-screen flex items-center justify-center p-2 sm:p-4 ${
         isDarkTheme ? 'bg-gray-900' : 'bg-white'
       }`}
       initial={{ opacity: 0 }}
@@ -254,13 +254,13 @@ export default function UnixCounter() {
       <AnimatePresence>
         {showLabels && (
           <motion.div 
-            className="absolute top-6 left-6"
+            className="absolute top-3 sm:top-6 left-3 sm:left-6"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.4, ease: "easeOut" }}
           >
-            <h1 className={`text-2xl font-bold ${
+            <h1 className={`text-lg sm:text-xl md:text-2xl font-bold ${
               isDarkTheme ? 'text-white' : 'text-gray-900'
             }`}>
               Doble sueldo
@@ -270,11 +270,11 @@ export default function UnixCounter() {
       </AnimatePresence>
 
       {/* Botones en la parte superior derecha */}
-      <div className="absolute top-6 right-6 flex gap-4">
+      <div className="absolute top-3 sm:top-6 right-3 sm:right-6 flex gap-2 sm:gap-4">
         {/* Botón para mostrar/ocultar etiquetas */}
         <motion.button
           onClick={toggleLabels}
-          className={`w-10 h-10 rounded-full flex items-center justify-center ${
+          className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center ${
             isDarkTheme 
               ? showLabels 
                 ? 'bg-gray-800 text-white shadow-lg hover:bg-gray-700' 
@@ -289,16 +289,16 @@ export default function UnixCounter() {
           transition={{ duration: 0.2, ease: "easeOut" }}
         >
           {showLabels ? (
-            <HiTag className="w-5 h-5" />
+            <HiTag className="w-4 h-4 sm:w-5 sm:h-5" />
           ) : (
-            <HiOutlineTag className="w-5 h-5" />
+            <HiOutlineTag className="w-4 h-4 sm:w-5 sm:h-5" />
           )}
         </motion.button>
 
         {/* Botón para cambiar tema */}
         <motion.button
           onClick={toggleTheme}
-          className={`w-10 h-10 rounded-full flex items-center justify-center ${
+          className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center ${
             isDarkTheme 
               ? 'bg-gray-100 text-gray-800 hover:bg-gray-200 hover:shadow-md' 
               : 'bg-gray-800 text-white hover:bg-gray-700 hover:shadow-lg'
@@ -309,15 +309,15 @@ export default function UnixCounter() {
           transition={{ duration: 0.3, ease: "easeOut" }}
         >
           {isDarkTheme ? (
-            <HiOutlineSun className="w-5 h-5" />
+            <HiOutlineSun className="w-4 h-4 sm:w-5 sm:h-5" />
           ) : (
-            <HiOutlineMoon className="w-5 h-5" />
+            <HiOutlineMoon className="w-4 h-4 sm:w-5 sm:h-5" />
           )}
         </motion.button>
       </div>
 
       <motion.div 
-        className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 max-w-7xl w-full"
+        className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6 md:gap-8 max-w-7xl w-full px-4 sm:px-6"
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ 
