@@ -332,7 +332,7 @@ export default function DualCounter() {
             }}
           >
             <motion.div 
-              className={`toggle-button rounded-full border p-1 theme-transition ${
+              className={`toggle-button rounded-full border p-2 theme-transition ${
                 isDarkTheme ? 'toggle-button-dark' : 'toggle-button-light'
               }`}
               whileHover={{ 
@@ -341,20 +341,20 @@ export default function DualCounter() {
               }}
               transition={{ duration: 0.2 }}
             >
-              <div className="flex relative">
+              <div className="flex relative w-full">
                 {/* Indicador de selección animado */}
                 <motion.div
                   className={`absolute top-0 bottom-0 rounded-full transition-all duration-300 ${
                     isDarkTheme ? 'toggle-indicator-dark' : 'toggle-indicator-light'
                   }`}
                   initial={{ 
-                    x: selectedSection === 'doble-sueldo' ? 0 : '100%',
-                    width: '50%',
+                    x: selectedSection === 'doble-sueldo' ? 0 : '150px',
+                    width: '150px',
                     opacity: 0
                   }}
                   animate={{
-                    x: selectedSection === 'doble-sueldo' ? 0 : '100%',
-                    width: '50%',
+                    x: selectedSection === 'doble-sueldo' ? 0 : '150px',
+                    width: '150px',
                     opacity: 1
                   }}
                   transition={{
@@ -366,7 +366,7 @@ export default function DualCounter() {
                 
                 <motion.button
                   onClick={() => handleSectionChange('doble-sueldo')}
-                  className={`relative z-10 btn-responsive rounded-full font-medium theme-transition transition-all duration-300 ${
+                  className={`relative z-10 w-[150px] rounded-full font-medium theme-transition transition-all duration-300 px-4 py-3 text-center ${
                     selectedSection === 'doble-sueldo'
                       ? isDarkTheme ? 'toggle-text-selected-dark' : 'toggle-text-selected-light'
                       : isDarkTheme ? 'toggle-text-unselected-dark' : 'toggle-text-unselected-light'
@@ -379,7 +379,7 @@ export default function DualCounter() {
                 </motion.button>
                 <motion.button
                   onClick={() => handleSectionChange('bono-anual')}
-                  className={`relative z-10 btn-responsive rounded-full font-medium theme-transition transition-all duration-300 ${
+                  className={`relative z-10 w-[150px] rounded-full font-medium theme-transition transition-all duration-300 px-4 py-3 text-center ${
                     selectedSection === 'bono-anual'
                       ? isDarkTheme ? 'toggle-text-selected-dark' : 'toggle-text-selected-light'
                       : isDarkTheme ? 'toggle-text-unselected-dark' : 'toggle-text-unselected-light'
@@ -399,54 +399,212 @@ export default function DualCounter() {
       {/* Botones en la parte superior derecha */}
       <motion.div 
         className="absolute top-2 right-4 flex gap-1 sm:gap-2 md:gap-3 lg:gap-4"
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
+        initial={{ opacity: 0, x: 50, y: -20 }}
+        animate={{ opacity: 1, x: 0, y: 0 }}
         transition={{ 
-          duration: 0.3, 
-          ease: "easeOut"
+          duration: 0.6, 
+          ease: "easeOut",
+          staggerChildren: 0.1
         }}
       >
         {/* Botón para mostrar/ocultar etiquetas */}
         <motion.button
           onClick={toggleLabels}
-          className={`btn-icon rounded-full flex items-center justify-center theme-transition ${
+          className={`btn-icon rounded-full flex items-center justify-center theme-transition relative overflow-hidden ${
             isDarkTheme 
               ? showLabels 
-                ? 'bg-gray-800 text-white shadow-lg hover:bg-gray-700' 
-                : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                ? 'bg-gradient-to-br from-gray-600 to-gray-700 text-white shadow-2xl hover:shadow-gray-600/50' 
+                : 'bg-gradient-to-br from-gray-700 to-gray-800 text-gray-300 hover:from-gray-600 hover:to-gray-700'
               : showLabels 
-                ? 'bg-gray-800 text-white shadow-lg hover:bg-gray-700' 
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:shadow-md'
+                ? 'bg-gradient-to-br from-gray-500 to-gray-600 text-white shadow-2xl hover:shadow-gray-500/50' 
+                : 'bg-gradient-to-br from-gray-200 to-gray-300 text-gray-700 hover:from-gray-300 hover:to-gray-400 hover:shadow-lg'
           }`}
           title={showLabels ? 'Ocultar etiquetas' : 'Mostrar etiquetas'}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          transition={{ duration: 0.15 }}
+          initial={{ scale: 0, rotate: -180 }}
+          animate={{ scale: 1, rotate: 0 }}
+          transition={{ 
+            duration: 0.5, 
+            ease: "easeOut",
+            delay: 0.2,
+            scale: { duration: 0.1, ease: "easeOut" },
+            rotate: { duration: 0.1, ease: "easeOut" }
+          }}
+          whileHover={{ 
+            scale: 1.15, 
+            rotate: [0, -5, 5, 0],
+            transition: { 
+              duration: 0.15,
+              rotate: { duration: 0.3, repeat: Infinity, repeatType: "reverse" }
+            }
+          }}
+          whileTap={{ 
+            scale: 0.9,
+            rotate: 0
+          }}
+          onHoverStart={() => {
+            // Efecto de brillo al hacer hover
+          }}
         >
+          {/* Efecto de brillo interno */}
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+            initial={{ x: "-100%" }}
+            whileHover={{ x: "100%" }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+          />
+          
+          {/* Efecto de ondas al hacer click */}
+          <motion.div
+            className="absolute inset-0 rounded-full border-2 border-white/30"
+            initial={{ scale: 1, opacity: 0 }}
+            whileTap={{ 
+              scale: 1.5, 
+              opacity: [0, 0.8, 0],
+              transition: { duration: 0.4 }
+            }}
+          />
+          
+          {/* Efecto de partículas flotantes */}
+          <motion.div
+            className="absolute -top-1 -right-1 w-2 h-2 bg-gray-400 rounded-full"
+            animate={{ 
+              y: [0, -10, 0],
+              opacity: [0.7, 1, 0.7],
+              scale: [1, 1.2, 1]
+            }}
+            transition={{ 
+              duration: 2, 
+              repeat: Infinity, 
+              ease: "easeInOut" 
+            }}
+          />
+          
           {showLabels ? (
-            <HiTag className="icon-responsive" />
+            <motion.div
+              initial={{ scale: 0, rotate: 180 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+            >
+              <HiTag className="icon-responsive" />
+            </motion.div>
           ) : (
-            <HiOutlineTag className="icon-responsive" />
+            <motion.div
+              initial={{ scale: 0, rotate: -180 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+            >
+              <HiOutlineTag className="icon-responsive" />
+            </motion.div>
           )}
         </motion.button>
 
         {/* Botón para cambiar tema */}
         <motion.button
           onClick={toggleTheme}
-          className={`btn-icon rounded-full flex items-center justify-center theme-transition ${
+          className={`btn-icon rounded-full flex items-center justify-center theme-transition relative overflow-hidden ${
             isDarkTheme 
-              ? 'bg-gray-100 text-gray-800 hover:bg-gray-200 hover:shadow-md' 
-              : 'bg-gray-800 text-white hover:bg-gray-700 hover:shadow-lg'
+              ? 'bg-gradient-to-br from-gray-100 to-gray-400 text-gray-800 shadow-2xl hover:shadow-gray-300/50' 
+              : 'bg-gradient-to-br from-gray-600 to-gray-800 text-white shadow-2xl hover:shadow-gray-700/50'
           }`}
           title={isDarkTheme ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          transition={{ duration: 0.15 }}
+          initial={{ scale: 0, rotate: 180 }}
+          animate={{ scale: 1, rotate: 0 }}
+          transition={{ 
+            duration: 0.5, 
+            ease: "easeOut",
+            delay: 0.3,
+            scale: { duration: 0.1, ease: "easeOut" },
+            rotate: { duration: 0.1, ease: "easeOut" }
+          }}
+          whileHover={{ 
+            scale: 1.15, 
+            rotate: [0, 5, -5, 0],
+            transition: { 
+              duration: 0.15,
+              rotate: { duration: 0.3, repeat: Infinity, repeatType: "reverse" }
+            }
+          }}
+          whileTap={{ 
+            scale: 0.9,
+            rotate: 0
+          }}
         >
+          {/* Efecto de brillo interno */}
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+            initial={{ x: "-100%" }}
+            whileHover={{ x: "100%" }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+          />
+          
+          {/* Efecto de ondas al hacer click */}
+          <motion.div
+            className="absolute inset-0 rounded-full border-2 border-white/30"
+            initial={{ scale: 1, opacity: 0 }}
+            whileTap={{ 
+              scale: 1.5, 
+              opacity: [0, 0.8, 0],
+              transition: { duration: 0.4 }
+            }}
+          />
+          
+          {/* Efecto de partículas flotantes */}
+          <motion.div
+            className="absolute -top-1 -left-1 w-2 h-2 bg-gray-500 rounded-full"
+            animate={{ 
+              y: [0, -8, 0],
+              x: [0, 5, 0],
+              opacity: [0.7, 1, 0.7],
+              scale: [1, 1.3, 1]
+            }}
+            transition={{ 
+              duration: 1.8, 
+              repeat: Infinity, 
+              ease: "easeInOut" 
+            }}
+          />
+          
+          {/* Efecto de partículas flotantes adicional */}
+          <motion.div
+            className="absolute -bottom-1 -right-1 w-1.5 h-1.5 bg-gray-400 rounded-full"
+            animate={{ 
+              y: [0, 6, 0],
+              x: [0, -3, 0],
+              opacity: [0.5, 1, 0.5],
+              scale: [1, 1.4, 1]
+            }}
+            transition={{ 
+              duration: 2.2, 
+              repeat: Infinity, 
+              ease: "easeInOut",
+              delay: 0.5
+            }}
+          />
+          
           {isDarkTheme ? (
-            <HiOutlineSun className="icon-responsive" />
+            <motion.div
+              initial={{ scale: 0, rotate: -90 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+              whileHover={{ 
+                rotate: 360,
+                transition: { duration: 0.3, ease: "easeInOut" }
+              }}
+            >
+              <HiOutlineSun className="icon-responsive" />
+            </motion.div>
           ) : (
-            <HiOutlineMoon className="icon-responsive" />
+            <motion.div
+              initial={{ scale: 0, rotate: 90 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+              whileHover={{ 
+                rotate: -360,
+                transition: { duration: 0.3, ease: "easeInOut" }
+              }}
+            >
+              <HiOutlineMoon className="icon-responsive" />
+            </motion.div>
           )}
         </motion.button>
       </motion.div>
