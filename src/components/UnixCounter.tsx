@@ -219,16 +219,37 @@ export default function UnixCounter() {
   }, [startTimestamp, timeUnits]);
 
   const calculateTimeUnits = (totalSeconds: number): TimeUnits => {
+    // Calcular unidades básicas
     const seconds = totalSeconds % 60;
     const totalMinutes = Math.floor(totalSeconds / 60);
     const minutes = totalMinutes % 60;
     const totalHours = Math.floor(totalMinutes / 60);
     const hours = totalHours % 24;
     const totalDays = Math.floor(totalHours / 24);
-    const days = totalDays % 7;
-    const totalWeeks = Math.floor(totalDays / 7);
-    const weeks = totalWeeks % 4;
-    const months = Math.floor(totalDays / 30.44);
+    
+    // Lógica acumulativa y dinámica
+    let months = 0;
+    let weeks = 0;
+    let days = 0;
+    
+    // Si hay suficientes días para al menos un mes (30+ días)
+    if (totalDays >= 30) {
+      months = Math.floor(totalDays / 30);
+      days = totalDays % 30;
+      weeks = 0; // No mostramos semanas cuando hay meses
+    }
+    // Si hay suficientes días para al menos una semana (7+ días) pero menos de un mes
+    else if (totalDays >= 7) {
+      months = 0;
+      weeks = Math.floor(totalDays / 7);
+      days = totalDays % 7;
+    }
+    // Si hay menos de una semana, solo mostramos días
+    else {
+      months = 0;
+      weeks = 0;
+      days = totalDays;
+    }
 
     return { seconds, minutes, hours, days, weeks, months };
   };
