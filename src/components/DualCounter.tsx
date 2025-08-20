@@ -82,17 +82,15 @@ const TimeDigit = ({
   return (
     <motion.div 
       className="text-center"
-      initial={{ opacity: 0, y: 30, scale: 0.8, rotateY: -10 }}
-      animate={{ opacity: 1, y: 0, scale: 1, rotateY: 0 }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
       transition={{ 
-        duration: 0.8, 
-        ease: [0.25, 0.46, 0.45, 0.94],
-        delay: 0.8
+        duration: 0.3, 
+        ease: "easeOut"
       }}
       whileHover={{ 
-        scale: 1.02,
-        rotateY: 2,
-        transition: { duration: 0.3 }
+        scale: 1.01,
+        transition: { duration: 0.2 }
       }}
     >
       <div className="flex flex-col items-center relative h-32 sm:h-36 md:h-40 lg:h-48">
@@ -101,12 +99,11 @@ const TimeDigit = ({
           className={`text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold mb-1 sm:mb-2 ${
             isDarkTheme ? 'text-gray-600' : 'text-gray-300'
           }`}
-          initial={{ y: 20, opacity: 0, scale: 0.8, rotateX: 15 }}
-          animate={{ y: 0, opacity: 0.7, scale: 0.9, rotateX: 0 }}
+          initial={{ y: 10, opacity: 0 }}
+          animate={{ y: 0, opacity: 0.7 }}
           transition={{ 
-            duration: 0.6, 
-            ease: [0.25, 0.46, 0.45, 0.94],
-            delay: 1.0
+            duration: 0.3, 
+            ease: "easeOut"
           }}
         >
           {formatNumber(nextValue)}
@@ -120,13 +117,12 @@ const TimeDigit = ({
               className={`text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-bold ${
                 isDarkTheme ? 'text-white' : 'text-gray-900'
               }`}
-              initial={{ y: 60, opacity: 0, scale: 0.7, rotateX: 20 }}
-              animate={{ y: 0, opacity: 1, scale: 1, rotateX: 0 }}
-              exit={{ y: -60, opacity: 0, scale: 0.7, rotateX: -20 }}
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -20, opacity: 0 }}
               transition={{ 
-                duration: 0.08, 
-                ease: [0.25, 0.46, 0.45, 0.94],
-                delay: 0.05
+                duration: 0.15, 
+                ease: "easeInOut"
               }}
             >
               {formatNumber(value)}
@@ -142,13 +138,12 @@ const TimeDigit = ({
               className={`text-2xl sm:text-3xl md:text-4xl lg:text-7xl font-bold ${
                 isDarkTheme ? 'text-gray-600' : 'text-gray-300'
               }`}
-              initial={{ y: 40, opacity: 0, scale: 0.8, rotateX: 15 }}
-              animate={{ y: 0, opacity: 0.7, scale: 0.9, rotateX: 0 }}
-              exit={{ y: -40, opacity: 0, scale: 0.8, rotateX: -15 }}
+              initial={{ y: 15, opacity: 0 }}
+              animate={{ y: 0, opacity: 0.7 }}
+              exit={{ y: -15, opacity: 0 }}
               transition={{ 
-                duration: 0.08, 
-                ease: [0.25, 0.46, 0.45, 0.94],
-                delay: 0.03
+                duration: 0.15, 
+                ease: "easeInOut"
               }}
             >
               {formatNumber(prevValue)}
@@ -163,13 +158,12 @@ const TimeDigit = ({
               className={`text-sm sm:text-base md:text-lg font-medium mt-2 sm:mt-3 ${
                 isDarkTheme ? 'text-gray-400' : 'text-gray-600'
               }`}
-              initial={{ opacity: 0, y: 20, scale: 0.8, rotateX: 10 }}
-              animate={{ opacity: 1, y: 0, scale: 1, rotateX: 0 }}
-              exit={{ opacity: 0, y: 20, scale: 0.8, rotateX: 10 }}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
               transition={{ 
-                duration: 0.6, 
-                ease: [0.25, 0.46, 0.45, 0.94],
-                delay: 1.2
+                duration: 0.3, 
+                ease: "easeOut"
               }}
             >
               {unit}
@@ -313,20 +307,15 @@ export default function DualCounter() {
       }`}
       initial={{ 
         opacity: 0, 
-        scale: 0.9, 
-        rotateY: -5,
-        filter: "blur(10px)"
+        scale: 0.95
       }}
       animate={{ 
         opacity: 1, 
-        scale: 1, 
-        rotateY: 0,
-        filter: "blur(0px)"
+        scale: 1
       }}
       transition={{ 
-        duration: 1.5, 
-        ease: [0.25, 0.46, 0.45, 0.94],
-        staggerChildren: 0.1
+        duration: 0.4, 
+        ease: "easeOut"
       }}
     >
       {/* Toggle Button en la parte superior */}
@@ -334,13 +323,12 @@ export default function DualCounter() {
         {showLabels && (
           <motion.div 
             className="absolute top-2 left-2 sm:left-auto"
-            initial={{ opacity: 0, y: -30, scale: 0.8, rotate: -5 }}
-            animate={{ opacity: 1, y: 0, scale: 1, rotate: 0 }}
-            exit={{ opacity: 0, y: -30, scale: 0.8, rotate: -5 }}
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
             transition={{ 
-              duration: 0.8, 
-              ease: [0.25, 0.46, 0.45, 0.94],
-              delay: 0.2
+              duration: 0.3, 
+              ease: "easeOut"
             }}
           >
             <motion.div 
@@ -362,20 +350,17 @@ export default function DualCounter() {
                   initial={{ 
                     x: selectedSection === 'doble-sueldo' ? 0 : '100%',
                     width: '50%',
-                    scale: 0.8,
                     opacity: 0
                   }}
                   animate={{
                     x: selectedSection === 'doble-sueldo' ? 0 : '100%',
                     width: '50%',
-                    scale: 1,
                     opacity: 1
                   }}
                   transition={{
                     type: "spring",
-                    stiffness: 300,
-                    damping: 30,
-                    delay: 0.8
+                    stiffness: 400,
+                    damping: 25
                   }}
                 />
                 
@@ -414,12 +399,11 @@ export default function DualCounter() {
       {/* Botones en la parte superior derecha */}
       <motion.div 
         className="absolute top-2 right-4 flex gap-1 sm:gap-2 md:gap-3 lg:gap-4"
-        initial={{ opacity: 0, x: 30, scale: 0.9 }}
-        animate={{ opacity: 1, x: 0, scale: 1 }}
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
         transition={{ 
-          duration: 0.8, 
-          ease: [0.25, 0.46, 0.45, 0.94],
-          delay: 0.4
+          duration: 0.3, 
+          ease: "easeOut"
         }}
       >
         {/* Botón para mostrar/ocultar etiquetas */}
@@ -435,9 +419,9 @@ export default function DualCounter() {
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:shadow-md'
           }`}
           title={showLabels ? 'Ocultar etiquetas' : 'Mostrar etiquetas'}
-          whileHover={{ scale: 1.1, rotate: -90 }}
+          whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          transition={{ duration: 0.2, ease: "easeOut" }}
+          transition={{ duration: 0.15 }}
         >
           {showLabels ? (
             <HiTag className="icon-responsive" />
@@ -455,9 +439,9 @@ export default function DualCounter() {
               : 'bg-gray-800 text-white hover:bg-gray-700 hover:shadow-lg'
           }`}
           title={isDarkTheme ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'}
-          whileHover={{ scale: 1.1, rotate: 360 }}
+          whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          transition={{ duration: 0.3, ease: "easeOut" }}
+          transition={{ duration: 0.15 }}
         >
           {isDarkTheme ? (
             <HiOutlineSun className="icon-responsive" />
@@ -472,13 +456,12 @@ export default function DualCounter() {
         <motion.div 
           key={selectedSection}
           className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6 md:gap-8 max-w-7xl w-full px-4 sm:px-6"
-          initial={{ opacity: 0, y: 50, scale: 0.9, rotateX: 15 }}
-          animate={{ opacity: 1, y: 0, scale: 1, rotateX: 0 }}
-          exit={{ opacity: 0, y: -50, scale: 0.9, rotateX: -15 }}
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -30 }}
           transition={{ 
-            duration: 0.8, 
-            ease: [0.25, 0.46, 0.45, 0.94],
-            delay: 0.6
+            duration: 0.4, 
+            ease: "easeOut"
           }}
         >
           <TimeDigit 
