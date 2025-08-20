@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --shadow-dark: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+  --shadow-light: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
 @layer base {
   html {
     font-family: 'Inter', system-ui, sans-serif;
@@ -14,15 +19,72 @@
 
 @layer components {
   .btn {
-    @apply px-4 py-2 rounded-lg font-medium transition-colors duration-200;
+    @apply px-3 py-2 sm:px-4 sm:py-2 md:px-5 md:py-3 lg:px-6 lg:py-3 text-sm sm:text-base rounded-lg font-medium transition-all duration-200;
   }
   
   .btn-primary {
-    @apply bg-primary-600 text-white hover:bg-primary-700;
+    @apply bg-primary-600 text-white hover:bg-primary-700 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
   }
   
   .btn-secondary {
-    @apply bg-gray-200 text-gray-800 hover:bg-gray-300;
+    @apply bg-gray-200 text-gray-800 hover:bg-gray-300 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2;
+  }
+
+  .btn-sm {
+    @apply px-2 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm;
+  }
+
+  .btn-lg {
+    @apply px-4 py-3 sm:px-6 sm:py-3 md:px-8 md:py-4 text-base sm:text-lg;
+  }
+
+  .btn-icon {
+    @apply w-10 h-10 sm:w-8 sm:h-8 md:w-8 md:h-8 lg:w-10 lg:h-10 xl:w-12 xl:h-12;
+  }
+
+  .btn-icon-sm {
+    @apply w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7;
+  }
+
+  .btn-icon-lg {
+    @apply w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-14 lg:h-14;
+  }
+
+  /* Botón de selección mejorado */
+  .toggle-button {
+    @apply relative overflow-hidden;
+  }
+
+  .toggle-button-dark {
+    @apply bg-gray-900 border-gray-600 shadow-lg;
+  }
+
+  .toggle-button-light {
+    @apply bg-white border-gray-200 shadow-lg;
+  }
+
+  .toggle-indicator-dark {
+    @apply bg-gray-700 shadow-lg shadow-gray-500/20;
+  }
+
+  .toggle-indicator-light {
+    @apply bg-black shadow-lg;
+  }
+
+  .toggle-text-selected-dark {
+    @apply text-white;
+  }
+
+  .toggle-text-selected-light {
+    @apply text-white;
+  }
+
+  .toggle-text-unselected-dark {
+    @apply text-gray-300 hover:text-gray-100;
+  }
+
+  .toggle-text-unselected-light {
+    @apply text-gray-600 hover:text-gray-800;
   }
 }
 
@@ -56,5 +118,27 @@
   .text-7xl, .text-8xl {
     will-change: transform, opacity, filter;
     backface-visibility: hidden;
+  }
+
+  /* Breakpoints personalizados para botones */
+  .btn-responsive {
+    @apply px-2 py-1.5 sm:px-3 sm:py-2 md:px-4 md:py-2.5 lg:px-5 lg:py-3 xl:px-6 xl:py-3;
+  }
+
+  .text-responsive {
+    @apply text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl;
+  }
+
+  .icon-responsive {
+    @apply w-5 h-5 sm:w-4 sm:h-4 md:w-4 md:h-4 lg:w-5 lg:h-5 xl:w-6 xl:h-6;
+  }
+
+  /* Efectos de sombra para modo dark */
+  .shadow-dark {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+  }
+
+  .shadow-light {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
   }
 }

@@ -68,13 +68,13 @@ export default function TimeTracker() {
       </div>
 
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <div className="flex gap-4 mb-6">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6">
           <input
             type="text"
             value={currentTask}
             onChange={(e) => setCurrentTask(e.target.value)}
             placeholder="¿En qué estás trabajando?"
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            className="flex-1 btn-responsive border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             disabled={isTracking}
           />
           {!isTracking ? (
