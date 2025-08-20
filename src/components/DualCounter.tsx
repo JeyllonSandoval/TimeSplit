@@ -82,10 +82,18 @@ const TimeDigit = ({
   return (
     <motion.div 
       className="text-center"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
-      whileHover={{ scale: 1.02 }}
+      initial={{ opacity: 0, y: 30, scale: 0.8, rotateY: -10 }}
+      animate={{ opacity: 1, y: 0, scale: 1, rotateY: 0 }}
+      transition={{ 
+        duration: 0.8, 
+        ease: [0.25, 0.46, 0.45, 0.94],
+        delay: 0.8
+      }}
+      whileHover={{ 
+        scale: 1.02,
+        rotateY: 2,
+        transition: { duration: 0.3 }
+      }}
     >
       <div className="flex flex-col items-center relative h-32 sm:h-36 md:h-40 lg:h-48">
         {/* Fila superior - Número siguiente */}
@@ -93,9 +101,13 @@ const TimeDigit = ({
           className={`text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold mb-1 sm:mb-2 ${
             isDarkTheme ? 'text-gray-600' : 'text-gray-300'
           }`}
-          initial={{ y: 0, opacity: 0.7, scale: 0.9 }}
-          animate={{ y: 0, opacity: 0.7, scale: 0.9 }}
-          transition={{ duration: 0.3, ease: "easeOut" }}
+          initial={{ y: 20, opacity: 0, scale: 0.8, rotateX: 15 }}
+          animate={{ y: 0, opacity: 0.7, scale: 0.9, rotateX: 0 }}
+          transition={{ 
+            duration: 0.6, 
+            ease: [0.25, 0.46, 0.45, 0.94],
+            delay: 1.0
+          }}
         >
           {formatNumber(nextValue)}
         </motion.div>
@@ -108,13 +120,13 @@ const TimeDigit = ({
               className={`text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-bold ${
                 isDarkTheme ? 'text-white' : 'text-gray-900'
               }`}
-              initial={{ y: 40, opacity: 0, scale: 0.8 }}
-              animate={{ y: 0, opacity: 1, scale: 1 }}
-              exit={{ y: -40, opacity: 0, scale: 0.8 }}
+              initial={{ y: 60, opacity: 0, scale: 0.7, rotateX: 20 }}
+              animate={{ y: 0, opacity: 1, scale: 1, rotateX: 0 }}
+              exit={{ y: -60, opacity: 0, scale: 0.7, rotateX: -20 }}
               transition={{ 
-                duration: 0.05, 
+                duration: 0.08, 
                 ease: [0.25, 0.46, 0.45, 0.94],
-                delay: 0.1
+                delay: 0.05
               }}
             >
               {formatNumber(value)}
@@ -130,13 +142,13 @@ const TimeDigit = ({
               className={`text-2xl sm:text-3xl md:text-4xl lg:text-7xl font-bold ${
                 isDarkTheme ? 'text-gray-600' : 'text-gray-300'
               }`}
-              initial={{ y: 40, opacity: 0, scale: 0.8 }}
-              animate={{ y: 0, opacity: 0.7, scale: 0.9 }}
-              exit={{ y: -40, opacity: 0, scale: 0.8 }}
+              initial={{ y: 40, opacity: 0, scale: 0.8, rotateX: 15 }}
+              animate={{ y: 0, opacity: 0.7, scale: 0.9, rotateX: 0 }}
+              exit={{ y: -40, opacity: 0, scale: 0.8, rotateX: -15 }}
               transition={{ 
-                duration: 0.05, 
+                duration: 0.08, 
                 ease: [0.25, 0.46, 0.45, 0.94],
-                delay: 0.05
+                delay: 0.03
               }}
             >
               {formatNumber(prevValue)}
@@ -151,12 +163,13 @@ const TimeDigit = ({
               className={`text-sm sm:text-base md:text-lg font-medium mt-2 sm:mt-3 ${
                 isDarkTheme ? 'text-gray-400' : 'text-gray-600'
               }`}
-              initial={{ opacity: 0, y: 10, scale: 0.9 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 10, scale: 0.9 }}
+              initial={{ opacity: 0, y: 20, scale: 0.8, rotateX: 10 }}
+              animate={{ opacity: 1, y: 0, scale: 1, rotateX: 0 }}
+              exit={{ opacity: 0, y: 20, scale: 0.8, rotateX: 10 }}
               transition={{ 
-                duration: 0.4, 
-                ease: [0.25, 0.46, 0.45, 0.94]
+                duration: 0.6, 
+                ease: [0.25, 0.46, 0.45, 0.94],
+                delay: 1.2
               }}
             >
               {unit}
@@ -295,25 +308,43 @@ export default function DualCounter() {
 
   return (
     <motion.div 
-      className={`min-h-screen flex flex-col items-center justify-center p-2 sm:p-4 ${
+      className={`min-h-screen flex flex-col items-center justify-center p-2 sm:p-4 theme-transition ${
         isDarkTheme ? 'bg-[#121212]' : 'bg-white'
       }`}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.8, ease: "easeOut" }}
+      initial={{ 
+        opacity: 0, 
+        scale: 0.9, 
+        rotateY: -5,
+        filter: "blur(10px)"
+      }}
+      animate={{ 
+        opacity: 1, 
+        scale: 1, 
+        rotateY: 0,
+        filter: "blur(0px)"
+      }}
+      transition={{ 
+        duration: 1.5, 
+        ease: [0.25, 0.46, 0.45, 0.94],
+        staggerChildren: 0.1
+      }}
     >
       {/* Toggle Button en la parte superior */}
       <AnimatePresence>
         {showLabels && (
           <motion.div 
             className="absolute top-2 left-2 sm:left-auto"
-            initial={{ opacity: 0, y: -20, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -20, scale: 0.9 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
+            initial={{ opacity: 0, y: -30, scale: 0.8, rotate: -5 }}
+            animate={{ opacity: 1, y: 0, scale: 1, rotate: 0 }}
+            exit={{ opacity: 0, y: -30, scale: 0.8, rotate: -5 }}
+            transition={{ 
+              duration: 0.8, 
+              ease: [0.25, 0.46, 0.45, 0.94],
+              delay: 0.2
+            }}
           >
             <motion.div 
-              className={`toggle-button rounded-full border p-1 ${
+              className={`toggle-button rounded-full border p-1 theme-transition ${
                 isDarkTheme ? 'toggle-button-dark' : 'toggle-button-light'
               }`}
               whileHover={{ 
@@ -328,21 +359,29 @@ export default function DualCounter() {
                   className={`absolute top-0 bottom-0 rounded-full transition-all duration-300 ${
                     isDarkTheme ? 'toggle-indicator-dark' : 'toggle-indicator-light'
                   }`}
-                  initial={false}
+                  initial={{ 
+                    x: selectedSection === 'doble-sueldo' ? 0 : '100%',
+                    width: '50%',
+                    scale: 0.8,
+                    opacity: 0
+                  }}
                   animate={{
                     x: selectedSection === 'doble-sueldo' ? 0 : '100%',
-                    width: '50%'
+                    width: '50%',
+                    scale: 1,
+                    opacity: 1
                   }}
                   transition={{
                     type: "spring",
                     stiffness: 300,
-                    damping: 30
+                    damping: 30,
+                    delay: 0.8
                   }}
                 />
                 
                 <motion.button
                   onClick={() => handleSectionChange('doble-sueldo')}
-                  className={`relative z-10 btn-responsive rounded-full font-medium transition-all duration-300 ${
+                  className={`relative z-10 btn-responsive rounded-full font-medium theme-transition transition-all duration-300 ${
                     selectedSection === 'doble-sueldo'
                       ? isDarkTheme ? 'toggle-text-selected-dark' : 'toggle-text-selected-light'
                       : isDarkTheme ? 'toggle-text-unselected-dark' : 'toggle-text-unselected-light'
@@ -355,7 +394,7 @@ export default function DualCounter() {
                 </motion.button>
                 <motion.button
                   onClick={() => handleSectionChange('bono-anual')}
-                  className={`relative z-10 btn-responsive rounded-full font-medium transition-all duration-300 ${
+                  className={`relative z-10 btn-responsive rounded-full font-medium theme-transition transition-all duration-300 ${
                     selectedSection === 'bono-anual'
                       ? isDarkTheme ? 'toggle-text-selected-dark' : 'toggle-text-selected-light'
                       : isDarkTheme ? 'toggle-text-unselected-dark' : 'toggle-text-unselected-light'
@@ -373,11 +412,20 @@ export default function DualCounter() {
       </AnimatePresence>
 
       {/* Botones en la parte superior derecha */}
-      <div className="absolute top-2 right-4 flex gap-1 sm:gap-2 md:gap-3 lg:gap-4">
+      <motion.div 
+        className="absolute top-2 right-4 flex gap-1 sm:gap-2 md:gap-3 lg:gap-4"
+        initial={{ opacity: 0, x: 30, scale: 0.9 }}
+        animate={{ opacity: 1, x: 0, scale: 1 }}
+        transition={{ 
+          duration: 0.8, 
+          ease: [0.25, 0.46, 0.45, 0.94],
+          delay: 0.4
+        }}
+      >
         {/* Botón para mostrar/ocultar etiquetas */}
         <motion.button
           onClick={toggleLabels}
-          className={`btn-icon rounded-full flex items-center justify-center ${
+          className={`btn-icon rounded-full flex items-center justify-center theme-transition ${
             isDarkTheme 
               ? showLabels 
                 ? 'bg-gray-800 text-white shadow-lg hover:bg-gray-700' 
@@ -401,7 +449,7 @@ export default function DualCounter() {
         {/* Botón para cambiar tema */}
         <motion.button
           onClick={toggleTheme}
-          className={`btn-icon rounded-full flex items-center justify-center ${
+          className={`btn-icon rounded-full flex items-center justify-center theme-transition ${
             isDarkTheme 
               ? 'bg-gray-100 text-gray-800 hover:bg-gray-200 hover:shadow-md' 
               : 'bg-gray-800 text-white hover:bg-gray-700 hover:shadow-lg'
@@ -417,19 +465,20 @@ export default function DualCounter() {
             <HiOutlineMoon className="icon-responsive" />
           )}
         </motion.button>
-      </div>
+      </motion.div>
 
       {/* Cronómetro con AnimatePresence para transición suave */}
       <AnimatePresence mode="wait">
         <motion.div 
           key={selectedSection}
           className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6 md:gap-8 max-w-7xl w-full px-4 sm:px-6"
-          initial={{ opacity: 0, y: 30, scale: 0.95 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: -30, scale: 0.95 }}
+          initial={{ opacity: 0, y: 50, scale: 0.9, rotateX: 15 }}
+          animate={{ opacity: 1, y: 0, scale: 1, rotateX: 0 }}
+          exit={{ opacity: 0, y: -50, scale: 0.9, rotateX: -15 }}
           transition={{ 
-            duration: 0.6, 
-            ease: "easeOut"
+            duration: 0.8, 
+            ease: [0.25, 0.46, 0.45, 0.94],
+            delay: 0.6
           }}
         >
           <TimeDigit 
