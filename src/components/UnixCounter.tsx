@@ -235,8 +235,16 @@ export default function UnixCounter() {
     // Si hay suficientes días para al menos un mes (30+ días)
     if (totalDays >= 30) {
       months = Math.floor(totalDays / 30);
-      days = totalDays % 30;
-      weeks = 0; // No mostramos semanas cuando hay meses
+      const remainingDays = totalDays % 30;
+      
+      // Si quedan días suficientes para formar semanas, mostrarlas
+      if (remainingDays >= 7) {
+        weeks = Math.floor(remainingDays / 7);
+        days = remainingDays % 7;
+      } else {
+        weeks = 0;
+        days = remainingDays;
+      }
     }
     // Si hay suficientes días para al menos una semana (7+ días) pero menos de un mes
     else if (totalDays >= 7) {
