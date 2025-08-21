@@ -243,6 +243,7 @@ export default function DualCounter() {
   const [isDarkTheme, setIsDarkTheme] = useState(false);
   const [isInitialAnimationComplete, setIsInitialAnimationComplete] = useState(false);
   const [toggleDimensions, setToggleDimensions] = useState(getToggleDimensions());
+  const [waveAnimation, setWaveAnimation] = useState(0);
 
   // Obtener la fecha objetivo según la sección seleccionada
   const getTargetDate = () => {
@@ -340,10 +341,12 @@ export default function DualCounter() {
 
   const toggleLabels = () => {
     setShowLabels(!showLabels);
+    setWaveAnimation(prev => prev + 1);
   };
 
   const toggleTheme = () => {
     setIsDarkTheme(!isDarkTheme);
+    setWaveAnimation(prev => prev + 1);
   };
 
   const toggleSection = () => {
@@ -589,14 +592,47 @@ export default function DualCounter() {
             transition={{ duration: 0.3, ease: "easeInOut" }}
           />
           
-          {/* Efecto de ondas al hacer click */}
+          {/* Efecto de ondas al hacer click - Mejorado */}
+          {[...Array(3)].map((_, index) => (
+            <motion.div
+              key={`${waveAnimation}-${index}`}
+              className={`absolute inset-0 rounded-full border-2 ${
+                isDarkTheme 
+                  ? 'border-white/60' 
+                  : 'border-white/70'
+              }`}
+              initial={{ scale: 1, opacity: 0 }}
+              animate={{ 
+                scale: [1, 1.3, 1.8, 2.5, 3.2],
+                opacity: [0, 0.8, 0.6, 0.4, 0]
+              }}
+              transition={{ 
+                duration: 1.2,
+                delay: index * 0.15,
+                repeat: 0,
+                ease: "easeOut"
+              }}
+            />
+          ))}
+          
+          {/* Onda adicional con efecto de brillo */}
           <motion.div
-            className="absolute inset-0 rounded-full border-2 border-white/30"
+            key={`${waveAnimation}-glow`}
+            className={`absolute inset-0 rounded-full ${
+              isDarkTheme 
+                ? 'bg-gradient-to-r from-white/40 to-white/40' 
+                : 'bg-gradient-to-r from-white/50 to-white/50'
+            }`}
             initial={{ scale: 1, opacity: 0 }}
-            whileTap={{ 
-              scale: 1.5, 
-              opacity: [0, 0.8, 0],
-              transition: { duration: 0.4 }
+            animate={{ 
+              scale: [1, 1.5, 2.2, 2.8],
+              opacity: [0, 0.6, 0.3, 0]
+            }}
+            transition={{ 
+              duration: 1.0,
+              delay: 0.1,
+              repeat: 0,
+              ease: "easeOut"
             }}
           />
           
@@ -665,14 +701,47 @@ export default function DualCounter() {
             transition={{ duration: 0.3, ease: "easeInOut" }}
           />
           
-          {/* Efecto de ondas al hacer click */}
+          {/* Efecto de ondas al hacer click - Mejorado */}
+          {[...Array(3)].map((_, index) => (
+            <motion.div
+              key={`${waveAnimation}-${index}`}
+              className={`absolute inset-0 rounded-full border-2 ${
+                isDarkTheme 
+                  ? 'border-amber-400/60' 
+                  : 'border-indigo-600/70'
+              }`}
+              initial={{ scale: 1, opacity: 0 }}
+              animate={{ 
+                scale: [1, 1.3, 1.8, 2.5, 3.2],
+                opacity: [0, 0.8, 0.6, 0.4, 0]
+              }}
+              transition={{ 
+                duration: 1.2,
+                delay: index * 0.15,
+                repeat: 0,
+                ease: "easeOut"
+              }}
+            />
+          ))}
+          
+          {/* Onda adicional con efecto de brillo */}
           <motion.div
-            className="absolute inset-0 rounded-full border-2 border-white/30"
+            key={`${waveAnimation}-glow`}
+            className={`absolute inset-0 rounded-full ${
+              isDarkTheme 
+                ? 'bg-gradient-to-r from-amber-400/40 to-yellow-400/40' 
+                : 'bg-gradient-to-r from-indigo-500/50 to-purple-500/50'
+            }`}
             initial={{ scale: 1, opacity: 0 }}
-            whileTap={{ 
-              scale: 1.5, 
-              opacity: [0, 0.8, 0],
-              transition: { duration: 0.4 }
+            animate={{ 
+              scale: [1, 1.5, 2.2, 2.8],
+              opacity: [0, 0.6, 0.3, 0]
+            }}
+            transition={{ 
+              duration: 1.0,
+              delay: 0.1,
+              repeat: 0,
+              ease: "easeOut"
             }}
           />
           
