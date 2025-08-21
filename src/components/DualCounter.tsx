@@ -12,6 +12,38 @@ interface TimeUnits {
   months: number;
 }
 
+// Componente de partículas flotantes para la animación de entrada
+const FloatingParticles = ({ isDarkTheme }: { isDarkTheme: boolean }) => (
+  <>
+    {/* Partículas desactivadas en ambos temas para una interfaz más limpia */}
+  </>
+);
+
+// Componente de ondas expansivas para la animación de entrada
+const ExpandingWaves = ({ isDarkTheme }: { isDarkTheme: boolean }) => (
+  <>
+    {[...Array(3)].map((_, i) => (
+      <motion.div
+        key={i}
+        className={`absolute inset-0 rounded-full border-2 ${
+          isDarkTheme ? 'border-white/10' : 'border-gray-300/20'
+        }`}
+        initial={{ scale: 0, opacity: 0.8 }}
+        animate={{
+          scale: [0, 1.5, 2.5],
+          opacity: [0.8, 0.4, 0]
+        }}
+        transition={{
+          duration: 2,
+          repeat: Infinity,
+          delay: i * 0.5,
+          ease: "easeOut"
+        }}
+      />
+    ))}
+  </>
+);
+
 // Componente TimeDigit con efecto de rueda limpio
 const TimeDigit = ({ 
   value, 
@@ -180,6 +212,16 @@ export default function DualCounter() {
   const DOBLE_SUELDO_DATE = '2025-12-01T13:00:00'; // 1 de diciembre de 2025 a las 1 PM
   const BONO_ANUAL_DATE = '2025-12-13T13:00:00'; // 13 de diciembre de 2025 a la 1 PM
   
+  // Función para calcular el ancho y posición del indicador según el breakpoint
+  const getToggleDimensions = () => {
+    if (typeof window === 'undefined') return { width: 100, x: 0 };
+    
+    const width = window.innerWidth;
+    if (width < 640) return { width: 100, x: 0 }; // sm
+    if (width < 768) return { width: 120, x: 0 }; // md
+    return { width: 150, x: 0 }; // lg y xl
+  };
+  
   const [selectedSection, setSelectedSection] = useState<'doble-sueldo' | 'bono-anual'>('doble-sueldo');
   const [timeUnits, setTimeUnits] = useState<TimeUnits>({
     seconds: 0,
@@ -199,6 +241,8 @@ export default function DualCounter() {
   });
   const [showLabels, setShowLabels] = useState(false);
   const [isDarkTheme, setIsDarkTheme] = useState(false);
+  const [isInitialAnimationComplete, setIsInitialAnimationComplete] = useState(false);
+  const [toggleDimensions, setToggleDimensions] = useState(getToggleDimensions());
 
   // Obtener la fecha objetivo según la sección seleccionada
   const getTargetDate = () => {
@@ -213,6 +257,16 @@ export default function DualCounter() {
   useEffect(() => {
     setStartTimestamp(Math.floor(new Date(getTargetDate()).getTime() / 1000));
   }, [selectedSection]);
+
+  // Actualizar dimensiones del toggle cuando cambie el tamaño de la ventana
+  useEffect(() => {
+    const handleResize = () => {
+      setToggleDimensions(getToggleDimensions());
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const updateTime = () => {
@@ -300,39 +354,129 @@ export default function DualCounter() {
     setSelectedSection(section);
   };
 
+  // Animación de entrada compleja y dinámica
+  const containerVariants: any = {
+    hidden: {
+      opacity: 0,
+      scale: 0.3,
+      rotate: -180,
+      filter: "blur(20px)",
+    },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      rotate: 0,
+      filter: "blur(0px)",
+      transition: {
+        duration: 1.2,
+        ease: "easeInOut",
+        staggerChildren: 0.1,
+        delayChildren: 0.3
+      }
+    }
+  };
+
+  const itemVariants: any = {
+    hidden: {
+      opacity: 0,
+      y: 50,
+      scale: 0.8,
+      rotateX: -90
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      rotateX: 0,
+      transition: {
+        duration: 0.8,
+        ease: "easeOut"
+      }
+    }
+  };
+
+  const buttonVariants: any = {
+    hidden: {
+      opacity: 0,
+      y: -80
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.2,
+        ease: "easeOut"
+      }
+    }
+  };
+
   return (
     <motion.div 
-      className={`min-h-screen flex flex-col items-center justify-center p-2 sm:p-4 theme-transition ${
+      className={`min-h-screen flex flex-col items-center justify-center p-2 sm:p-4 theme-transition relative overflow-hidden ${
         isDarkTheme ? 'bg-[#121212]' : 'bg-white'
       }`}
-      initial={{ 
-        opacity: 0, 
-        scale: 0.95
-      }}
-      animate={{ 
-        opacity: 1, 
-        scale: 1
-      }}
-      transition={{ 
-        duration: 0.4, 
-        ease: "easeOut"
-      }}
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      onAnimationComplete={() => setIsInitialAnimationComplete(true)}
     >
+      {/* Partículas flotantes de fondo */}
+      <FloatingParticles isDarkTheme={isDarkTheme} />
+      
+      {/* Ondas expansivas de fondo */}
+      <ExpandingWaves isDarkTheme={isDarkTheme} />
+
+      {/* Efecto de gradiente animado de fondo */}
+      <motion.div
+        className="absolute inset-0 opacity-30 pointer-events-none"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 0.3 }}
+        transition={{ duration: 10, delay: 0.5 }}
+      >
+        <motion.div
+          className={`absolute inset-0 ${
+            isDarkTheme 
+              ? 'bg-gradient-to-br from-purple-900/20 via-blue-900/20 to-indigo-900/20' 
+              : 'bg-gradient-to-br from-blue-100/30 via-purple-100/30 to-pink-100/30'
+          }`}
+          animate={{
+            background: isDarkTheme 
+              ? [
+                  'linear-gradient(45deg, rgba(88, 28, 135, 0.2), rgba(30, 58, 138, 0.2), rgba(67, 56, 202, 0.2))',
+                  'linear-gradient(135deg, rgba(67, 56, 202, 0.2), rgba(88, 28, 135, 0.2), rgba(30, 58, 138, 0.2))',
+                  'linear-gradient(225deg, rgba(30, 58, 138, 0.2), rgba(67, 56, 202, 0.2), rgba(88, 28, 135, 0.2))',
+                  'linear-gradient(315deg, rgba(67, 56, 202, 0.2), rgba(30, 58, 138, 0.2), rgba(88, 28, 135, 0.2))',
+                  'linear-gradient(45deg, rgba(88, 28, 135, 0.2), rgba(30, 58, 138, 0.2), rgba(67, 56, 202, 0.2))'
+                ]
+              : [
+                  'linear-gradient(45deg, rgba(219, 234, 254, 0.3), rgba(233, 213, 255, 0.3), rgba(252, 231, 243, 0.3))',
+                  'linear-gradient(135deg, rgba(252, 231, 243, 0.3), rgba(219, 234, 254, 0.3), rgba(233, 213, 255, 0.3))',
+                  'linear-gradient(225deg, rgba(233, 213, 255, 0.3), rgba(252, 231, 243, 0.3), rgba(219, 234, 254, 0.3))',
+                  'linear-gradient(315deg, rgba(252, 231, 243, 0.3), rgba(233, 213, 255, 0.3), rgba(219, 234, 254, 0.3))',
+                  'linear-gradient(45deg, rgba(219, 234, 254, 0.3), rgba(233, 213, 255, 0.3), rgba(252, 231, 243, 0.3))'
+                ]
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: "linear"
+          }}
+        />
+      </motion.div>
+
       {/* Toggle Button en la parte superior */}
       <AnimatePresence>
         {showLabels && (
           <motion.div 
-            className="absolute top-2 left-2 sm:left-auto"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ 
-              duration: 0.3, 
-              ease: "easeOut"
-            }}
+            className="absolute top-2 left-2 sm:left-4 md:left-auto z-20"
+            variants={buttonVariants}
+            initial="hidden"
+            animate="visible"
+            exit={{ opacity: 0, y: -20, scale: 0.8 }}
+            transition={{ duration: 0.3 }}
           >
             <motion.div 
-              className={`toggle-button rounded-full border p-2 theme-transition ${
+              className={`toggle-button rounded-full border p-1 sm:p-2 theme-transition ${
                 isDarkTheme ? 'toggle-button-dark' : 'toggle-button-light'
               }`}
               whileHover={{ 
@@ -348,14 +492,17 @@ export default function DualCounter() {
                     isDarkTheme ? 'toggle-indicator-dark' : 'toggle-indicator-light'
                   }`}
                   initial={{ 
-                    x: selectedSection === 'doble-sueldo' ? 0 : '150px',
-                    width: '150px',
-                    opacity: 0
+                    opacity: 0,
+                    x: selectedSection === 'doble-sueldo' ? 0 : toggleDimensions.width,
+                    width: toggleDimensions.width
                   }}
                   animate={{
-                    x: selectedSection === 'doble-sueldo' ? 0 : '150px',
-                    width: '150px',
-                    opacity: 1
+                    opacity: 1,
+                    x: selectedSection === 'doble-sueldo' ? 0 : toggleDimensions.width,
+                    width: toggleDimensions.width
+                  }}
+                  style={{
+                    width: toggleDimensions.width
                   }}
                   transition={{
                     type: "spring",
@@ -366,7 +513,7 @@ export default function DualCounter() {
                 
                 <motion.button
                   onClick={() => handleSectionChange('doble-sueldo')}
-                  className={`relative z-10 w-[150px] rounded-full font-medium theme-transition transition-all duration-300 px-4 py-3 text-center ${
+                  className={`relative z-10 w-[100px] sm:w-[120px] md:w-[150px] lg:w-[150px] rounded-full font-medium theme-transition transition-all duration-300 px-2 py-2 sm:px-3 sm:py-2.5 md:px-4 md:py-3 text-center text-xs sm:text-sm md:text-base ${
                     selectedSection === 'doble-sueldo'
                       ? isDarkTheme ? 'toggle-text-selected-dark' : 'toggle-text-selected-light'
                       : isDarkTheme ? 'toggle-text-unselected-dark' : 'toggle-text-unselected-light'
@@ -379,7 +526,7 @@ export default function DualCounter() {
                 </motion.button>
                 <motion.button
                   onClick={() => handleSectionChange('bono-anual')}
-                  className={`relative z-10 w-[150px] rounded-full font-medium theme-transition transition-all duration-300 px-4 py-3 text-center ${
+                  className={`relative z-10 w-[100px] sm:w-[120px] md:w-[150px] lg:w-[150px] xl:w-[150px] rounded-full font-medium theme-transition transition-all duration-300 px-2 py-2 sm:px-3 sm:py-2.5 md:px-4 md:py-3 text-center text-xs sm:text-sm md:text-base ${
                     selectedSection === 'bono-anual'
                       ? isDarkTheme ? 'toggle-text-selected-dark' : 'toggle-text-selected-light'
                       : isDarkTheme ? 'toggle-text-unselected-dark' : 'toggle-text-unselected-light'
@@ -398,19 +545,19 @@ export default function DualCounter() {
 
       {/* Botones en la parte superior derecha */}
       <motion.div 
-        className="absolute top-2 right-4 flex gap-1 sm:gap-2 md:gap-3 lg:gap-4"
-        initial={{ opacity: 0, x: 50, y: -20 }}
-        animate={{ opacity: 1, x: 0, y: 0 }}
+        className="absolute top-2 right-2 sm:right-4 flex gap-1 sm:gap-2 md:gap-3 lg:gap-4 z-20"
+        variants={buttonVariants}
+        initial="hidden"
+        animate="visible"
         transition={{ 
-          duration: 0.6, 
-          ease: "easeOut",
-          staggerChildren: 0.1
+          staggerChildren: 0.05,
+          delayChildren: 0.6
         }}
       >
         {/* Botón para mostrar/ocultar etiquetas */}
         <motion.button
           onClick={toggleLabels}
-          className={`btn-icon rounded-full flex items-center justify-center theme-transition relative overflow-hidden ${
+          className={`w-10 h-10 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 rounded-full flex items-center justify-center theme-transition relative overflow-hidden ${
             isDarkTheme 
               ? showLabels 
                 ? 'bg-gradient-to-br from-gray-600 to-gray-700 text-white shadow-2xl hover:shadow-gray-600/50' 
@@ -420,18 +567,10 @@ export default function DualCounter() {
                 : 'bg-gradient-to-br from-gray-200 to-gray-300 text-gray-700 hover:from-gray-300 hover:to-gray-400 hover:shadow-lg'
           }`}
           title={showLabels ? 'Ocultar etiquetas' : 'Mostrar etiquetas'}
-          initial={{ scale: 0, rotate: -180 }}
-          animate={{ scale: 1, rotate: 0 }}
-          transition={{ 
-            duration: 0.5, 
-            ease: "easeOut",
-            delay: 0.2,
-            scale: { duration: 0.1, ease: "easeOut" },
-            rotate: { duration: 0.1, ease: "easeOut" }
-          }}
+          variants={buttonVariants}
           whileHover={{ 
             scale: 1.15, 
-            rotate: [0, -5, 5, 0],
+            rotate: [0, -10, 10, 0],
             transition: { 
               duration: 0.15,
               rotate: { duration: 0.3, repeat: Infinity, repeatType: "reverse" }
@@ -440,9 +579,6 @@ export default function DualCounter() {
           whileTap={{ 
             scale: 0.9,
             rotate: 0
-          }}
-          onHoverStart={() => {
-            // Efecto de brillo al hacer hover
           }}
         >
           {/* Efecto de brillo interno */}
@@ -485,7 +621,7 @@ export default function DualCounter() {
               animate={{ scale: 1, rotate: 0 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
             >
-              <HiTag className="icon-responsive" />
+              <HiTag className="w-5 h-5 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7 xl:w-8 xl:h-8" />
             </motion.div>
           ) : (
             <motion.div
@@ -493,7 +629,7 @@ export default function DualCounter() {
               animate={{ scale: 1, rotate: 0 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
             >
-              <HiOutlineTag className="icon-responsive" />
+              <HiOutlineTag className="w-5 h-5 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7 xl:w-8 xl:h-8" />
             </motion.div>
           )}
         </motion.button>
@@ -501,32 +637,24 @@ export default function DualCounter() {
         {/* Botón para cambiar tema */}
         <motion.button
           onClick={toggleTheme}
-          className={`btn-icon rounded-full flex items-center justify-center theme-transition relative overflow-hidden ${
+          className={`w-10 h-10 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 rounded-full flex items-center justify-center theme-transition relative overflow-hidden ${
             isDarkTheme 
               ? 'bg-gradient-to-br from-gray-100 to-gray-400 text-gray-800 shadow-2xl hover:shadow-gray-300/50' 
               : 'bg-gradient-to-br from-gray-600 to-gray-800 text-white shadow-2xl hover:shadow-gray-700/50'
           }`}
           title={isDarkTheme ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'}
-          initial={{ scale: 0, rotate: 180 }}
-          animate={{ scale: 1, rotate: 0 }}
-          transition={{ 
-            duration: 0.5, 
-            ease: "easeOut",
-            delay: 0.3,
-            scale: { duration: 0.1, ease: "easeOut" },
-            rotate: { duration: 0.1, ease: "easeOut" }
-          }}
+          variants={buttonVariants}
           whileHover={{ 
-            scale: 1.15, 
-            rotate: [0, 5, -5, 0],
+            scale: 1.1,
+            rotate: 360,
             transition: { 
-              duration: 0.15,
-              rotate: { duration: 0.3, repeat: Infinity, repeatType: "reverse" }
+              duration: 0.2,
+              rotate: { duration: 0.3 }
             }
           }}
           whileTap={{ 
-            scale: 0.9,
-            rotate: 0
+            scale: 0.95,
+            transition: { duration: 0.1 }
           }}
         >
           {/* Efecto de brillo interno */}
@@ -548,38 +676,7 @@ export default function DualCounter() {
             }}
           />
           
-          {/* Efecto de partículas flotantes */}
-          <motion.div
-            className="absolute -top-1 -left-1 w-2 h-2 bg-gray-500 rounded-full"
-            animate={{ 
-              y: [0, -8, 0],
-              x: [0, 5, 0],
-              opacity: [0.7, 1, 0.7],
-              scale: [1, 1.3, 1]
-            }}
-            transition={{ 
-              duration: 1.8, 
-              repeat: Infinity, 
-              ease: "easeInOut" 
-            }}
-          />
-          
-          {/* Efecto de partículas flotantes adicional */}
-          <motion.div
-            className="absolute -bottom-1 -right-1 w-1.5 h-1.5 bg-gray-400 rounded-full"
-            animate={{ 
-              y: [0, 6, 0],
-              x: [0, -3, 0],
-              opacity: [0.5, 1, 0.5],
-              scale: [1, 1.4, 1]
-            }}
-            transition={{ 
-              duration: 2.2, 
-              repeat: Infinity, 
-              ease: "easeInOut",
-              delay: 0.5
-            }}
-          />
+          {/* Efectos de partículas removidos para evitar animaciones no deseadas */}
           
           {isDarkTheme ? (
             <motion.div
@@ -587,11 +684,11 @@ export default function DualCounter() {
               animate={{ scale: 1, rotate: 0 }}
               transition={{ duration: 0.4, ease: "easeOut" }}
               whileHover={{ 
-                rotate: 360,
+                rotate: 180,
                 transition: { duration: 0.3, ease: "easeInOut" }
               }}
             >
-              <HiOutlineSun className="icon-responsive" />
+              <HiOutlineSun className="w-5 h-5 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7 xl:w-8 xl:h-8" />
             </motion.div>
           ) : (
             <motion.div
@@ -599,11 +696,11 @@ export default function DualCounter() {
               animate={{ scale: 1, rotate: 0 }}
               transition={{ duration: 0.4, ease: "easeOut" }}
               whileHover={{ 
-                rotate: -360,
+                rotate: -180,
                 transition: { duration: 0.3, ease: "easeInOut" }
               }}
             >
-              <HiOutlineMoon className="icon-responsive" />
+              <HiOutlineMoon className="w-5 h-5 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7 xl:w-8 xl:h-8" />
             </motion.div>
           )}
         </motion.button>
@@ -613,10 +710,11 @@ export default function DualCounter() {
       <AnimatePresence mode="wait">
         <motion.div 
           key={selectedSection}
-          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6 md:gap-8 max-w-7xl w-full px-4 sm:px-6"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -30 }}
+          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-4 md:gap-6 lg:gap-8 max-w-7xl w-full px-2 sm:px-4 md:px-6 z-10"
+          variants={itemVariants}
+          initial="hidden"
+          animate="visible"
+          exit={{ opacity: 0, y: -30, scale: 0.9 }}
           transition={{ 
             duration: 0.4, 
             ease: "easeOut"
@@ -671,6 +769,8 @@ export default function DualCounter() {
           />
         </motion.div>
       </AnimatePresence>
+
+      {/* Efecto de partículas finales desactivado para una interfaz más limpia */}
     </motion.div>
   );
 }
