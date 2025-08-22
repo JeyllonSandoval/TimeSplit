@@ -330,3 +330,32 @@ export const pulseVariants: Variants = {
     }
   }
 };
+
+// Variantes para transición suave entre contadores
+export const smoothSlideVariants: Variants = {
+  hidden: {
+    opacity: 0,
+    x: 10,
+    scale: 0.85
+  },
+  visible: {
+    opacity: 1,
+    x: 0,
+    scale: 1,
+    transition: {
+      duration: 0.2,
+      ease: [0.25, 0.46, 0.45, 0.94], // Cubic bezier para movimiento suave
+      opacity: { duration: 0.4 },
+      scale: { duration: 0.5 }
+    }
+  },
+  exit: {
+    opacity: 0,
+    x: -10,
+    scale: 0.95,
+    transition: {
+      duration: 0.2,
+      ease: [0.25, 0.46, 0.45, 0.94]
+    }
+  }
+};

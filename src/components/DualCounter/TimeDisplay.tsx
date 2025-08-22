@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { TimeDigit } from '../counter/TimeDigit';
-import { itemVariants } from '../../utils/animations';
+import { smoothSlideVariants } from '../../utils/animations';
 import type { TimeUnits } from '../../types';
 import type { SectionType } from '../../constants/dates';
 
@@ -29,18 +29,14 @@ export const TimeDisplay = ({
   ];
 
   return (
-    <AnimatePresence mode="sync">
+    <AnimatePresence mode="wait">
       <motion.div 
         key={selectedSection}
         className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-4 md:gap-6 lg:gap-8 max-w-7xl w-full px-2 sm:px-4 md:px-6 z-10"
-        variants={itemVariants}
+        variants={smoothSlideVariants}
         initial="hidden"
         animate="visible"
-        exit={{ opacity: 0, y: -15, scale: 0.95 }}
-        transition={{ 
-          duration: 0.2, 
-          ease: "easeOut"
-        }}
+        exit="exit"
       >
         {timeUnitsArray.map(({ key, value, previousValue, unit }) => (
           <TimeDigit 
