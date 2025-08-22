@@ -134,15 +134,15 @@ body.no-scroll {
   * {
     transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-duration: 0.3s;
+    transition-duration: 0.15s;
   }
   
   /* Transiciones específicas para cambios de tema */
   .theme-transition {
-    transition: background-color 0.3s ease-in-out, 
-                color 0.3s ease-in-out, 
-                border-color 0.3s ease-in-out, 
-                box-shadow 0.3s ease-in-out;
+    transition: background-color 0.15s ease-in-out, 
+                color 0.15s ease-in-out, 
+                border-color 0.15s ease-in-out, 
+                box-shadow 0.15s ease-in-out;
   }
   
   /* Optimizaciones específicas para números */
@@ -171,5 +171,22 @@ body.no-scroll {
 
   .shadow-light {
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+  
+  /* Transiciones rápidas para el toggle */
+  .toggle-button {
+    transition: all 0.15s ease-out !important;
+  }
+  
+  .toggle-indicator-dark,
+  .toggle-indicator-light {
+    transition: all 0.15s ease-out !important;
+  }
+  
+  .toggle-text-selected-dark,
+  .toggle-text-selected-light,
+  .toggle-text-unselected-dark,
+  .toggle-text-unselected-light {
+    transition: all 0.15s ease-out !important;
   }
 }
