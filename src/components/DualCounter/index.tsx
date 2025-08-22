@@ -5,6 +5,7 @@ import { BackgroundEffects } from '../animations/BackgroundEffects';
 import { ToggleSection } from './ToggleSection';
 import { ControlButtons } from './ControlButtons';
 import { TimeDisplay } from './TimeDisplay';
+import { PercentageButtons } from './PercentageButtons';
 import { useToggleDimensions } from '../../hooks/useToggleDimensions';
 import { useTheme } from '../../hooks/useTheme';
 import { useTimeCounter } from '../../hooks/useTimeCounter';
@@ -13,12 +14,13 @@ import type { SectionType } from '../../constants/dates';
 
 export default function DualCounter() {
   const [selectedSection, setSelectedSection] = useState<SectionType>('doble-sueldo');
+  const [bonoAnualPart, setBonoAnualPart] = useState<'first' | 'second'>('first');
   const [showLabels, setShowLabels] = useState(false);
   const [waveAnimation, setWaveAnimation] = useState(0);
 
   const toggleDimensions = useToggleDimensions();
   const { isDarkTheme, toggleTheme } = useTheme();
-  const { timeUnits, previousTimeUnits } = useTimeCounter(selectedSection);
+  const { timeUnits, previousTimeUnits } = useTimeCounter(selectedSection, bonoAnualPart);
 
   // Debug: Mostrar etiquetas por defecto para ver el toggle
   useEffect(() => {
@@ -27,6 +29,14 @@ export default function DualCounter() {
 
   const handleSectionChange = (section: SectionType) => {
     setSelectedSection(section);
+    // Resetear a la primera parte cuando se cambie de sección
+    if (section === 'bono-anual') {
+      setBonoAnualPart('first');
+    }
+  };
+
+  const handleBonoAnualPartChange = (part: 'first' | 'second') => {
+    setBonoAnualPart(part);
   };
 
   const toggleLabels = () => {
@@ -81,6 +91,15 @@ export default function DualCounter() {
         previousTimeUnits={previousTimeUnits}
         isDarkTheme={isDarkTheme}
         showLabels={showLabels}
+      />
+
+      {/* Botones de porcentaje */}
+      <PercentageButtons
+        isDarkTheme={isDarkTheme}
+        showLabels={showLabels}
+        selectedSection={selectedSection}
+        bonoAnualPart={bonoAnualPart}
+        onBonoAnualPartChange={handleBonoAnualPartChange}
       />
     </motion.div>
   );

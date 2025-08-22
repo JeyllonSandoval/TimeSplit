@@ -22,7 +22,7 @@ export const ToggleSection = ({
     <AnimatePresence>
       {showLabels && (
         <motion.div 
-          className="absolute top-2 transform -translate-x-1/2 z-20"
+          className="absolute top-2 left-2 lg:left-auto transform -translate-x-1/2 z-20"
           variants={buttonVariants}
           initial="hidden"
           animate="visible"

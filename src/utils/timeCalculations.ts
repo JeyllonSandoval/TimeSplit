@@ -1,6 +1,18 @@
 import type { TimeUnits } from '../types';
 
 export const calculateTimeUnits = (totalSeconds: number): TimeUnits => {
+  // Si el tiempo ya pasó, retornar todo en 0
+  if (totalSeconds <= 0) {
+    return {
+      seconds: 0,
+      minutes: 0,
+      hours: 0,
+      days: 0,
+      weeks: 0,
+      months: 0
+    };
+  }
+
   const seconds = totalSeconds % 60;
   const totalMinutes = Math.floor(totalSeconds / 60);
   const minutes = totalMinutes % 60;

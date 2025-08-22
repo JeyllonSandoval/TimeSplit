@@ -16,12 +16,14 @@ export const TimeDigit = ({
   previousValue
 }: TimeDigitProps) => {
   const formatNumber = (num: number) => {
-    return num.toString().padStart(2, '0');
+    // Asegurar que no se muestren números negativos
+    const safeNum = Math.max(0, num);
+    return safeNum.toString().padStart(2, '0');
   };
 
   // Calcular números para las filas superior e inferior
   const topValue = value + 1;
-  const bottomValue = value - 1;
+  const bottomValue = Math.max(0, value - 1); // No permitir valores negativos
 
   return (
     <motion.div 
