@@ -12,15 +12,52 @@ import { useTimeCounter } from '../../hooks/useTimeCounter';
 import { containerVariants } from '../../utils/animations';
 import type { SectionType } from '../../constants/dates';
 
-export default function DualCounter() {
-  const [selectedSection, setSelectedSection] = useState<SectionType>('doble-sueldo');
+export interface DualCounterProps {
+  // Fechas personalizables
+  dobleSueldoDate?: string;
+  bonoAnualDate?: string;
+  bonoAnualMarzoDate?: string;
+  // Configuración opcional
+  defaultSection?: SectionType;
+  showThemeToggle?: boolean;
+  showLabelsToggle?: boolean;
+  showPercentageButtons?: boolean;
+  className?: string;
+}
+
+export default function DualCounter({
+  dobleSueldoDate = '2025-12-01T13:00:00',
+  bonoAnualDate = '2025-12-13T13:00:00',
+  bonoAnualMarzoDate = '2026-03-27T16:00:00',
+  defaultSection = 'doble-sueldo',
+  showThemeToggle = true,
+  showLabelsToggle = true,
+  showPercentageButtons = true,
+  className = ''
+}: DualCounterProps) {
+  const [selectedSection, setSelectedSection] = useState<SectionType>(defaultSection);
   const [bonoAnualPart, setBonoAnualPart] = useState<'first' | 'second'>('first');
   const [showLabels, setShowLabels] = useState(false);
   const [waveAnimation, setWaveAnimation] = useState(0);
 
   const toggleDimensions = useToggleDimensions();
   const { isDarkTheme, toggleTheme } = useTheme();
-  const { timeUnits, previousTimeUnits } = useTimeCounter(selectedSection, bonoAnualPart);
+  
+  // Determinar la fecha objetivo basada en la sección seleccionada
+  const getTargetDate = () => {
+    if (selectedSection === 'doble-sueldo') {
+      return dobleSueldoDate;
+    } else if (selectedSection === 'bono-anual') {
+      return bonoAnualPart === 'second' ? bonoAnualMarzoDate : bonoAnualDate;
+    }
+    return dobleSueldoDate;
+  };
+
+  const { timeUnits, previousTimeUnits } = useTimeCounter({
+    targetDate: getTargetDate(),
+    sectionType: selectedSection,
+    bonoAnualPart
+  });
 
   // Debug: Mostrar etiquetas por defecto para ver el toggle
   useEffect(() => {
@@ -57,7 +94,7 @@ export default function DualCounter() {
     <motion.div 
       className={`min-h-screen flex flex-col items-center justify-center theme-transition relative overflow-hidden ${
         isDarkTheme ? 'bg-[#121212]' : 'bg-white'
-      }`}
+      } ${className}`}
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -81,9 +118,11 @@ export default function DualCounter() {
       <ControlButtons
         showLabels={showLabels}
         isDarkTheme={isDarkTheme}
-        onToggleLabels={toggleLabels}
-        onToggleTheme={handleToggleTheme}
+        onToggleLabels={showLabelsToggle ? toggleLabels : undefined}
+        onToggleTheme={showThemeToggle ? handleToggleTheme : undefined}
         waveAnimation={waveAnimation}
+        showLabelsToggle={showLabelsToggle}
+        showThemeToggle={showThemeToggle}
       />
 
       {/* Display del tiempo */}
@@ -96,13 +135,15 @@ export default function DualCounter() {
       />
 
       {/* Botones de porcentaje */}
-      <PercentageButtons
-        isDarkTheme={isDarkTheme}
-        showLabels={showLabels}
-        selectedSection={selectedSection}
-        bonoAnualPart={bonoAnualPart}
-        onBonoAnualPartChange={handleBonoAnualPartChange}
-      />
+      {showPercentageButtons && (
+        <PercentageButtons
+          isDarkTheme={isDarkTheme}
+          showLabels={showLabels}
+          selectedSection={selectedSection}
+          bonoAnualPart={bonoAnualPart}
+          onBonoAnualPartChange={handleBonoAnualPartChange}
+        />
+      )}
     </motion.div>
   );
 }

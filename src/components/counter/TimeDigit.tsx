@@ -79,21 +79,34 @@ export const TimeDigit = ({
           </motion.div>
         </div>
         
-        <AnimatePresence>
-          {showLabels && (
-            <motion.div 
-              className={`text-sm sm:text-base md:text-lg font-medium mt-2 sm:mt-3 ${
-                isDarkTheme ? 'text-gray-400' : 'text-gray-600'
-              }`}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 10 }}
-              transition={{ duration: 0.3 }}
-            >
-              {unit}
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {/* Espacio reservado fijo para las etiquetas */}
+        <div className="h-8 sm:h-10 md:h-12 lg:h-16 flex items-center justify-center">
+          <AnimatePresence mode="wait">
+            {showLabels ? (
+              <motion.div 
+                key="visible"
+                className={`text-sm sm:text-base md:text-lg font-medium ${
+                  isDarkTheme ? 'text-gray-400' : 'text-gray-600'
+                }`}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                {unit}
+              </motion.div>
+            ) : (
+              <motion.div 
+                key="hidden"
+                className="h-full"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+              />
+            )}
+          </AnimatePresence>
+        </div>
       </div>
     </motion.div>
   );

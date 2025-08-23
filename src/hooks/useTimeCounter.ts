@@ -1,10 +1,14 @@
 import { useState, useEffect } from 'react';
 import type { TimeUnits } from '../types';
-import { DATES } from '../constants/dates';
-import type { SectionType } from '../constants/dates';
 import { calculateTimeUnits } from '../utils/timeCalculations';
 
-export const useTimeCounter = (selectedSection: SectionType, bonoAnualPart: 'first' | 'second' = 'first') => {
+export interface TimeCounterConfig {
+  targetDate: string;
+  sectionType?: string;
+  bonoAnualPart?: 'first' | 'second';
+}
+
+export const useTimeCounter = (config: TimeCounterConfig) => {
   const [timeUnits, setTimeUnits] = useState<TimeUnits>({
     seconds: 0,
     minutes: 0,
@@ -23,25 +27,15 @@ export const useTimeCounter = (selectedSection: SectionType, bonoAnualPart: 'fir
     months: 0
   });
 
-  const getTargetDate = (): string => {
-    if (selectedSection === 'doble-sueldo') {
-      return DATES.DOBLE_SUELDO;
-    } else if (selectedSection === 'bono-anual') {
-      // Si es la segunda parte del bono anual, usar la fecha de marzo
-      return bonoAnualPart === 'second' ? DATES.BONO_ANUAL_MARZO : DATES.BONO_ANUAL;
-    }
-    return DATES.DOBLE_SUELDO;
-  };
-
   const [startTimestamp, setStartTimestamp] = useState<number>(
-    Math.floor(new Date(getTargetDate()).getTime() / 1000)
+    Math.floor(new Date(config.targetDate).getTime() / 1000)
   );
 
-  // Actualizar timestamp cuando cambie la sección o la parte del bono anual
+  // Actualizar timestamp cuando cambie la configuración
   useEffect(() => {
-    const targetDate = getTargetDate();
+    const targetDate = config.targetDate;
     setStartTimestamp(Math.floor(new Date(targetDate).getTime() / 1000));
-  }, [selectedSection, bonoAnualPart]);
+  }, [config.targetDate]);
 
   useEffect(() => {
     const updateTime = () => {
