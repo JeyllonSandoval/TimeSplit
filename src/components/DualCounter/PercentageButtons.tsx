@@ -23,7 +23,7 @@ export const PercentageButtons = ({
 
   return (
     <motion.div 
-      className="absolute bottom-8 left-0 right-0 flex justify-center gap-4 z-20 lg:bottom-20"
+      className="absolute bottom-6 left-0 right-0 flex justify-center gap-4 z-20 lg:bottom-20"
       variants={buttonVariants}
       initial="hidden"
       animate="visible"
@@ -32,9 +32,9 @@ export const PercentageButtons = ({
         onClick={() => onBonoAnualPartChange('first')}
         className={`px-6 py-3 rounded-full font-medium text-sm transition-all duration-300 flex items-center gap-2 ${
           bonoAnualPart === 'first'
-            ? (isDarkTheme ? 'bg-gray-700 text-white' : 'bg-gray-600 text-white')
+            ? (isDarkTheme ? 'bg-gradient-to-br from-gray-200 to-gray-400 text-black' : 'bg-gradient-to-br from-gray-800 to-gray-600 text-white')
             : (isDarkTheme 
-                ? 'bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white' 
+                ? 'bg-black/40 text-gray-300 hover:bg-black/60 hover:text-white' 
                 : 'bg-gray-200 text-gray-700 hover:bg-gray-300 hover:text-gray-800')
         }`}
         whileHover={{ scale: 1.05 }}
@@ -48,9 +48,9 @@ export const PercentageButtons = ({
         onClick={() => onBonoAnualPartChange('second')}
         className={`px-6 py-3 rounded-full font-medium text-sm transition-all duration-300 flex items-center gap-2 ${
           bonoAnualPart === 'second'
-            ? (isDarkTheme ? 'bg-gray-600 text-white' : 'bg-gray-500 text-white')
+            ? (isDarkTheme ? 'bg-gradient-to-br from-gray-200 to-gray-400 text-black' : 'bg-gradient-to-br from-gray-800 to-gray-600 text-white')
             : (isDarkTheme 
-                ? 'bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white' 
+                ? 'bg-black/40 text-gray-300 hover:bg-black/60 hover:text-white' 
                 : 'bg-gray-200 text-gray-700 hover:bg-gray-300 hover:text-gray-800')
         }`}
         whileHover={{ scale: 1.05 }}

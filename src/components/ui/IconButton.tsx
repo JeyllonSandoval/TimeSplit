@@ -83,14 +83,14 @@ export const IconButton = ({
           key={`${waveAnimation}-${index}`}
           className={`absolute inset-0 rounded-full border-2 ${
             iconType === 'theme' && isDarkTheme
-              ? 'border-yellow-400/60'
+              ? 'border-yellow-400/60 border-4'
               : iconType === 'theme' && !isDarkTheme
-              ? 'border-indigo-400/60'
+              ? 'border-indigo-400/60 border-4'
               : iconType === 'labels'
-              ? 'border-blue-400/60'
+              ? 'border-blue-400/60 border-4'
               : isDarkTheme 
-              ? 'border-white/60' 
-              : 'border-white/70'
+              ? 'border-white/60 border-4' 
+              : 'border-white/70 border-4'
           }`}
           initial={{ scale: 1, opacity: 0 }}
           animate={{ 
@@ -111,10 +111,10 @@ export const IconButton = ({
         <motion.div
           className={`absolute inset-0 rounded-full border-2 ${
             iconType === 'theme' && isDarkTheme
-              ? 'border-yellow-500/30'
+              ? 'border-yellow-500/90 border-4'
               : iconType === 'theme' && !isDarkTheme
-              ? 'border-indigo-500/30'
-              : 'border-blue-500/30'
+              ? 'border-indigo-500/90 border-4'
+              : 'border-blue-500/90 border-4'
           }`}
           initial={{ scale: 1, opacity: 0 }}
           animate={{ 

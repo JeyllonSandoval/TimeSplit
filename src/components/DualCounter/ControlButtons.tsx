@@ -13,7 +13,7 @@ interface ControlButtonsProps {
 
 export const ControlButtons = ({ 
   showLabels, 
-  isDarkTheme,
+  isDarkTheme, 
   onToggleLabels, 
   onToggleTheme, 
   waveAnimation 
@@ -36,18 +36,12 @@ export const ControlButtons = ({
         isDarkTheme={isDarkTheme}
         isActive={showLabels}
         waveAnimation={waveAnimation}
-        iconType="labels"
       >
         {showLabels ? (
           <motion.div
             initial={{ scale: 0, rotate: 180 }}
             animate={{ scale: 1, rotate: 0 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
-            whileHover={{ 
-              scale: 1.1,
-              rotate: [0, -5, 5, 0],
-              transition: { duration: 0.6, repeat: Infinity, repeatType: "reverse" }
-            }}
           >
             <HiTag className="w-5 h-5 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7 xl:w-8 xl:h-8" />
           </motion.div>
@@ -56,11 +50,6 @@ export const ControlButtons = ({
             initial={{ scale: 0, rotate: -180 }}
             animate={{ scale: 1, rotate: 0 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
-            whileHover={{ 
-              scale: 1.1,
-              rotate: [0, 5, -5, 0],
-              transition: { duration: 0.6, repeat: Infinity, repeatType: "reverse" }
-            }}
           >
             <HiOutlineTag className="w-5 h-5 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7 xl:w-8 xl:h-8" />
           </motion.div>
@@ -74,10 +63,9 @@ export const ControlButtons = ({
         isDarkTheme={isDarkTheme}
         waveAnimation={waveAnimation}
         className={isDarkTheme 
-          ? 'bg-gradient-to-br from-gray-600 to-gray-400 text-gray-800 shadow-2xl hover:from-gray-700 hover:to-gray-500 hover:shadow-yellow-300/50' 
-          : 'bg-gradient-to-br from-gray-600 to-gray-800 text-white shadow-2xl hover:shadow-indigo-700/50'
+          ? 'bg-gradient-to-br from-gray-100 to-white/30 text-gray-800 hover:text-white/70 shadow-2xl hover:shadow-gray-300/50' 
+          : 'bg-gradient-to-br from-gray-600 to-gray-800 text-white hover:text-black/70 shadow-2xl hover:shadow-gray-700/50'
         }
-        iconType="theme"
       >
         {isDarkTheme ? (
           <motion.div
@@ -86,10 +74,8 @@ export const ControlButtons = ({
             transition={{ duration: 0.4, ease: "easeOut" }}
             whileHover={{ 
               rotate: 180,
-              scale: 1.1,
-              transition: { duration: 0.6, ease: "easeInOut" }
+              transition: { duration: 0.3, ease: "easeInOut" }
             }}
-            className="text-white"
           >
             <HiOutlineSun className="w-5 h-5 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7 xl:w-8 xl:h-8" />
           </motion.div>
@@ -100,8 +86,7 @@ export const ControlButtons = ({
             transition={{ duration: 0.4, ease: "easeOut" }}
             whileHover={{ 
               rotate: -180,
-              scale: 1.1,
-              transition: { duration: 0.6, ease: "easeInOut" }
+              transition: { duration: 0.3, ease: "easeInOut" }
             }}
           >
             <HiOutlineMoon className="w-5 h-5 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7 xl:w-8 xl:h-8" />

@@ -32,9 +32,9 @@ export const TimeDigit = ({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <div className="flex flex-col items-center relative h-32 sm:h-36 md:h-40 lg:h-48">
+      <div className="flex flex-col items-center relative h-32 sm:h-36 md:h-40 lg:h-72">
         {/* Fila superior - número anterior */}
-        <div className="relative h-16 sm:h-20 md:h-24 lg:h-32 flex items-center justify-center mb-1">
+        <div className="relative h-16 sm:h-20 md:h-24 lg:h-32 flex items-center justify-center">
           <motion.div
             className={`text-2xl sm:text-3xl md:text-4xl lg:text-7xl font-bold ${
               isDarkTheme ? 'text-gray-500' : 'text-gray-400'
@@ -48,7 +48,7 @@ export const TimeDigit = ({
         </div>
 
         {/* Fila central - número principal */}
-        <div className="relative h-20 sm:h-24 md:h-28 lg:h-36 flex items-center justify-center mb-1 sm:mb-2">
+        <div className="relative h-20 sm:h-24 md:h-28 lg:h-36 flex items-center justify-center">
           <AnimatePresence mode="wait">
             <motion.div
               key={value}
@@ -66,7 +66,7 @@ export const TimeDigit = ({
         </div>
 
         {/* Fila inferior - número siguiente */}
-        <div className="relative h-16 sm:h-20 md:h-24 lg:h-32 flex items-center justify-center mb-1">
+        <div className="relative h-16 sm:h-20 md:h-24 lg:h-32 flex items-center justify-center">
           <motion.div
             className={`text-2xl sm:text-3xl md:text-4xl lg:text-7xl font-bold ${
               isDarkTheme ? 'text-gray-500' : 'text-gray-400'

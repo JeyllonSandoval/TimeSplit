@@ -32,7 +32,7 @@ export const TimeDisplay = ({
     <AnimatePresence mode="wait">
       <motion.div 
         key={selectedSection}
-        className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-4 md:gap-6 lg:gap-8 max-w-7xl w-full px-2 sm:px-4 md:px-6 z-10"
+        className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-6 sm:gap-4 md:gap-6 lg:gap-8 max-w-7xl w-full h-full z-10"
         variants={smoothSlideVariants}
         initial="hidden"
         animate="visible"

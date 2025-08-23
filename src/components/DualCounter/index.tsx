@@ -29,6 +29,7 @@ export default function DualCounter() {
 
   const handleSectionChange = (section: SectionType) => {
     setSelectedSection(section);
+    setWaveAnimation(prev => prev + 1);
     // Resetear a la primera parte cuando se cambie de sección
     if (section === 'bono-anual') {
       setBonoAnualPart('first');
@@ -37,6 +38,7 @@ export default function DualCounter() {
 
   const handleBonoAnualPartChange = (part: 'first' | 'second') => {
     setBonoAnualPart(part);
+    setWaveAnimation(prev => prev + 1);
   };
 
   const toggleLabels = () => {
@@ -53,7 +55,7 @@ export default function DualCounter() {
 
   return (
     <motion.div 
-      className={`min-h-screen flex flex-col items-center justify-center p-2 sm:p-4 theme-transition relative overflow-hidden ${
+      className={`min-h-screen flex flex-col items-center justify-center theme-transition relative overflow-hidden ${
         isDarkTheme ? 'bg-[#121212]' : 'bg-white'
       }`}
       variants={containerVariants}
@@ -61,7 +63,7 @@ export default function DualCounter() {
       animate="visible"
     >
       {/* Ondas expansivas de fondo */}
-      <ExpandingWaves isDarkTheme={isDarkTheme} />
+      {/* <ExpandingWaves isDarkTheme={isDarkTheme} waveAnimation={waveAnimation} /> */}
 
       {/* Efectos de fondo */}
       <BackgroundEffects isDarkTheme={isDarkTheme} />
