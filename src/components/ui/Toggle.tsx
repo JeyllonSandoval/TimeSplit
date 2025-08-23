@@ -1,19 +1,8 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import type { SectionType } from '../../constants/dates';
-
-interface Employee {
-  id: string;
-  name: string;
-  position: string;
-  date: string;
-}
-
-interface Department {
-  id: string;
-  name: string;
-  employees: Employee[];
-}
+import type { Employee, Department } from '../../types/index';
+import { BonoVacacionalCounter } from '../DualCounter/BonoVacacionalCounter';
 
 interface ToggleProps {
   selectedSection: SectionType;
@@ -27,21 +16,21 @@ const departments: Department[] = [
     id: '1',
     name: 'Calidad de Software',
     employees: [
-      { id: '1', name: 'John', position: 'Analista de Calidad', date: '2025-07-12T16:00:00' },
-      { id: '2', name: 'Ruben', position: 'Analista de Calidad', date: '2025-02-27T16:00:00' },
-      { id: '3', name: 'Alisson', position: 'Analista de Calidad', date: '2025-06-12T16:00:00' },
-      { id: '4', name: 'Genesis', position: 'Analista de Calidad', date: '2025-06-12T16:00:00' },
-      { id: '5', name: 'Ariel', position: 'Analista de Calidad', date: '2025-01-12T16:00:00' },
-      { id: '6', name: 'Jeyllon', position: 'Analista de Calidad', date: '2025-04-12T16:00:00' }
+      { id: '1', name: 'John Garcia', position: 'Analista', date: '2025-07-12T16:00:00' },
+      { id: '2', name: 'Ruben Santana', position: 'Analista', date: '2025-02-27T16:00:00' },
+      { id: '3', name: 'Alisson Almonte', position: 'Oficial', date: '2025-06-12T16:00:00' },
+      { id: '4', name: 'Genesis Diaz', position: 'Analista', date: '2025-06-12T16:00:00' },
+      { id: '5', name: 'Ariel De Leon', position: 'Gerente', date: '2025-01-12T16:00:00' },
+      { id: '6', name: 'Jeyllon Sandoval', position: 'Analista', date: '2025-04-12T16:00:00' }
     ]
   },
   {
     id: '2',
     name: 'Banca Electrónica',
     employees: [
-      { id: '7', name: 'Estiven Mendoza', position: 'Desarrollador', date: '2025-06-12T16:00:00' },
-      { id: '8', name: 'Jhones Concepción', position: 'Desarrollador', date: '2025-04-12T16:00:00' },
-      { id: '9', name: 'Styven Sanchez', position: 'Desarrollador', date: '2025-05-12T16:00:00' }
+      { id: '7', name: 'Estiven Mendoza', position: 'Analista', date: '2025-06-12T16:00:00' },
+      { id: '8', name: 'Jhones Concepción', position: 'Oficial', date: '2025-04-12T16:00:00' },
+      { id: '9', name: 'Styven Sanchez', position: 'Encargado', date: '2025-05-12T16:00:00' }
     ]
   }
 ];
@@ -54,32 +43,18 @@ export const Toggle = ({
 }: ToggleProps) => {
   const [hoveredDepartment, setHoveredDepartment] = useState<string | null>(null);
   const [isHoveringBonoVacacional, setIsHoveringBonoVacacional] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
-  const [timeRemaining, setTimeRemaining] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  const [showBonoVacacionalCounter, setShowBonoVacacionalCounter] = useState(false);
+  
+  const menuRef = useRef<HTMLDivElement>(null);
+  const toggleRef = useRef<HTMLDivElement>(null);
   
   const sections: { key: SectionType; label: string }[] = [
     { key: 'doble-sueldo', label: 'Doble Sueldo' },
     { key: 'bono-anual', label: 'Bono Anual' },
     { key: 'bono-vacacional', label: 'Bono Vacacional' }
   ];
-
-  // Función para calcular el tiempo restante hasta la fecha del empleado
-  const calculateTimeRemaining = (targetDate: string) => {
-    const now = new Date();
-    const target = new Date(targetDate);
-    const difference = target.getTime() - now.getTime();
-
-    if (difference <= 0) {
-      return { days: 0, hours: 0, minutes: 0, seconds: 0 };
-    }
-
-    const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-
-    return { days, hours, minutes, seconds };
-  };
 
   // Función para formatear la fecha
   const formatDate = (dateString: string) => {
@@ -93,26 +68,52 @@ export const Toggle = ({
     });
   };
 
-  // Actualizar el contador cada segundo cuando hay un empleado seleccionado
-  useEffect(() => {
-    if (!selectedEmployee) return;
+  // Función para manejar la selección de empleado
+  const handleEmployeeSelection = (employee: Employee) => {
+    setSelectedEmployee(employee);
+    setShowBonoVacacionalCounter(true);
+    setIsMenuOpen(false);
+    setIsHoveringBonoVacacional(false);
+    setHoveredDepartment(null);
+  };
 
-    const timer = setInterval(() => {
-      setTimeRemaining(calculateTimeRemaining(selectedEmployee.date));
-    }, 1000);
+  // Función para regresar del contador
+  const handleBackFromCounter = () => {
+    setShowBonoVacacionalCounter(false);
+    setSelectedEmployee(null);
+  };
 
-    return () => clearInterval(timer);
-  }, [selectedEmployee]);
+  // Función para abrir el menú
+  const handleOpenMenu = () => {
+    setIsMenuOpen(true);
+    setIsHoveringBonoVacacional(true);
+  };
 
-  // Actualizar el tiempo restante cuando se selecciona un empleado
-  useEffect(() => {
-    if (selectedEmployee) {
-      setTimeRemaining(calculateTimeRemaining(selectedEmployee.date));
-    }
-  }, [selectedEmployee]);
+  // Función para cerrar el menú
+  const handleCloseMenu = () => {
+    setIsMenuOpen(false);
+    setIsHoveringBonoVacacional(false);
+    setHoveredDepartment(null);
+  };
+
+  // Función para manejar el hover del departamento
+  const handleDepartmentHover = (departmentId: string) => {
+    setHoveredDepartment(departmentId);
+  };
+
+  // Si se está mostrando el contador del Bono Vacacional, no renderizar el toggle
+  if (showBonoVacacionalCounter && selectedEmployee) {
+    return (
+      <BonoVacacionalCounter
+        selectedEmployee={selectedEmployee}
+        isDarkTheme={isDarkTheme}
+        onBack={handleBackFromCounter}
+      />
+    );
+  }
 
   return (
-    <div className="relative">
+    <div className="relative" ref={toggleRef}>
       <motion.div 
         className={`toggle-button rounded-full border p-1 sm:p-2 theme-transition ${
           isDarkTheme ? 'toggle-button-dark' : 'toggle-button-light'
@@ -160,6 +161,9 @@ export const Toggle = ({
                 // Solo permitir click en doble-sueldo y bono-anual
                 if (section.key !== 'bono-vacacional') {
                   onSectionChange(section.key);
+                } else {
+                  // Para bono-vacacional, abrir el menú
+                  handleOpenMenu();
                 }
               }}
               onMouseEnter={() => {
@@ -167,23 +171,18 @@ export const Toggle = ({
                   setIsHoveringBonoVacacional(true);
                 }
               }}
-              onMouseLeave={() => {
-                if (section.key === 'bono-vacacional') {
-                  setIsHoveringBonoVacacional(false);
-                }
-              }}
               className={`relative z-10 w-[100px] sm:w-[120px] md:w-[150px] lg:w-[150px] rounded-full font-medium theme-transition transition-all duration-150 px-2 py-2 sm:px-3 sm:py-2.5 md:px-4 md:py-3 text-center text-xs sm:text-sm md:text-base ${
                 selectedSection === section.key
                   ? isDarkTheme ? 'toggle-text-selected-dark' : 'toggle-text-selected-light'
                   : isDarkTheme ? 'toggle-text-unselected-dark' : 'toggle-text-unselected-light'
               } ${
-                section.key === 'bono-vacacional' ? 'cursor-default' : 'cursor-pointer'
+                section.key === 'bono-vacacional' ? 'cursor-pointer' : 'cursor-pointer'
               }`}
               whileHover={{ 
-                scale: section.key === 'bono-vacacional' ? 1 : 1.05 
+                scale: 1.05 
               }}
               whileTap={{ 
-                scale: section.key === 'bono-vacacional' ? 1 : 0.95 
+                scale: 0.95 
               }}
               transition={{ duration: 0.05 }}
             >
@@ -195,54 +194,77 @@ export const Toggle = ({
 
       {/* Panel desplegable para Bono Vacacional */}
       <AnimatePresence>
-        {isHoveringBonoVacacional && (
+        {(isHoveringBonoVacacional || isMenuOpen) && (
           <motion.div
-            className={`absolute top-full left-0 right-0 mt-4 p-4 rounded-lg border ${
-              isDarkTheme ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
-            } shadow-lg z-30`}
+            ref={menuRef}
+            className={`absolute top-full left-0 right-0 mt-4 p-6 rounded-2xl border ${
+              isDarkTheme 
+                ? 'bg-black border-gray-700/50 backdrop-blur-sm' 
+                : 'bg-white/95 border-gray-200/50 backdrop-blur-sm'
+            } shadow-2xl z-30`}
             initial={{ opacity: 0, y: -10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            onMouseEnter={() => setIsHoveringBonoVacacional(true)}
-            onMouseLeave={() => setIsHoveringBonoVacacional(false)}
+            onMouseEnter={() => {
+              setIsHoveringBonoVacacional(true);
+              setIsMenuOpen(true);
+            }}
+            onMouseLeave={() => {
+              // Cerrar el menú cuando el mouse sale
+              setIsHoveringBonoVacacional(false);
+              setIsMenuOpen(false);
+              setHoveredDepartment(null);
+            }}
           >
-            <div className="flex gap-6">
+            <div className="flex gap-8">
               {/* Lista de Departamentos */}
               <div className="flex-1">
-                <h3 className={`text-lg font-semibold mb-3 ${
-                  isDarkTheme ? 'text-gray-200' : 'text-gray-700'
+                <h3 className={`text-lg font-semibold mb-4 ${
+                  isDarkTheme ? 'text-gray-100' : 'text-gray-800'
                 }`}>
                   Departamentos
                 </h3>
-                <div className="space-y-2">
+                <div className="space-y-3">
                   {departments.map((department) => (
                     <motion.div
                       key={department.id}
-                      className={`p-3 rounded-lg cursor-pointer transition-all duration-200 ${
+                      className={`group p-4 rounded-xl cursor-pointer transition-all duration-300 ${
                         hoveredDepartment === department.id
                           ? isDarkTheme 
-                            ? 'bg-blue-900/50 border-l-4 border-blue-400' 
-                            : 'bg-blue-100 border-l-4 border-blue-500'
+                            ? 'bg-gray-200/20 border-gray-300/50 shadow-lg shadow-gray-300/10' 
+                            : 'bg-gray-100 border border-gray-300 shadow-lg shadow-gray-300/30'
                           : isDarkTheme 
-                            ? 'bg-gray-700/50 hover:bg-gray-600/50' 
-                            : 'bg-gray-50 hover:bg-gray-100'
+                            ? 'bg-black border-gray-700/50 hover:bg-gray-700/50 hover:border-gray-600/50' 
+                            : 'bg-white border-gray-200/50 hover:bg-gray-100/80 hover:border-gray-300/50'
                       }`}
-                      onMouseEnter={() => setHoveredDepartment(department.id)}
-                      onMouseLeave={() => setHoveredDepartment(null)}
-                      whileHover={{ x: 3 }}
-                      transition={{ duration: 0.2 }}
+                      onMouseEnter={() => handleDepartmentHover(department.id)}
+                      whileHover={{ 
+                        scale: 1.02,
+                        y: -2
+                      }}
+                      transition={{ duration: 0.1 }}
                     >
-                      <span className={`font-medium ${
-                        isDarkTheme ? 'text-white' : 'text-gray-800'
-                      }`}>
-                        {department.name}
-                      </span>
-                      <span className={`block text-sm mt-1 ${
-                        isDarkTheme ? 'text-gray-400' : 'text-gray-500'
-                      }`}>
-                        {department.employees.length} empleados
-                      </span>
+                      <div className="flex items-center justify-between">
+                        <span className={`font-medium text-sm ${
+                          hoveredDepartment === department.id
+                            ? isDarkTheme ? 'text-gray-100' : 'text-gray-800'
+                            : isDarkTheme ? 'text-gray-200' : 'text-gray-800'
+                        }`}>
+                          {department.name}
+                        </span>
+                        <span className={`text-xs px-2 py-1 rounded-full ${
+                          hoveredDepartment === department.id
+                            ? isDarkTheme 
+                              ? 'bg-white text-black font-bold' 
+                              : 'bg-gray-200 text-gray-700 font-bold'
+                            : isDarkTheme 
+                              ? 'bg-black text-gray-400 font-bold' 
+                              : 'bg-gray-200/50 text-gray-600 font-bold'
+                        }`}>
+                          {department.employees.length}
+                        </span>
+                      </div>
                     </motion.div>
                   ))}
                 </div>
@@ -250,8 +272,8 @@ export const Toggle = ({
 
               {/* Lista de Empleados */}
               <div className="flex-1">
-                <h3 className={`text-lg font-semibold mb-3 ${
-                  isDarkTheme ? 'text-gray-200' : 'text-gray-700'
+                <h3 className={`text-lg font-semibold mb-4 ${
+                  isDarkTheme ? 'text-gray-100' : 'text-gray-800'
                 }`}>
                   Empleados
                 </h3>
@@ -262,44 +284,39 @@ export const Toggle = ({
                       initial={{ opacity: 0, y: 5 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -5 }}
-                      transition={{ duration: 0.15 }}
-                      className="space-y-2"
+                      transition={{ duration: 0.1 }}
+                      className="space-y-3"
                     >
                       {departments
                         .find(d => d.id === hoveredDepartment)
                         ?.employees.map((employee) => (
                           <motion.div
                             key={employee.id}
-                            className={`p-3 rounded-lg border cursor-pointer transition-all duration-200 ${
+                            className={`group p-3 rounded-xl cursor-pointer transition-all duration-300 ${
                               selectedEmployee?.id === employee.id
                                 ? isDarkTheme 
-                                  ? 'bg-gray-600 border-gray-400' 
-                                  : 'bg-gray-200 border-gray-400'
+                                  ? 'bg-gray-600 border-gray-400 shadow-lg' 
+                                  : 'bg-gray-200 border-gray-400 shadow-lg'
                                 : isDarkTheme 
-                                  ? 'bg-gray-700 border-gray-600 hover:bg-gray-600' 
-                                  : 'bg-gray-50 border-gray-200 hover:bg-gray-100'
+                                  ? 'bg-black border-gray-600/50 hover:bg-white/10 hover:border-gray-500/50' 
+                                  : 'bg-white border-gray-200/50 hover:bg-black/10 hover:border-gray-300/50'
                             }`}
                             initial={{ opacity: 0, x: 5 }}
                             animate={{ opacity: 1, x: 0 }}
-                            transition={{ duration: 0.15 }}
-                            onClick={() => setSelectedEmployee(employee)}
-                            whileHover={{ scale: 1.02 }}
+                            transition={{ duration: 0.1 }}
+                            onClick={() => handleEmployeeSelection(employee)}
+                            whileHover={{ 
+                              scale: 1.02,
+                              y: -1
+                            }}
                             whileTap={{ scale: 0.98 }}
                           >
-                            <div className={`font-medium ${
-                              isDarkTheme ? 'text-white' : 'text-gray-800'
+                            <div className={`font-medium text-sm ${
+                              selectedEmployee?.id === employee.id
+                                ? isDarkTheme ? 'text-white' : 'text-gray-800'
+                                : isDarkTheme ? 'text-gray-200' : 'text-gray-800'
                             }`}>
                               {employee.name}
-                            </div>
-                            <div className={`text-sm ${
-                              isDarkTheme ? 'text-gray-400' : 'text-gray-500'
-                            }`}>
-                              {employee.position}
-                            </div>
-                            <div className={`text-xs mt-1 ${
-                              isDarkTheme ? 'text-gray-500' : 'text-gray-600'
-                            }`}>
-                              {formatDate(employee.date)}
                             </div>
                           </motion.div>
                         ))}
@@ -308,88 +325,62 @@ export const Toggle = ({
                     <motion.div
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      className={`text-center py-8 ${
-                        isDarkTheme ? 'text-gray-400' : 'text-gray-500'
+                      className={`text-center py-12 ${
+                        isDarkTheme ? 'text-gray-500' : 'text-gray-400'
                       }`}
                     >
-                      Pasa el mouse sobre un departamento para ver sus empleados
+                      <div className={`w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center ${
+                        isDarkTheme ? 'bg-gray-800/50' : 'bg-gray-100/80'
+                      }`}>
+                        <svg className={`w-8 h-8 ${
+                          isDarkTheme ? 'text-gray-600' : 'text-gray-400'
+                        }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                      </div>
+                      <p className="text-sm">Pasa el mouse sobre un departamento</p>
+                      <p className="text-xs mt-1">para ver sus empleados</p>
                     </motion.div>
                   )}
                 </AnimatePresence>
               </div>
             </div>
 
-            {/* Contador del empleado seleccionado */}
+            {/* Información del empleado seleccionado */}
             {selectedEmployee && (
               <motion.div
-                className={`mt-6 p-4 rounded-lg border ${
-                  isDarkTheme ? 'bg-gray-800 border-gray-600' : 'bg-gray-50 border-gray-200'
+                className={`mt-8 p-6 rounded-2xl border ${
+                  isDarkTheme 
+                    ? 'bg-gradient-to-r from-gray-500/10 to-gray-600/10 border-gray-400/30' 
+                    : 'bg-gradient-to-r from-gray-50 to-gray-100 border-gray-300/50'
                 }`}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.2 }}
+                transition={{ duration: 0.3 }}
               >
                 <div className="text-center">
                   <h4 className={`text-lg font-semibold mb-3 ${
-                    isDarkTheme ? 'text-white' : 'text-gray-800'
+                    isDarkTheme ? 'text-gray-200' : 'text-gray-800'
                   }`}>
-                    Contador para {selectedEmployee.name}
+                    Empleado seleccionado: {selectedEmployee.name}
                   </h4>
-                  <div className="grid grid-cols-4 gap-4">
-                    <div className="text-center">
-                      <div className={`text-2xl font-bold ${
-                        isDarkTheme ? 'text-white' : 'text-gray-800'
-                      }`}>
-                        {timeRemaining.days}
-                      </div>
-                      <div className={`text-sm ${
-                        isDarkTheme ? 'text-gray-400' : 'text-gray-600'
-                      }`}>
-                        Días
-                      </div>
-                    </div>
-                    <div className="text-center">
-                      <div className={`text-2xl font-bold ${
-                        isDarkTheme ? 'text-white' : 'text-gray-800'
-                      }`}>
-                        {timeRemaining.hours.toString().padStart(2, '0')}
-                      </div>
-                      <div className={`text-sm ${
-                        isDarkTheme ? 'text-gray-400' : 'text-gray-600'
-                      }`}>
-                        Horas
-                      </div>
-                    </div>
-                    <div className="text-center">
-                      <div className={`text-2xl font-bold ${
-                        isDarkTheme ? 'text-white' : 'text-gray-800'
-                      }`}>
-                        {timeRemaining.minutes.toString().padStart(2, '0')}
-                      </div>
-                      <div className={`text-sm ${
-                        isDarkTheme ? 'text-gray-400' : 'text-gray-600'
-                      }`}>
-                        Minutos
-                      </div>
-                    </div>
-                    <div className="text-center">
-                      <div className={`text-2xl font-bold ${
-                        isDarkTheme ? 'text-white' : 'text-gray-800'
-                      }`}>
-                        {timeRemaining.seconds.toString().padStart(2, '0')}
-                      </div>
-                      <div className={`text-sm ${
-                        isDarkTheme ? 'text-gray-400' : 'text-gray-600'
-                      }`}>
-                        Segundos
-                      </div>
-                    </div>
-                  </div>
-                  <div className={`text-sm mt-3 ${
-                    isDarkTheme ? 'text-gray-400' : 'text-gray-600'
+                  <div className={`text-sm mb-6 ${
+                    isDarkTheme ? 'text-gray-300' : 'text-gray-600'
                   }`}>
-                    Fecha objetivo: {formatDate(selectedEmployee.date)}
+                    {selectedEmployee.position} - {formatDate(selectedEmployee.date)}
                   </div>
+                  <motion.button
+                    className={`px-8 py-3 rounded-xl font-medium transition-all duration-200 ${
+                      isDarkTheme 
+                        ? 'bg-gray-600 hover:bg-gray-700 text-white shadow-lg shadow-gray-600/25' 
+                        : 'bg-gray-500 hover:bg-gray-600 text-white shadow-lg shadow-gray-500/25'
+                    }`}
+                    onClick={() => handleEmployeeSelection(selectedEmployee)}
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    Ver Contador
+                  </motion.button>
                 </div>
               </motion.div>
             )}

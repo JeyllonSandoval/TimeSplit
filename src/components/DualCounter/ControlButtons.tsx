@@ -84,7 +84,7 @@ export const ControlButtons = ({
                 transition: { duration: 0.3, ease: "easeInOut" }
               }}
             >
-              <HiOutlineSun className="w-5 h-5 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7 xl:w-8 xl:h-8" />
+              <HiOutlineSun className="w-5 h-5 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7 xl:w-8 xl:h-8 text-white" />
             </motion.div>
           ) : (
             <motion.div
