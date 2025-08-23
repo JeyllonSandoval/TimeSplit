@@ -101,6 +101,29 @@ export const Toggle = ({
     setHoveredDepartment(departmentId);
   };
 
+  // Efecto para detectar clics fuera del menú
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        isMenuOpen &&
+        menuRef.current &&
+        toggleRef.current &&
+        !menuRef.current.contains(event.target as Node) &&
+        !toggleRef.current.contains(event.target as Node)
+      ) {
+        handleCloseMenu();
+      }
+    };
+
+    if (isMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isMenuOpen]);
+
   // Si se está mostrando el contador del Bono Vacacional, no renderizar el toggle
   if (showBonoVacacionalCounter && selectedEmployee) {
     return (
@@ -111,6 +134,7 @@ export const Toggle = ({
       />
     );
   }
+  
 
   return (
     <div className="relative" ref={toggleRef}>
@@ -161,6 +185,10 @@ export const Toggle = ({
                 // Solo permitir click en doble-sueldo y bono-anual
                 if (section.key !== 'bono-vacacional') {
                   onSectionChange(section.key);
+                  // Cerrar el menú del Bono Vacacional si está abierto
+                  if (isMenuOpen || isHoveringBonoVacacional) {
+                    handleCloseMenu();
+                  }
                 } else {
                   // Para bono-vacacional, abrir el menú
                   handleOpenMenu();
@@ -390,3 +418,5 @@ export const Toggle = ({
     </div>
   );
 };
+
+
