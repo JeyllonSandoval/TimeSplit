@@ -6,9 +6,11 @@ import { ToggleSection } from './ToggleSection';
 import { ControlButtons } from './ControlButtons';
 import { TimeDisplay } from './TimeDisplay';
 import { PercentageButtons } from './PercentageButtons';
+import { EasterEggScreen } from '../EasterEgg';
 import { useToggleDimensions } from '../../hooks/useToggleDimensions';
 import { useTheme } from '../../hooks/useTheme';
 import { useTimeCounter } from '../../hooks/useTimeCounter';
+import { useEasterEgg } from '../../hooks/useEasterEgg';
 import { containerVariants } from '../../utils/animations';
 import type { SectionType } from '../../constants/dates';
 import type { Employee } from '../../types/index';
@@ -44,6 +46,7 @@ export default function DualCounter({
 
   const { toggleDimensions, registerButton } = useToggleDimensions();
   const { isDarkTheme, toggleTheme } = useTheme();
+  const { showEasterEgg, closeEasterEgg, sequenceProgress } = useEasterEgg();
   
   // Determinar la fecha objetivo basada en la sección seleccionada
   const getTargetDate = () => {
@@ -125,6 +128,18 @@ export default function DualCounter({
 
   console.log('DualCounter renderizando:', { isDarkTheme, showLabels, selectedSection });
 
+  // Si el Easter Egg está activo, mostrar solo la pantalla del Easter Egg
+  if (showEasterEgg) {
+    return (
+      <EasterEggScreen
+        isVisible={showEasterEgg}
+        onBack={closeEasterEgg}
+        isDarkTheme={isDarkTheme}
+      />
+    );
+  }
+
+  // Interfaz principal normal
   return (
     <motion.div 
       className={`min-h-screen flex flex-col items-center justify-center theme-transition relative overflow-hidden ${
@@ -181,6 +196,7 @@ export default function DualCounter({
           selectedSection={selectedSection}
           bonoAnualPart={bonoAnualPart}
           onBonoAnualPartChange={handleBonoAnualPartChange}
+          easterEggProgress={sequenceProgress}
         />
       )}
     </motion.div>

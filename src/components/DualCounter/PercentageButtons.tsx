@@ -9,6 +9,7 @@ interface PercentageButtonsProps {
   selectedSection: SectionType;
   bonoAnualPart: 'first' | 'second';
   onBonoAnualPartChange: (part: 'first' | 'second') => void;
+  easterEggProgress?: number;
 }
 
 export const PercentageButtons = ({ 
@@ -16,7 +17,8 @@ export const PercentageButtons = ({
   showLabels, 
   selectedSection, 
   bonoAnualPart,
-  onBonoAnualPartChange 
+  onBonoAnualPartChange,
+  easterEggProgress = 0
 }: PercentageButtonsProps) => {
   // Solo mostrar cuando esté seleccionada la sección bono-anual y showLabels sea true
   if (!showLabels || selectedSection !== 'bono-anual') return null;
@@ -59,6 +61,20 @@ export const PercentageButtons = ({
         <FaCoins size={18} />
         <span>30%</span>
       </motion.button>
+
+      {/* Indicador sutil del Easter Egg */}
+      {easterEggProgress > 0 && (
+        <motion.div
+          className="absolute -top-2 -right-2 w-3 h-3"
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ type: "spring", stiffness: 300 }}
+        >
+          <div className={`w-full h-full rounded-full ${
+            isDarkTheme ? 'bg-purple-400' : 'bg-purple-600'
+          } opacity-60`} />
+        </motion.div>
+      )}
     </motion.div>
   );
 };
