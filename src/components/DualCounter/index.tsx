@@ -40,7 +40,7 @@ export default function DualCounter({
   const [showLabels, setShowLabels] = useState(false);
   const [waveAnimation, setWaveAnimation] = useState(0);
 
-  const toggleDimensions = useToggleDimensions();
+  const { toggleDimensions, registerButton } = useToggleDimensions();
   const { isDarkTheme, toggleTheme } = useTheme();
   
   // Determinar la fecha objetivo basada en la sección seleccionada
@@ -112,6 +112,7 @@ export default function DualCounter({
         onSectionChange={handleSectionChange}
         isDarkTheme={isDarkTheme}
         toggleDimensions={toggleDimensions}
+        registerButton={registerButton}
       />
 
       {/* Botones de control */}

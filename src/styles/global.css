@@ -108,6 +108,93 @@ body.no-scroll {
   .toggle-text-unselected-light {
     @apply text-gray-500 hover:text-gray-700;
   }
+
+  /* Estilos para toggle inline-flex */
+  .toggle-button .inline-flex {
+    display: inline-flex !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    width: auto !important;
+    min-width: fit-content !important;
+  }
+
+  .toggle-button .inline-flex > * {
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+  }
+
+  /* Estilos adicionales para toggle plano */
+  .toggle-button {
+    display: inline-block !important;
+    width: auto !important;
+    min-width: fit-content !important;
+  }
+
+  .toggle-button > div {
+    display: inline-flex !important;
+    flex-wrap: nowrap !important;
+    width: auto !important;
+    min-width: fit-content !important;
+  }
+
+  .toggle-button button {
+    display: inline-block !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* Estilos específicos para eliminar saltos de línea */
+  .toggle-button,
+  .toggle-button * {
+    line-height: 1.2 !important;
+    vertical-align: middle !important;
+  }
+
+  .toggle-button .inline-flex {
+    line-height: 1.2 !important;
+    vertical-align: middle !important;
+    height: auto !important;
+  }
+
+  .toggle-button button {
+    line-height: 1.2 !important;
+    vertical-align: middle !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0.75rem 1rem !important;
+    font-weight: 500 !important;
+  }
+
+  /* Estilos para hacer el toggle más prominente */
+  .toggle-button {
+    min-height: 3.5rem !important;
+  }
+
+  .toggle-button button {
+    min-height: 2.5rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  /* Mejoras visuales adicionales */
+  .toggle-button {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+  }
+
+  .toggle-button:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+  }
+
+  .toggle-button button:hover {
+    transform: translateY(-1px) !important;
+  }
+
+  .toggle-indicator-dark,
+  .toggle-indicator-light {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2) !important;
+  }
 }
 
 @layer utilities {

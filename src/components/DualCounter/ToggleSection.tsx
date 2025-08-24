@@ -8,7 +8,8 @@ interface ToggleSectionProps {
   selectedSection: SectionType;
   onSectionChange: (section: SectionType) => void;
   isDarkTheme: boolean;
-  toggleDimensions: { width: number; x: number };
+  toggleDimensions: { widths: number[]; positions: number[] };
+  registerButton: (index: number, ref: HTMLButtonElement | null) => void;
 }
 
 export const ToggleSection = ({ 
@@ -16,7 +17,8 @@ export const ToggleSection = ({
   selectedSection, 
   onSectionChange, 
   isDarkTheme, 
-  toggleDimensions 
+  toggleDimensions,
+  registerButton
 }: ToggleSectionProps) => {
   return (
     <AnimatePresence>
@@ -34,6 +36,7 @@ export const ToggleSection = ({
             onSectionChange={onSectionChange}
             isDarkTheme={isDarkTheme}
             toggleDimensions={toggleDimensions}
+            registerButton={registerButton}
           />
         </motion.div>
       )}

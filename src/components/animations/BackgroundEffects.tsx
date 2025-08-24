@@ -44,38 +44,6 @@ export const BackgroundEffects = ({ isDarkTheme }: BackgroundEffectsProps) => {
           }}
         />
       </motion.div>
-
-      {/* Círculos flotantes decorativos */}
-      {[...Array(6)].map((_, i) => (
-        <motion.div
-          key={i}
-          className={`absolute rounded-full ${
-            isDarkTheme ? 'bg-white/5' : 'bg-gray-400/10'
-          }`}
-          style={{
-            width: Math.random() * 100 + 50,
-            height: Math.random() * 100 + 50,
-            left: `${Math.random() * 100}%`,
-            top: `${Math.random() * 100}%`
-          }}
-          initial={{ 
-            opacity: 0, 
-            scale: 0,
-            rotate: 0
-          }}
-          animate={{
-            opacity: [0, 0.3, 0, 0.3, 0],
-            scale: [0, 1, 0.8, 1.2, 0],
-            rotate: [0, 180, 360]
-          }}
-          transition={{
-            duration: 8 + i * 2,
-            repeat: Infinity,
-            delay: i * 1.5,
-            ease: [0.25, 0.46, 0.45, 0.94]
-          }}
-        />
-      ))}
     </>
   );
 };

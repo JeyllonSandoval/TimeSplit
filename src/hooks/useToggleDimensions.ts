@@ -1,30 +1,59 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 
 interface ToggleDimensions {
-  width: number;
-  x: number;
+  widths: number[];
+  positions: number[];
 }
 
 export const useToggleDimensions = () => {
-  const getToggleDimensions = (): ToggleDimensions => {
-    if (typeof window === 'undefined') return { width: 100, x: 0 };
-    
-    const width = window.innerWidth;
-    if (width < 640) return { width: 100, x: 0 }; // sm
-    if (width < 768) return { width: 120, x: 0 }; // md
-    return { width: 150, x: 0 }; // lg y xl
-  };
+  const [toggleDimensions, setToggleDimensions] = useState<ToggleDimensions>({
+    widths: [100, 100, 100],
+    positions: [0, 100, 200]
+  });
 
-  const [toggleDimensions, setToggleDimensions] = useState<ToggleDimensions>(getToggleDimensions());
+  const buttonRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
+  const updateDimensions = useCallback(() => {
+    if (buttonRefs.current.length === 0) return;
+
+    const widths: number[] = [];
+    const positions: number[] = [];
+    let currentPosition = 0;
+
+    buttonRefs.current.forEach((buttonRef) => {
+      if (buttonRef) {
+        const width = buttonRef.offsetWidth;
+        widths.push(width);
+        positions.push(currentPosition);
+        currentPosition += width;
+      }
+    });
+
+    setToggleDimensions({ widths, positions });
+  }, []);
+
+  useEffect(() => {
+    updateDimensions();
+  }, [updateDimensions]);
 
   useEffect(() => {
     const handleResize = () => {
-      setToggleDimensions(getToggleDimensions());
+      updateDimensions();
     };
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  }, [updateDimensions]);
 
-  return toggleDimensions;
+  const registerButton = useCallback((index: number, ref: HTMLButtonElement | null) => {
+    buttonRefs.current[index] = ref;
+    // Actualizar dimensiones después de registrar el botón
+    setTimeout(updateDimensions, 0);
+  }, [updateDimensions]);
+
+  return {
+    toggleDimensions,
+    registerButton,
+    updateDimensions
+  };
 };

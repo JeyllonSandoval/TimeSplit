@@ -8,7 +8,8 @@ interface ToggleProps {
   selectedSection: SectionType;
   onSectionChange: (section: SectionType) => void;
   isDarkTheme: boolean;
-  toggleDimensions: { width: number; x: number };
+  toggleDimensions: { widths: number[]; positions: number[] };
+  registerButton: (index: number, ref: HTMLButtonElement | null) => void;
 }
 
 const departments: Department[] = [
@@ -39,7 +40,8 @@ export const Toggle = ({
   selectedSection, 
   onSectionChange, 
   isDarkTheme, 
-  toggleDimensions 
+  toggleDimensions,
+  registerButton
 }: ToggleProps) => {
   const [hoveredDepartment, setHoveredDepartment] = useState<string | null>(null);
   const [isHoveringBonoVacacional, setIsHoveringBonoVacacional] = useState(false);
@@ -139,7 +141,7 @@ export const Toggle = ({
   return (
     <div className="relative" ref={toggleRef}>
       <motion.div 
-        className={`toggle-button rounded-full border p-1 sm:p-2 theme-transition ${
+        className={`toggle-button rounded-full border p-1 sm:p-2 md:p-3 lg:p-2 theme-transition ${
           isDarkTheme ? 'toggle-button-dark' : 'toggle-button-light'
         }`}
         whileHover={{ 
@@ -148,27 +150,21 @@ export const Toggle = ({
         }}
         transition={{ duration: 0.2 }}
       >
-        <div className="flex relative w-full">
+        <div className="inline-flex relative w-full">
           {/* Indicador de selección animado */}
           <motion.div
             className={`absolute top-0 bottom-0 rounded-full transition-all duration-150 ${
               isDarkTheme ? 'toggle-indicator-dark' : 'toggle-indicator-light'
             }`}
-            initial={{ 
-              opacity: 0,
-              x: selectedSection === 'doble-sueldo' ? 0 : 
-                  selectedSection === 'bono-anual' ? toggleDimensions.width : 
-                  toggleDimensions.width * 2,
-              width: toggleDimensions.width
-            }}
+            initial={false}
             animate={{
               opacity: 1,
-              x: selectedSection === 'bono-anual' ? toggleDimensions.width : 
-                  selectedSection === 'bono-vacacional' ? toggleDimensions.width * 2 : 0,
-              width: toggleDimensions.width
-            }}
-            style={{
-              width: toggleDimensions.width
+              x: selectedSection === 'doble-sueldo' ? toggleDimensions.positions[0] || 0 :
+                  selectedSection === 'bono-anual' ? toggleDimensions.positions[1] || 0 :
+                  toggleDimensions.positions[2] || 0,
+              width: selectedSection === 'doble-sueldo' ? toggleDimensions.widths[0] || 100 :
+                     selectedSection === 'bono-anual' ? toggleDimensions.widths[1] || 100 :
+                     toggleDimensions.widths[2] || 100
             }}
             transition={{
               type: "spring",
@@ -178,9 +174,10 @@ export const Toggle = ({
             }}
           />
           
-          {sections.map((section) => (
+          {sections.map((section, index) => (
             <motion.button
               key={section.key}
+              ref={(ref) => registerButton(index, ref)}
               onClick={() => {
                 // Solo permitir click en doble-sueldo y bono-anual
                 if (section.key !== 'bono-vacacional') {
@@ -199,7 +196,7 @@ export const Toggle = ({
                   setIsHoveringBonoVacacional(true);
                 }
               }}
-              className={`relative z-10 w-[100px] sm:w-[120px] md:w-[150px] lg:w-[150px] rounded-full font-medium theme-transition transition-all duration-150 px-2 py-2 sm:px-3 sm:py-2.5 md:px-4 md:py-3 text-center text-xs sm:text-sm md:text-base ${
+              className={`relative z-10 rounded-full font-medium theme-transition transition-all duration-150 px-4 py-3 text-center text-sm sm:text-sm md:text-base lg:text-base ${
                 selectedSection === section.key
                   ? isDarkTheme ? 'toggle-text-selected-dark' : 'toggle-text-selected-light'
                   : isDarkTheme ? 'toggle-text-unselected-dark' : 'toggle-text-unselected-light'
@@ -230,9 +227,7 @@ export const Toggle = ({
                 ? 'bg-black border-gray-700/50 backdrop-blur-sm' 
                 : 'bg-white/95 border-gray-200/50 backdrop-blur-sm'
             } shadow-2xl z-30`}
-            initial={{ opacity: 0, y: -10, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -10, scale: 0.95 }}
+            exit={{ opacity: 0, y: -10, scale: 0.50 }}
             transition={{ duration: 0.2 }}
             onMouseEnter={() => {
               setIsHoveringBonoVacacional(true);
@@ -248,32 +243,28 @@ export const Toggle = ({
             <div className="flex gap-8">
               {/* Lista de Departamentos */}
               <div className="flex-1">
-                <h3 className={`text-lg font-semibold mb-4 ${
+                <h3 className={`text-base font-bold mb-4 ${
                   isDarkTheme ? 'text-gray-100' : 'text-gray-800'
                 }`}>
                   Departamentos
                 </h3>
-                <div className="space-y-3">
+                <div className="flex flex-col gap-2">
                   {departments.map((department) => (
                     <motion.div
                       key={department.id}
-                      className={`group p-4 rounded-xl cursor-pointer transition-all duration-300 ${
+                      className={`group p-2 rounded-xl cursor-pointer transition-all duration-300 ${
                         hoveredDepartment === department.id
                           ? isDarkTheme 
-                            ? 'bg-gray-200/20 border-gray-300/50 shadow-lg shadow-gray-300/10' 
-                            : 'bg-gray-100 border border-gray-300 shadow-lg shadow-gray-300/30'
+                            ? 'bg-gray-200/20 shadow-lg shadow-gray-300/10' 
+                            : 'bg-gray-400/30 shadow-lg shadow-gray-300/30'
                           : isDarkTheme 
-                            ? 'bg-black border-gray-700/50 hover:bg-gray-700/50 hover:border-gray-600/50' 
-                            : 'bg-white border-gray-200/50 hover:bg-gray-100/80 hover:border-gray-300/50'
+                            ? 'bg-black hover:bg-gray-700/50 ' 
+                            : 'bg-white hover:bg-gray-100/80 '
                       }`}
                       onMouseEnter={() => handleDepartmentHover(department.id)}
-                      whileHover={{ 
-                        scale: 1.02,
-                        y: -2
-                      }}
-                      transition={{ duration: 0.1 }}
+                      
                     >
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between gap-1">
                         <span className={`font-medium text-sm ${
                           hoveredDepartment === department.id
                             ? isDarkTheme ? 'text-gray-100' : 'text-gray-800'
@@ -285,10 +276,10 @@ export const Toggle = ({
                           hoveredDepartment === department.id
                             ? isDarkTheme 
                               ? 'bg-white text-black font-bold' 
-                              : 'bg-gray-200 text-gray-700 font-bold'
+                              : 'bg-black/60 text-white font-bold'
                             : isDarkTheme 
-                              ? 'bg-black text-gray-400 font-bold' 
-                              : 'bg-gray-200/50 text-gray-600 font-bold'
+                              ? 'bg-white/15 text-gray-400 font-bold' 
+                              : 'bg-gray-200/90 text-gray-600 font-bold'
                         }`}>
                           {department.employees.length}
                         </span>
@@ -300,7 +291,7 @@ export const Toggle = ({
 
               {/* Lista de Empleados */}
               <div className="flex-1">
-                <h3 className={`text-lg font-semibold mb-4 ${
+                <h3 className={`text-base font-bold mb-4 ${
                   isDarkTheme ? 'text-gray-100' : 'text-gray-800'
                 }`}>
                   Empleados
@@ -313,14 +304,14 @@ export const Toggle = ({
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -5 }}
                       transition={{ duration: 0.1 }}
-                      className="space-y-3"
+                      className="flex flex-col gap-2"
                     >
                       {departments
                         .find(d => d.id === hoveredDepartment)
                         ?.employees.map((employee) => (
                           <motion.div
                             key={employee.id}
-                            className={`group p-3 rounded-xl cursor-pointer transition-all duration-300 ${
+                            className={`group p-2 rounded-xl cursor-pointer transition-all duration-300 ${
                               selectedEmployee?.id === employee.id
                                 ? isDarkTheme 
                                   ? 'bg-gray-600 border-gray-400 shadow-lg' 
@@ -329,15 +320,7 @@ export const Toggle = ({
                                   ? 'bg-black border-gray-600/50 hover:bg-white/10 hover:border-gray-500/50' 
                                   : 'bg-white border-gray-200/50 hover:bg-black/10 hover:border-gray-300/50'
                             }`}
-                            initial={{ opacity: 0, x: 5 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ duration: 0.1 }}
                             onClick={() => handleEmployeeSelection(employee)}
-                            whileHover={{ 
-                              scale: 1.02,
-                              y: -1
-                            }}
-                            whileTap={{ scale: 0.98 }}
                           >
                             <div className={`font-medium text-sm ${
                               selectedEmployee?.id === employee.id
@@ -351,9 +334,7 @@ export const Toggle = ({
                     </motion.div>
                   ) : (
                     <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      className={`text-center py-12 ${
+                      className={`text-center p-2 ${
                         isDarkTheme ? 'text-gray-500' : 'text-gray-400'
                       }`}
                     >
