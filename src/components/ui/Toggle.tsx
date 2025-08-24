@@ -65,8 +65,11 @@ export const Toggle = ({
 
   // Función para manejar el menú móvil
   const handleMobileMenuToggle = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-    if (isMobileMenuOpen) {
+    const newState = !isMobileMenuOpen;
+    setIsMobileMenuOpen(newState);
+    
+    // Si se está cerrando el menú, limpiar todos los estados relacionados
+    if (!newState) {
       setHoveredDepartment(null);
       setIsMobileDepartmentsOpen(false);
     }
@@ -77,6 +80,10 @@ export const Toggle = ({
     setIsMobileMenuOpen(false);
     setHoveredDepartment(null);
     setIsMobileDepartmentsOpen(false);
+    // Forzar re-render para asegurar que el estado visual se actualice
+    setTimeout(() => {
+      setIsMobileMenuOpen(false);
+    }, 0);
   };
 
   // Función para manejar la vista de departamentos en móvil
@@ -141,6 +148,16 @@ export const Toggle = ({
     };
   }, [isMenuOpen, isMobileMenuOpen]);
 
+  // Efecto adicional para asegurar sincronización del estado visual
+  useEffect(() => {
+    // Forzar re-render cuando cambie el estado del menú móvil
+    if (!isMobileMenuOpen) {
+      // Asegurar que todos los estados relacionados estén limpios
+      setHoveredDepartment(null);
+      setIsMobileDepartmentsOpen(false);
+    }
+  }, [isMobileMenuOpen]);
+
   return (
     <div className="relative flex justify-center" ref={toggleRef}>
       {/* Botón de menú móvil - solo visible en móvil */}
@@ -149,16 +166,39 @@ export const Toggle = ({
           onClick={handleMobileMenuToggle}
           className={`px-4 py-2 rounded-full font-medium transition-all duration-200 ${
             isDarkTheme 
-              ? 'text-lg text-gray-100 hover:bg-gradient-to-br hover:from-gray-100 hover:to-gray-400 hover:text-black' 
-              : 'bg-white text-gray-800 hover:bg-gray-100'
+              ? isMobileMenuOpen
+                ? 'bg-gradient-to-br from-gray-100 to-gray-400 shadow-lg'
+                : 'text-lg hover:bg-gradient-to-br hover:from-gray-100 hover:to-gray-400 hover:text-black'
+              : isMobileMenuOpen
+                ? 'bg-gradient-to-br from-gray-800 to-gray-600 shadow-lg'
+                : 'bg-white hover:bg-gray-100'
           } shadow-lg`}
           whileHover={{
             scale: 1.05,
             background: isDarkTheme 
-              ? 'linear-gradient(to right, #1a1a1a, #333333)'
-              : 'linear-gradient(to right, #f0f0f0, #e0e0e0)'
+              ? isMobileMenuOpen
+                ? 'linear-gradient(to right, #e5e7eb, #9ca3af)'
+                : 'linear-gradient(to right, #1a1a1a, #333333)'
+              : isMobileMenuOpen
+                ? 'linear-gradient(to right, #374151, #4b5563)'
+                : 'linear-gradient(to right, #f0f0f0, #e0e0e0)'
           }}
           whileTap={{ scale: 0.95 }}
+          animate={{
+            background: isDarkTheme 
+              ? isMobileMenuOpen
+                ? 'linear-gradient(to right, #e5e7eb, #9ca3af)'
+                : 'linear-gradient(to right, #1a1a1a, #333333)'
+              : isMobileMenuOpen
+                ? 'linear-gradient(to right, #111827, #374151)'
+                : 'linear-gradient(to right, #ffffff, #ffffff)'
+          }}
+          style={{
+            color: isDarkTheme 
+              ? isMobileMenuOpen ? '#000000' : '#f3f4f6'
+              : isMobileMenuOpen ? '#ffffff' : '#1f2937'
+          }}
+          transition={{ duration: 0.2 }}
         >
           <div className="flex items-center gap-2">
             <svg 
@@ -166,6 +206,11 @@ export const Toggle = ({
               fill="none" 
               stroke="currentColor" 
               viewBox="0 0 24 24"
+              style={{
+                color: isDarkTheme 
+                  ? isMobileMenuOpen ? '#000000' : '#f3f4f6'
+                  : isMobileMenuOpen ? '#ffffff' : '#1f2937'
+              }}
             >
               <path 
                 strokeLinecap="round" 
@@ -184,7 +229,7 @@ export const Toggle = ({
         {isMobileMenuOpen && (
           <motion.div
             ref={mobileMenuRef}
-            className={`absolute top-full left-1 transform -translate-x-1/2 mt-2 p-4 rounded-2xl border w-[295px] max-h-[80vh] overflow-y-auto z-50 ${
+            className={`absolute top-10 left-1 transform -translate-x-1/2 mt-2 p-4 rounded-2xl border w-[295px] max-h-[90vh] overflow-y-auto z-50 ${
               isDarkTheme 
                 ? 'bg-black border-gray-700/50 backdrop-blur-sm' 
                 : 'bg-white/95 border-gray-200/50 backdrop-blur-sm'
