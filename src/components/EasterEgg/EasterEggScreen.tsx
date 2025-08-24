@@ -242,9 +242,6 @@ export const EasterEggScreen = ({
             <div className="p-3 m-2 rounded-full bg-red-800/50 border border-red-600/50 backdrop-blur-sm">
               <FaMobile className="text-xl text-red-300" />
             </div>
-            <div className="mt-2 text-xs text-center text-red-300">
-              MENU
-            </div>
           </div>
         ) : (
           <div className="text-center">
@@ -259,7 +256,7 @@ export const EasterEggScreen = ({
       </div>
 
       {/* Contenido principal */}
-      <div className="text-center max-w-6xl px-6 relative z-10">
+      <div className="text-center max-w-7xl w-full px-6 relative z-10">
         {/* Contador de tiempo con entrada animada */}
         <motion.div
           initial={{ y: 50, opacity: 0 }}
@@ -267,45 +264,45 @@ export const EasterEggScreen = ({
           transition={{ delay: 0.5, duration: 0.8 }}
           className="text-center"
         >
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-24">
+          <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-6 sm:gap-4 md:gap-6 lg:gap-8 max-w-7xl w-full h-full z-10">
             <TimeDigit
               value={timeUnits.months}
-              unit="Meses"
+              unit="MESES"
               isDarkTheme={true}
               showLabels={false}
               previousValue={timeUnits.months}
             />
             <TimeDigit
               value={timeUnits.weeks}
-              unit="Semanas"
+              unit="SEMANAS"
               isDarkTheme={true}
               showLabels={false}
               previousValue={timeUnits.weeks}
             />
             <TimeDigit
               value={timeUnits.days}
-              unit="Días"
+              unit="DÍAS"
               isDarkTheme={true}
               showLabels={false}
               previousValue={timeUnits.days}
             />
             <TimeDigit
               value={timeUnits.hours}
-              unit="Horas"
+              unit="HORAS"
               isDarkTheme={true}
               showLabels={false}
               previousValue={timeUnits.hours}
             />
             <TimeDigit
               value={timeUnits.minutes}
-              unit="Minutos"
+              unit="MINUTOS"
               isDarkTheme={true}
               showLabels={false}
               previousValue={timeUnits.minutes}
             />
             <TimeDigit
               value={timeUnits.seconds}
-              unit="Segundos"
+              unit="SEGUNDOS"
               isDarkTheme={true}
               showLabels={false}
               previousValue={timeUnits.seconds}
