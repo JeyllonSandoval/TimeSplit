@@ -6,7 +6,7 @@ import { ToggleSection } from './ToggleSection';
 import { ControlButtons } from './ControlButtons';
 import { TimeDisplay } from './TimeDisplay';
 import { PercentageButtons } from './PercentageButtons';
-import { EasterEggScreen } from '../EasterEgg';
+import { EasterEggScreen, EasterEggUnlockAnimation } from '../EasterEgg';
 import { useToggleDimensions } from '../../hooks/useToggleDimensions';
 import { useTheme } from '../../hooks/useTheme';
 import { useTimeCounter } from '../../hooks/useTimeCounter';
@@ -46,7 +46,13 @@ export default function DualCounter({
 
   const { toggleDimensions, registerButton } = useToggleDimensions();
   const { isDarkTheme, toggleTheme } = useTheme();
-  const { showEasterEgg, closeEasterEgg, sequenceProgress } = useEasterEgg();
+  const { 
+    showEasterEgg, 
+    showUnlockAnimation,
+    closeEasterEgg, 
+    handleAnimationComplete,
+    sequenceProgress 
+  } = useEasterEgg();
   
   // Determinar la fecha objetivo basada en la sección seleccionada
   const getTargetDate = () => {
@@ -128,8 +134,27 @@ export default function DualCounter({
 
   console.log('DualCounter renderizando:', { isDarkTheme, showLabels, selectedSection });
 
+  // Debug: Log del estado del easter egg
+  console.log('🎮 Estado del Easter Egg en DualCounter:', {
+    showUnlockAnimation,
+    showEasterEgg,
+    sequenceProgress
+  });
+
+  // Si la animación de desbloqueo está activa, mostrarla
+  if (showUnlockAnimation) {
+    console.log('🎬 Mostrando animación de desbloqueo');
+    return (
+      <EasterEggUnlockAnimation
+        isVisible={showUnlockAnimation}
+        onAnimationComplete={handleAnimationComplete}
+      />
+    );
+  }
+
   // Si el Easter Egg está activo, mostrar solo la pantalla del Easter Egg
   if (showEasterEgg) {
+    console.log('🥚 Mostrando pantalla del Easter Egg');
     return (
       <EasterEggScreen
         isVisible={showEasterEgg}
@@ -138,6 +163,8 @@ export default function DualCounter({
       />
     );
   }
+
+  console.log('🏠 Mostrando interfaz principal normal');
 
   // Interfaz principal normal
   return (

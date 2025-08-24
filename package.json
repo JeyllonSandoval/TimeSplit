@@ -11,6 +11,9 @@
   "dependencies": {
     "@astrojs/react": "^4.3.0",
     "@astrojs/tailwind": "^6.0.2",
+    "@tsparticles/engine": "^3.9.1",
+    "@tsparticles/react": "^3.0.0",
+    "@tsparticles/slim": "^3.9.1",
     "astro": "^5.13.2",
     "framer-motion": "^12.23.12",
     "react": "^19.1.1",

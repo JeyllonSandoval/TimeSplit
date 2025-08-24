@@ -4,13 +4,14 @@ import { useState, useEffect, useCallback } from 'react';
 const EASTER_EGG_SEQUENCE = [
   'ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 
   'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 
-  'KeyB', 'KeyA'
+  'KeyB', 'KeyA', 'Enter', 'Enter'
 ];
 
 export const useEasterEgg = () => {
   const [sequenceIndex, setSequenceIndex] = useState(0);
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [showEasterEgg, setShowEasterEgg] = useState(false);
+  const [showUnlockAnimation, setShowUnlockAnimation] = useState(false);
 
   const handleKeyPress = useCallback((event: KeyboardEvent) => {
     if (isUnlocked) return;
@@ -21,17 +22,20 @@ export const useEasterEgg = () => {
       const newIndex = sequenceIndex + 1;
       setSequenceIndex(newIndex);
       
+      console.log(`✅ Tecla correcta: ${event.code} (${newIndex}/${EASTER_EGG_SEQUENCE.length})`);
+      
       if (newIndex === EASTER_EGG_SEQUENCE.length) {
-        // ¡Secuencia completada!
+        // ¡Secuencia completada! Mostrar animación primero
+        console.log('🎉 ¡Secuencia completada! Activando animación...');
+        setShowUnlockAnimation(true);
         setIsUnlocked(true);
-        setShowEasterEgg(true);
-        setSequenceIndex(0);
-        
-        // Mostrar notificación
-        console.log('🎉 ¡Easter Egg desbloqueado! 🎉');
+        setSequenceIndex(0); // Resetear para futuros intentos
       }
     } else {
       // Resetear secuencia si se presiona una tecla incorrecta
+      if (sequenceIndex > 0) {
+        console.log(`❌ Tecla incorrecta: ${event.code}. Reseteando secuencia.`);
+      }
       setSequenceIndex(0);
     }
   }, [sequenceIndex, isUnlocked]);
@@ -39,6 +43,7 @@ export const useEasterEgg = () => {
   // Agregar tecla Escape para volver a la interfaz principal
   const handleEscapeKey = useCallback((event: KeyboardEvent) => {
     if (event.code === 'Escape' && isUnlocked) {
+      console.log('🔙 Tecla ESC presionada, cerrando easter egg');
       setShowEasterEgg(false);
     }
   }, [isUnlocked]);
@@ -54,20 +59,42 @@ export const useEasterEgg = () => {
   }, [handleKeyPress]);
 
   const closeEasterEgg = () => {
+    console.log('🔙 Cerrando easter egg manualmente');
     setShowEasterEgg(false);
   };
 
   const resetEasterEgg = () => {
+    console.log('🔄 Reseteando easter egg');
     setIsUnlocked(false);
     setSequenceIndex(0);
     setShowEasterEgg(false);
+    setShowUnlockAnimation(false);
   };
+
+  const handleAnimationComplete = () => {
+    console.log('✨ Animación completada, mostrando easter egg');
+    setShowUnlockAnimation(false);
+    setShowEasterEgg(true);
+  };
+
+  // Debug: Log del estado actual
+  useEffect(() => {
+    console.log('🔄 Estado del Easter Egg:', {
+      sequenceIndex,
+      isUnlocked,
+      showEasterEgg,
+      showUnlockAnimation,
+      progress: sequenceIndex / EASTER_EGG_SEQUENCE.length
+    });
+  }, [sequenceIndex, isUnlocked, showEasterEgg, showUnlockAnimation]);
 
   return {
     isUnlocked,
     showEasterEgg,
+    showUnlockAnimation,
     closeEasterEgg,
     resetEasterEgg,
+    handleAnimationComplete,
     sequenceProgress: sequenceIndex / EASTER_EGG_SEQUENCE.length
   };
 };

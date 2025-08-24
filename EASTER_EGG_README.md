@@ -1,69 +1,147 @@
-# 🎉 Easter Egg - TimeSplit
+# 🎉 Easter Egg de TimeSplit
 
-## ¿Qué es?
+## 🎮 Cómo Activarlo
 
-Este es un **Easter Egg** oculto en la aplicación TimeSplit que desbloquea un contador especial que suma tiempo desde el **12 de junio de 2025**.
+Para desbloquear este increíble easter egg, debes ejecutar la siguiente secuencia de teclas:
 
-## 🚀 Cómo desbloquearlo
+**↑ ↑ ↓ ↓ ← → ← → B A**
 
-Para desbloquear el Easter Egg, debes seguir **exactamente** esta secuencia de teclas:
+### 📱 Instrucciones:
+1. **Flecha Arriba** (2 veces)
+2. **Flecha Abajo** (2 veces)
+3. **Flecha Izquierda**
+4. **Flecha Derecha**
+5. **Flecha Izquierda**
+6. **Flecha Derecha**
+7. **Tecla B**
+8. **Tecla A**
 
+## ✨ Características del Easter Egg
+
+### 🎭 Animación de Desbloqueo
+Cuando completes correctamente la secuencia, se activará una **animación increíble y alucinante** que incluye:
+
+#### 🌟 Fase 1: Explosión de Partículas
+- **100 partículas** de colores brillantes
+- Efectos de luz y sombra
+- Movimiento aleatorio y expansivo
+- **Efectos de sonido** generados por Web Audio API
+
+#### 🌊 Fase 2: Ondas Expansivas
+- **5 ondas concéntricas** con colores diferentes
+- Efecto de pulso central animado
+- Transiciones suaves y fluidas
+
+#### 🌀 Fase 3: Vortex Giratorio
+- **3 círculos giratorios** con partículas
+- Efecto de espiral en contrarrotación
+- Animaciones sincronizadas
+
+#### 📊 Fase 4: Matrix de Números
+- **100 números** cayendo en cascada
+- **20 símbolos especiales** (⚡💎🌟🔥💫)
+- Efecto visual tipo "Matrix"
+
+#### 🎊 Fase 5: Mensaje Final
+- Título **"¡DESBLOQUEADO!"** con gradientes
+- Efectos de confeti animados
+- **Sombra de texto** con blur
+- Emoji con efectos de brillo
+
+### 🎵 Efectos de Audio
+- **Sonido principal** de desbloqueo con acordes
+- **Efectos de partículas** con tonos aleatorios
+- **Sonido Matrix** con ondas cuadradas
+- **Efecto "whoosh"** final
+
+### 📊 Indicador de Progreso
+- **Visualización en tiempo real** de la secuencia
+- **Teclas iluminadas** según el progreso
+- **Barra de progreso** animada
+- **Mensajes motivacionales**
+
+## 🛠️ Tecnologías Utilizadas
+
+- **Framer Motion** - Animaciones fluidas y avanzadas
+- **Web Audio API** - Generación de sonidos en tiempo real
+- **React Hooks** - Estado y efectos personalizados
+- **Tailwind CSS** - Estilos y efectos visuales
+- **TypeScript** - Tipado seguro y robusto
+
+## 🎨 Personalización
+
+### Colores de Partículas
+```typescript
+const colors = ['#ff0080', '#00ff80', '#8000ff', '#ff8000', '#00ffff', '#ff00ff'];
 ```
-↑ ↑ ↓ ↓ ← → ← → B A
+
+### Secuencia Personalizable
+```typescript
+const EASTER_EGG_SEQUENCE = [
+  'ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 
+  'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 
+  'KeyB', 'KeyA'
+];
 ```
 
-### Pasos detallados:
-1. Presiona **Flecha Arriba** dos veces
-2. Presiona **Flecha Abajo** dos veces  
-3. Presiona **Flecha Izquierda**
-4. Presiona **Flecha Derecha**
-5. Presiona **Flecha Izquierda** nuevamente
-6. Presiona **Flecha Derecha** nuevamente
-7. Presiona la tecla **B**
-8. Presiona la tecla **A**
+### Duración de Fases
+```typescript
+const phaseDuration = 800; // milisegundos por fase
+```
 
-## 🎯 Características del Easter Egg
+## 🚀 Funcionalidades Avanzadas
 
-Una vez desbloqueado, **toda la interfaz principal se ocultará** y aparecerá una **pantalla completa especial** con:
+### 🔄 Sistema de Fases
+- **5 fases** de animación secuenciales
+- **Transiciones automáticas** entre fases
+- **Sincronización** de audio y video
 
-- **Contador de tiempo transcurrido** desde el 12 de junio de 2025
-- **Display visual** con colores especiales (púrpura, rosa, azul, verde, amarillo, rojo)
-- **Fecha de inicio** claramente marcada
-- **Mensaje especial** de celebración
-- **Animaciones suaves** y transiciones elegantes
-- **Pantalla completa** que reemplaza toda la interfaz
+### 🎯 Partículas Inteligentes
+- **Posicionamiento aleatorio** en pantalla
+- **Movimiento físico** realista
+- **Efectos de desvanecimiento** graduales
 
-## 🔍 Indicadores visuales
+### 🎭 Efectos Visuales
+- **Gradientes dinámicos** con CSS
+- **Sombras y blur** para profundidad
+- **Animaciones de escala** y rotación
 
-- Un **punto púrpura sutil** aparecerá en la esquina superior derecha de los botones de porcentaje cuando estés progresando en la secuencia
-- El indicador se muestra solo cuando hay progreso en la secuencia
-- Es completamente discreto y no interfiere con la funcionalidad normal
+## 📱 Compatibilidad
 
-## 💡 Notas técnicas
+- ✅ **Chrome/Edge** - Soporte completo
+- ✅ **Firefox** - Soporte completo
+- ✅ **Safari** - Soporte completo
+- ⚠️ **Móviles** - Limitado (requiere teclado físico)
 
-- La secuencia debe completarse **en orden exacto**
-- Si presionas una tecla incorrecta, la secuencia se reinicia
-- Una vez desbloqueado, **toda la interfaz principal se oculta** y se muestra la pantalla del Easter Egg
-- **Presiona ESC** o el botón de regreso para volver a la interfaz principal
-- El contador se actualiza en tiempo real cada segundo
-- Funciona en ambos temas (claro y oscuro)
+## 🎯 Consejos para Usuarios
 
-## 🎮 Inspiración
+1. **Practica la secuencia** antes de intentarla
+2. **No presiones teclas adicionales** durante la secuencia
+3. **Disfruta la animación** completa antes de continuar
+4. **Usa auriculares** para una experiencia inmersiva
 
-Este Easter Egg está inspirado en el famoso **Konami Code** (↑↑↓↓←→←→BA) que aparecía en muchos videojuegos clásicos.
+## 🔧 Desarrollo
 
-## 🔐 Seguridad
+### Estructura de Archivos
+```
+src/components/EasterEgg/
+├── EasterEggUnlockAnimation.tsx    # Animación principal
+├── EasterEggProgressIndicator.tsx  # Indicador de progreso
+├── EasterEggModal.tsx             # Modal del easter egg
+├── EasterEggScreen.tsx            # Pantalla completa
+└── index.ts                       # Exportaciones
+```
 
-- La funcionalidad es completamente **client-side**
-- No se almacena ningún estado en el servidor
-- Es solo para diversión y no afecta la funcionalidad principal de la app
+### Hooks Personalizados
+- `useEasterEgg` - Lógica principal del easter egg
+- `useAudioEffects` - Efectos de sonido
 
-## ⌨️ Navegación
-
-- **Para activar**: Sigue la secuencia ↑ ↑ ↓ ↓ ← → ← → B A
-- **Para volver**: Presiona **ESC** o haz clic en el botón de regreso (←)
-- **Estado**: Una vez activado, puedes volver y reabrir el Easter Egg con la misma secuencia
+### Componentes Reutilizables
+- **EasterEggUnlockAnimation** - Animación de desbloqueo
+- **EasterEggProgressIndicator** - Indicador visual de progreso
 
 ---
 
-**¡Diviértete descubriendo este secreto oculto! 🎉**
+## 🎊 ¡Disfruta del Easter Egg!
+
+Este easter egg fue diseñado para proporcionar una **experiencia visual y auditiva increíble** que celebra el logro del usuario. ¡Cada detalle fue cuidadosamente pensado para crear una animación memorable y alucinante!
