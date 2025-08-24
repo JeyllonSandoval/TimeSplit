@@ -25,9 +25,11 @@ export const Toggle = ({
 }: ToggleProps) => {
   const [hoveredDepartment, setHoveredDepartment] = useState<string | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   const menuRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLDivElement>(null);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
   
   const sections: { key: SectionType; label: string }[] = [
     { key: 'doble-sueldo', label: 'Doble Sueldo' },
@@ -40,6 +42,7 @@ export const Toggle = ({
     console.log('Toggle: handleEmployeeSelection called with:', employee);
     onEmployeeSelection(employee);
     setIsMenuOpen(false);
+    setIsMobileMenuOpen(false);
     setHoveredDepartment(null);
     console.log('Toggle: Employee selection completed');
   };
@@ -58,9 +61,31 @@ export const Toggle = ({
     setHoveredDepartment(null);
   };
 
+  // Función para manejar el menú móvil
+  const handleMobileMenuToggle = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+    if (isMobileMenuOpen) {
+      setHoveredDepartment(null);
+    }
+  };
+
+  // Función para cerrar el menú móvil
+  const handleCloseMobileMenu = () => {
+    setIsMobileMenuOpen(false);
+    setHoveredDepartment(null);
+  };
+
   // Función para manejar el hover del departamento
   const handleDepartmentHover = (departmentId: string) => {
     setHoveredDepartment(departmentId);
+  };
+
+  // Función para manejar la selección de sección en móvil
+  const handleMobileSectionChange = (section: SectionType) => {
+    if (section !== 'bono-vacacional') {
+      onSectionChange(section);
+      handleCloseMobileMenu();
+    }
   };
 
   // Efecto para detectar clics fuera del menú
@@ -77,125 +102,325 @@ export const Toggle = ({
       }
     };
 
+    // Efecto para detectar clics fuera del menú móvil
+    const handleMobileClickOutside = (event: MouseEvent) => {
+      if (
+        isMobileMenuOpen &&
+        mobileMenuRef.current &&
+        toggleRef.current &&
+        !mobileMenuRef.current.contains(event.target as Node) &&
+        !toggleRef.current.contains(event.target as Node)
+      ) {
+        handleCloseMobileMenu();
+      }
+    };
+
     if (isMenuOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     }
 
+    if (isMobileMenuOpen) {
+      document.addEventListener('mousedown', handleMobileClickOutside);
+    }
+
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('mousedown', handleMobileClickOutside);
     };
-  }, [isMenuOpen]);
+  }, [isMenuOpen, isMobileMenuOpen]);
 
   return (
     <div className="relative flex justify-center" ref={toggleRef}>
-      <motion.div 
-        className={`toggle-button rounded-full border p-1 sm:p-2 md:p-3 lg:p-2 theme-transition ${
-          isDarkTheme ? 'toggle-button-dark' : 'toggle-button-light'
-        }`}
-        whileHover={{ 
-          scale: 1.02,
-          boxShadow: isDarkTheme ? 'var(--shadow-dark)' : 'var(--shadow-light)'
-        }}
-        transition={{ duration: 0.2 }}
-      >
-        <div className="inline-flex relative w-full">
-          {/* Indicador de selección animado */}
-          <motion.div
-            className={`absolute top-0 bottom-0 rounded-full transition-all duration-150 ${
-              isDarkTheme ? 'toggle-indicator-dark' : 'toggle-indicator-light'
-            }`}
-            initial={false}
-            animate={{
-              opacity: 1,
-              x: selectedSection === 'doble-sueldo' ? toggleDimensions.positions[0] || 0 :
-                  selectedSection === 'bono-anual' ? toggleDimensions.positions[1] || 0 :
-                  toggleDimensions.positions[2] || 0,
-              width: selectedSection === 'doble-sueldo' ? toggleDimensions.widths[0] || 100 :
-                     selectedSection === 'bono-anual' ? toggleDimensions.widths[1] || 100 :
-                     toggleDimensions.widths[2] || 100
-            }}
-            transition={{
-              type: "spring",
-              stiffness: 800,
-              damping: 15,
-              duration: 0.2
-            }}
-          />
-          
-          {sections.map((section, index) => (
-            <motion.button
-              key={section.key}
-              ref={(ref) => registerButton(index, ref)}
-              onClick={() => {
-                // Solo permitir click en doble-sueldo y bono-anual
-                if (section.key !== 'bono-vacacional') {
-                  onSectionChange(section.key);
-                  // Cerrar el menú del Bono Vacacional si está abierto
-                  if (isMenuOpen) {
-                    handleCloseMenu();
-                  }
-                } else {
-                  // Para bono-vacacional, abrir/cerrar el menú
-                  handleToggleMenu();
-                }
-              }}
-              className={`relative z-10 rounded-full font-medium theme-transition transition-all duration-150 px-4 py-3 text-center text-sm sm:text-sm md:text-base lg:text-base ${
-                selectedSection === section.key
-                  ? isDarkTheme ? 'toggle-text-selected-dark' : 'toggle-text-selected-light'
-                  : isDarkTheme ? 'toggle-text-unselected-dark' : 'toggle-text-unselected-light'
-              } ${
-                section.key === 'bono-vacacional' ? 'cursor-pointer ' : 'cursor-pointer'
-              } ${
-                section.key === 'bono-vacacional' 
-                  ? 'border-2 box-border' 
-                  : ''
-              } ${
-                section.key === 'bono-vacacional' && isMenuOpen 
-                  ? isDarkTheme ? 'border-gray-100' : 'border-gray-900/50'
-                  : 'border-transparent'
-              }`}
+      {/* Botón de menú móvil - solo visible en móvil */}
+      <div className="lg:hidden mb-4">
+        <motion.button
+          onClick={handleMobileMenuToggle}
+          className={`px-6 py-3 rounded-full font-medium transition-all duration-200 ${
+            isDarkTheme 
+              ? 'bg-gray-800 text-gray-100 hover:bg-gray-700 border border-gray-600' 
+              : 'bg-white text-gray-800 hover:bg-gray-100 border border-gray-300'
+          } shadow-lg`}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <div className="flex items-center gap-2">
+            <svg 
+              className="w-5 h-5" 
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
             >
-              {section.label}
-              {/* Icono de flecha para Bono Vacacional */}
-              {section.key === 'bono-vacacional' && (
-                <motion.div
-                  className="ml-2 relative"
-                  transition={{ duration: 0.1 }}
-                >
-                  <motion.svg
-                    className={`w-4 h-4 transition-all duration-200 ${
-                      selectedSection === 'bono-vacacional'
-                        ? isDarkTheme ? 'text-gray-900' : 'text-white'
-                        : isMenuOpen 
-                          ? isDarkTheme ? 'text-gray-100' : 'text-gray-900'
-                          : isDarkTheme ? 'text-gray-100' : 'text-gray-900'
-                    }`}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    animate={{
-                      rotate: isMenuOpen ? 180 : 0,
-                      y: isMenuOpen ? 1 : 0
-                    }}
-                    transition={{ 
-                      duration: 0.1,
-                    }}
-                  >
-                    <path 
-                      strokeLinecap="round" 
-                      strokeLinejoin="round" 
-                      strokeWidth={2} 
-                      d="M19 9l-7 7-7-7" 
-                    />
-                  </motion.svg>
-                </motion.div>
-              )}
-            </motion.button>
-          ))}
-        </div>
-      </motion.div>
+              <path 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth={2} 
+                d="M4 6h16M4 12h16M4 18h16" 
+              />
+            </svg>
+            Menú
+          </div>
+        </motion.button>
+      </div>
 
-      {/* Panel desplegable para Bono Vacacional */}
+      {/* Menú móvil desplegable */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            ref={mobileMenuRef}
+            className={`absolute top-full left-1 transform -translate-x-1/2 mt-2 p-4 rounded-2xl border w-[280px] max-h-[80vh] overflow-y-auto ${
+              isDarkTheme 
+                ? 'bg-black border-gray-700/50 backdrop-blur-sm' 
+                : 'bg-white/95 border-gray-200/50 backdrop-blur-sm'
+            } shadow-2xl z-30 lg:hidden`}
+            initial={{ opacity: 0, y: -10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.95 }}
+            transition={{ duration: 0.2 }}
+          >
+            {/* Secciones en móvil */}
+            <div className="mb-6">
+              <h3 className={`text-base font-bold mb-3 ${
+                isDarkTheme ? 'text-gray-100' : 'text-gray-800'
+              }`}>
+                Secciones
+              </h3>
+              <div className="flex flex-col gap-2">
+                {sections.map((section) => (
+                  <motion.button
+                    key={section.key}
+                    onClick={() => handleMobileSectionChange(section.key)}
+                    className={`p-3 rounded-xl text-left transition-all duration-200 ${
+                      selectedSection === section.key
+                        ? isDarkTheme 
+                          ? 'bg-gray-100 text-black' 
+                          : 'bg-gray-800 text-white'
+                        : isDarkTheme 
+                          ? 'bg-gray-800 hover:bg-gray-700 text-gray-200' 
+                          : 'bg-gray-100 hover:bg-gray-200 text-gray-800'
+                    }`}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <span className="font-medium">{section.label}</span>
+                  </motion.button>
+                ))}
+              </div>
+            </div>
+
+            {/* Departamentos y empleados en móvil */}
+            <div className="mb-6">
+              <h3 className={`text-base font-bold mb-3 ${
+                isDarkTheme ? 'text-gray-100' : 'text-gray-800'
+              }`}>
+                Departamentos
+              </h3>
+              <div className="flex flex-col gap-2">
+                {DEPARTMENTS.map((department) => (
+                  <motion.div
+                    key={department.id}
+                    className={`p-3 rounded-xl transition-all duration-200 ${
+                      hoveredDepartment === department.id
+                        ? isDarkTheme 
+                          ? 'bg-gray-200/20' 
+                          : 'bg-gray-400/30'
+                        : isDarkTheme 
+                          ? 'bg-gray-800 hover:bg-gray-700/50' 
+                          : 'bg-gray-100 hover:bg-gray-200/80'
+                    }`}
+                    onMouseEnter={() => handleDepartmentHover(department.id)}
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <span className={`font-medium text-sm ${
+                        hoveredDepartment === department.id
+                          ? isDarkTheme ? 'text-gray-100' : 'text-gray-800'
+                          : isDarkTheme ? 'text-gray-200' : 'text-gray-800'
+                      }`}>
+                        {department.name}
+                      </span>
+                      <span className={`text-xs px-2 py-1 rounded-full ${
+                        hoveredDepartment === department.id
+                          ? isDarkTheme 
+                            ? 'bg-white text-black font-bold' 
+                            : 'bg-black/60 text-white font-bold'
+                          : isDarkTheme 
+                            ? 'bg-white/15 text-gray-400 font-bold' 
+                            : 'bg-gray-200/90 text-gray-600 font-bold'
+                      }`}>
+                        {department.employees.length}
+                      </span>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+
+            {/* Empleados del departamento seleccionado */}
+            {hoveredDepartment && (
+              <div className="mb-4">
+                <h3 className={`text-base font-bold mb-3 ${
+                  isDarkTheme ? 'text-gray-100' : 'text-gray-800'
+                }`}>
+                  Integrantes
+                </h3>
+                <div className="flex flex-col gap-2">
+                  {DEPARTMENTS
+                    .find(d => d.id === hoveredDepartment)
+                    ?.employees.map((employee) => (
+                      <motion.button
+                        key={employee.id}
+                        onClick={() => handleEmployeeSelection(employee)}
+                        className={`p-3 rounded-xl text-left transition-all duration-200 ${
+                          selectedEmployee?.id === employee.id
+                            ? isDarkTheme 
+                              ? 'bg-gradient-to-br from-gray-100 to-gray-400 text-black' 
+                              : 'bg-gradient-to-br from-gray-900 to-gray-700 text-white'
+                            : isDarkTheme 
+                              ? 'bg-gray-800 hover:bg-gray-700 text-gray-200' 
+                              : 'bg-gray-100 hover:bg-gray-200 text-gray-800'
+                        }`}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        <span className="font-medium text-sm">{employee.name}</span>
+                      </motion.button>
+                    ))}
+                </div>
+              </div>
+            )}
+
+            {/* Mensaje cuando no hay departamento seleccionado */}
+            {!hoveredDepartment && (
+              <div className={`text-center p-4 ${
+                isDarkTheme ? 'text-gray-500' : 'text-gray-400'
+              }`}>
+                <div className={`w-12 h-12 mx-auto mb-3 rounded-full flex items-center justify-center ${
+                  isDarkTheme ? 'bg-gray-800/50' : 'bg-gray-100/80'
+                }`}>
+                  <svg className={`w-6 h-6 ${
+                    isDarkTheme ? 'text-gray-600' : 'text-gray-400'
+                  }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
+                <p className="text-sm">Toca un departamento</p>
+                <p className="text-xs mt-1">para ver sus empleados</p>
+              </div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Toggle principal - solo visible en desktop */}
+      <div className="hidden lg:block">
+        <motion.div 
+          className={`toggle-button rounded-full border p-1 sm:p-2 md:p-3 lg:p-2 theme-transition ${
+            isDarkTheme ? 'toggle-button-dark' : 'toggle-button-light'
+          }`}
+          whileHover={{ 
+            scale: 1.02,
+            boxShadow: isDarkTheme ? 'var(--shadow-dark)' : 'var(--shadow-light)'
+          }}
+          transition={{ duration: 0.2 }}
+        >
+          <div className="inline-flex relative w-full">
+            {/* Indicador de selección animado */}
+            <motion.div
+              className={`absolute top-0 bottom-0 rounded-full transition-all duration-150 ${
+                isDarkTheme ? 'toggle-indicator-dark' : 'toggle-indicator-light'
+              }`}
+              initial={false}
+              animate={{
+                opacity: 1,
+                x: selectedSection === 'doble-sueldo' ? toggleDimensions.positions[0] || 0 :
+                    selectedSection === 'bono-anual' ? toggleDimensions.positions[1] || 0 :
+                    toggleDimensions.positions[2] || 0,
+                width: selectedSection === 'doble-sueldo' ? toggleDimensions.widths[0] || 100 :
+                       selectedSection === 'bono-anual' ? toggleDimensions.widths[1] || 100 :
+                       toggleDimensions.widths[2] || 100
+              }}
+              transition={{
+                type: "spring",
+                stiffness: 800,
+                damping: 15,
+                duration: 0.2
+              }}
+            />
+            
+            {sections.map((section, index) => (
+              <motion.button
+                key={section.key}
+                ref={(ref) => registerButton(index, ref)}
+                onClick={() => {
+                  // Solo permitir click en doble-sueldo y bono-anual
+                  if (section.key !== 'bono-vacacional') {
+                    onSectionChange(section.key);
+                    // Cerrar el menú del Bono Vacacional si está abierto
+                    if (isMenuOpen) {
+                      handleCloseMenu();
+                    }
+                  } else {
+                    // Para bono-vacacional, abrir/cerrar el menú
+                    handleToggleMenu();
+                  }
+                }}
+                className={`relative z-10 rounded-full font-medium theme-transition transition-all duration-150 px-4 py-3 text-center text-sm sm:text-sm md:text-base lg:text-base ${
+                  selectedSection === section.key
+                    ? isDarkTheme ? 'toggle-text-selected-dark' : 'toggle-text-selected-light'
+                    : isDarkTheme ? 'toggle-text-unselected-dark' : 'toggle-text-unselected-light'
+                } ${
+                  section.key === 'bono-vacacional' ? 'cursor-pointer ' : 'cursor-pointer'
+                } ${
+                  section.key === 'bono-vacacional' 
+                    ? 'border-2 box-border' 
+                    : ''
+                } ${
+                  section.key === 'bono-vacacional' && isMenuOpen 
+                    ? isDarkTheme ? 'border-gray-100' : 'border-gray-900/50'
+                    : 'border-transparent'
+                }`}
+              >
+                {section.label}
+                {/* Icono de flecha para Bono Vacacional */}
+                {section.key === 'bono-vacacional' && (
+                  <motion.div
+                    className="ml-2 relative"
+                    transition={{ duration: 0.1 }}
+                  >
+                    <motion.svg
+                      className={`w-4 h-4 transition-all duration-200 ${
+                        selectedSection === 'bono-vacacional'
+                          ? isDarkTheme ? 'text-gray-900' : 'text-white'
+                          : isMenuOpen 
+                            ? isDarkTheme ? 'text-gray-100' : 'text-gray-900'
+                            : isDarkTheme ? 'text-gray-100' : 'text-gray-900'
+                      }`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      animate={{
+                        rotate: isMenuOpen ? 180 : 0,
+                        y: isMenuOpen ? 1 : 0
+                      }}
+                      transition={{ 
+                        duration: 0.1,
+                      }}
+                    >
+                      <path 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round" 
+                        strokeWidth={2} 
+                        d="M19 9l-7 7-7-7" 
+                      />
+                    </motion.svg>
+                  </motion.div>
+                )}
+              </motion.button>
+            ))}
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Panel desplegable para Bono Vacacional - solo visible en desktop */}
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
@@ -204,7 +429,7 @@ export const Toggle = ({
               isDarkTheme 
                 ? 'bg-black border-gray-700/50 backdrop-blur-sm' 
                 : 'bg-white/95 border-gray-200/50 backdrop-blur-sm'
-            } shadow-2xl z-30`}
+            } shadow-2xl z-30 hidden lg:block`}
             initial={{ opacity: 0, y: -10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
