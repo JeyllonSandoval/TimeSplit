@@ -200,7 +200,7 @@ export const Toggle = ({
         {isMenuOpen && (
           <motion.div
             ref={menuRef}
-            className={`absolute top-full left-1/2 transform -translate-x-1/2 mt-4 p-6 rounded-2xl border min-w-[600px] ${
+            className={`absolute top-full left-1 lg:left-auto transform -translate-x-1/2 mt-4 p-6 rounded-2xl border min-w-[600px] ${
               isDarkTheme 
                 ? 'bg-black border-gray-700/50 backdrop-blur-sm' 
                 : 'bg-white/95 border-gray-200/50 backdrop-blur-sm'
