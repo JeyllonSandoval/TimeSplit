@@ -167,7 +167,7 @@ export const Toggle = ({
         {isMobileMenuOpen && (
           <motion.div
             ref={mobileMenuRef}
-            className={`absolute top-full left-1 transform -translate-x-1/2 mt-2 p-4 rounded-2xl border w-[280px] max-h-[80vh] overflow-y-auto ${
+            className={`absolute top-full left-1 transform -translate-x-1/2 mt-2 p-4 rounded-2xl border w-[280px] max-h-[80vh] overflow-y-auto z-50 ${
               isDarkTheme 
                 ? 'bg-black border-gray-700/50 backdrop-blur-sm' 
                 : 'bg-white/95 border-gray-200/50 backdrop-blur-sm'
