@@ -23,7 +23,7 @@ export const PercentageButtons = ({
 
   return (
     <motion.div 
-      className="absolute bottom-36 left-0 right-0 flex justify-center gap-4 z-10 lg:bottom-36"
+      className="absolute bottom-[85%] left-0 right-0 flex justify-center gap-4 z-10 lg:bottom-36"
       variants={buttonVariants}
       initial="hidden"
       animate="visible"
