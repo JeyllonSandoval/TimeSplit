@@ -9,12 +9,8 @@ const EASTER_EGG_SEQUENCE = [
   'KeyB', 'KeyA', 'Enter', 'Enter'
 ];
 
-// Secuencia táctil alternativa para móviles
-const MOBILE_EASTER_EGG_SEQUENCE: TouchGesture[] = [
-  'swipeUp', 'swipeUp', 'swipeDown', 'swipeDown',
-  'swipeLeft', 'swipeRight', 'swipeLeft', 'swipeRight',
-  'doubleTap', 'longPress'
-];
+// Para móviles solo necesitamos un long press de 7 segundos
+const MOBILE_EASTER_EGG_SEQUENCE: TouchGesture[] = ['longPress7s'];
 
 // Tipo unión para la secuencia
 export type EasterEggSequence = (string | TouchGesture)[];
@@ -70,31 +66,17 @@ export const useEasterEgg = () => {
     }
   }, [sequenceIndex, isUnlocked, isMobileMode]);
 
-  // Manejador para gestos táctiles
+  // Manejador para gestos táctiles (solo long press de 7 segundos)
   const handleTouchGesture = useCallback((gesture: TouchGesture) => {
     if (isUnlocked || !isMobileMode) return;
 
-    const expectedGesture = MOBILE_EASTER_EGG_SEQUENCE[sequenceIndex];
-    
-    if (gesture === expectedGesture) {
-      const newIndex = sequenceIndex + 1;
-      setSequenceIndex(newIndex);
-      
-      console.log(`✅ Gesto correcto: ${gesture} (${newIndex}/${MOBILE_EASTER_EGG_SEQUENCE.length})`);
-      
-      if (newIndex === MOBILE_EASTER_EGG_SEQUENCE.length) {
-        console.log('🎉 ¡Secuencia táctil completada! Activando animación...');
-        setShowUnlockAnimation(true);
-        setIsUnlocked(true);
-        setSequenceIndex(0);
-      }
-    } else {
-      if (sequenceIndex > 0) {
-        console.log(`❌ Gesto incorrecto: ${gesture}. Esperaba: ${expectedGesture}. Reseteando secuencia.`);
-      }
+    if (gesture === 'longPress7s') {
+      console.log('🎉 ¡Long press de 7 segundos completado! Activando animación...');
+      setShowUnlockAnimation(true);
+      setIsUnlocked(true);
       setSequenceIndex(0);
     }
-  }, [sequenceIndex, isUnlocked, isMobileMode]);
+  }, [isUnlocked, isMobileMode]);
 
   // Escuchar gestos táctiles
   useEffect(() => {
