@@ -2,11 +2,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Toggle } from '../ui/Toggle';
 import { buttonVariants } from '../../utils/animations';
 import type { SectionType } from '../../constants/dates';
+import type { Employee } from '../../types/index';
 
 interface ToggleSectionProps {
   showLabels: boolean;
   selectedSection: SectionType;
   onSectionChange: (section: SectionType) => void;
+  onEmployeeSelection: (employee: Employee) => void;
+  selectedEmployee: Employee | null;
   isDarkTheme: boolean;
   toggleDimensions: { widths: number[]; positions: number[] };
   registerButton: (index: number, ref: HTMLButtonElement | null) => void;
@@ -16,6 +19,8 @@ export const ToggleSection = ({
   showLabels, 
   selectedSection, 
   onSectionChange, 
+  onEmployeeSelection,
+  selectedEmployee,
   isDarkTheme, 
   toggleDimensions,
   registerButton
@@ -34,6 +39,8 @@ export const ToggleSection = ({
           <Toggle
             selectedSection={selectedSection}
             onSectionChange={onSectionChange}
+            onEmployeeSelection={onEmployeeSelection}
+            selectedEmployee={selectedEmployee}
             isDarkTheme={isDarkTheme}
             toggleDimensions={toggleDimensions}
             registerButton={registerButton}

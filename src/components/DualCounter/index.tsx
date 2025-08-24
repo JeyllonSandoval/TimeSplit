@@ -11,6 +11,7 @@ import { useTheme } from '../../hooks/useTheme';
 import { useTimeCounter } from '../../hooks/useTimeCounter';
 import { containerVariants } from '../../utils/animations';
 import type { SectionType } from '../../constants/dates';
+import type { Employee } from '../../types/index';
 
 export interface DualCounterProps {
   // Fechas personalizables
@@ -39,25 +40,47 @@ export default function DualCounter({
   const [bonoAnualPart, setBonoAnualPart] = useState<'first' | 'second'>('first');
   const [showLabels, setShowLabels] = useState(false);
   const [waveAnimation, setWaveAnimation] = useState(0);
+  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
 
   const { toggleDimensions, registerButton } = useToggleDimensions();
   const { isDarkTheme, toggleTheme } = useTheme();
   
   // Determinar la fecha objetivo basada en la sección seleccionada
   const getTargetDate = () => {
+    let targetDate: string;
+    
     if (selectedSection === 'doble-sueldo') {
-      return dobleSueldoDate;
+      targetDate = dobleSueldoDate;
     } else if (selectedSection === 'bono-anual') {
-      return bonoAnualPart === 'second' ? bonoAnualMarzoDate : bonoAnualDate;
+      targetDate = bonoAnualPart === 'second' ? bonoAnualMarzoDate : bonoAnualDate;
+    } else if (selectedSection === 'bono-vacacional' && selectedEmployee) {
+      targetDate = selectedEmployee.date;
+    } else {
+      targetDate = dobleSueldoDate;
     }
-    return dobleSueldoDate;
+    
+    console.log('getTargetDate result:', {
+      selectedSection,
+      selectedEmployee: selectedEmployee?.name,
+      targetDate,
+      isEmployeeSelected: !!selectedEmployee
+    });
+    
+    return targetDate;
   };
 
+  const targetDate = getTargetDate();
+  console.log('Target date:', targetDate);
+  console.log('Selected section:', selectedSection);
+  console.log('Selected employee:', selectedEmployee);
+
   const { timeUnits, previousTimeUnits } = useTimeCounter({
-    targetDate: getTargetDate(),
+    targetDate: targetDate,
     sectionType: selectedSection,
     bonoAnualPart
   });
+
+  console.log('Time units from hook:', timeUnits);
 
   // Debug: Mostrar etiquetas por defecto para ver el toggle
   useEffect(() => {
@@ -71,11 +94,23 @@ export default function DualCounter({
     if (section === 'bono-anual') {
       setBonoAnualPart('first');
     }
+    // Limpiar empleado seleccionado cuando se cambie de sección
+    if (section !== 'bono-vacacional') {
+      setSelectedEmployee(null);
+    }
   };
 
   const handleBonoAnualPartChange = (part: 'first' | 'second') => {
     setBonoAnualPart(part);
     setWaveAnimation(prev => prev + 1);
+  };
+
+  const handleEmployeeSelection = (employee: Employee) => {
+    console.log('handleEmployeeSelection called with:', employee);
+    setSelectedEmployee(employee);
+    setSelectedSection('bono-vacacional');
+    setWaveAnimation(prev => prev + 1);
+    console.log('Employee selection completed');
   };
 
   const toggleLabels = () => {
@@ -110,6 +145,8 @@ export default function DualCounter({
         showLabels={showLabels}
         selectedSection={selectedSection}
         onSectionChange={handleSectionChange}
+        onEmployeeSelection={handleEmployeeSelection}
+        selectedEmployee={selectedEmployee}
         isDarkTheme={isDarkTheme}
         toggleDimensions={toggleDimensions}
         registerButton={registerButton}
@@ -133,6 +170,7 @@ export default function DualCounter({
         previousTimeUnits={previousTimeUnits}
         isDarkTheme={isDarkTheme}
         showLabels={showLabels}
+        selectedEmployee={selectedEmployee}
       />
 
       {/* Botones de porcentaje */}

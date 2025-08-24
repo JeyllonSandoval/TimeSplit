@@ -3,6 +3,7 @@ import { TimeDigit } from '../counter/TimeDigit';
 import { smoothSlideVariants } from '../../utils/animations';
 import type { TimeUnits } from '../../types';
 import type { SectionType } from '../../constants/dates';
+import type { Employee } from '../../types/index';
 
 interface TimeDisplayProps {
   selectedSection: SectionType;
@@ -10,6 +11,7 @@ interface TimeDisplayProps {
   previousTimeUnits: TimeUnits;
   isDarkTheme: boolean;
   showLabels: boolean;
+  selectedEmployee: Employee | null;
 }
 
 export const TimeDisplay = ({ 
@@ -17,8 +19,11 @@ export const TimeDisplay = ({
   timeUnits, 
   previousTimeUnits, 
   isDarkTheme, 
-  showLabels 
+  showLabels,
+  selectedEmployee
 }: TimeDisplayProps) => {
+  console.log('TimeDisplay renderizando:', { selectedSection, timeUnits, selectedEmployee });
+  
   const timeUnitsArray = [
     { key: 'months', value: timeUnits.months, previousValue: previousTimeUnits.months, unit: 'MESES' },
     { key: 'weeks', value: timeUnits.weeks, previousValue: previousTimeUnits.weeks, unit: 'SEMANAS' },
