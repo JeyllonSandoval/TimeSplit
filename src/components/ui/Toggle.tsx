@@ -44,7 +44,6 @@ export const Toggle = ({
   registerButton
 }: ToggleProps) => {
   const [hoveredDepartment, setHoveredDepartment] = useState<string | null>(null);
-  const [isHoveringBonoVacacional, setIsHoveringBonoVacacional] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
   const [showBonoVacacionalCounter, setShowBonoVacacionalCounter] = useState(false);
@@ -75,7 +74,6 @@ export const Toggle = ({
     setSelectedEmployee(employee);
     setShowBonoVacacionalCounter(true);
     setIsMenuOpen(false);
-    setIsHoveringBonoVacacional(false);
     setHoveredDepartment(null);
   };
 
@@ -85,16 +83,17 @@ export const Toggle = ({
     setSelectedEmployee(null);
   };
 
-  // Función para abrir el menú
-  const handleOpenMenu = () => {
-    setIsMenuOpen(true);
-    setIsHoveringBonoVacacional(true);
+  // Función para abrir/cerrar el menú (toggle)
+  const handleToggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+    if (isMenuOpen) {
+      setHoveredDepartment(null);
+    }
   };
 
   // Función para cerrar el menú
   const handleCloseMenu = () => {
     setIsMenuOpen(false);
-    setIsHoveringBonoVacacional(false);
     setHoveredDepartment(null);
   };
 
@@ -139,7 +138,7 @@ export const Toggle = ({
   
 
   return (
-    <div className="relative" ref={toggleRef}>
+    <div className="relative flex justify-center" ref={toggleRef}>
       <motion.div 
         className={`toggle-button rounded-full border p-1 sm:p-2 md:p-3 lg:p-2 theme-transition ${
           isDarkTheme ? 'toggle-button-dark' : 'toggle-button-light'
@@ -183,35 +182,63 @@ export const Toggle = ({
                 if (section.key !== 'bono-vacacional') {
                   onSectionChange(section.key);
                   // Cerrar el menú del Bono Vacacional si está abierto
-                  if (isMenuOpen || isHoveringBonoVacacional) {
+                  if (isMenuOpen) {
                     handleCloseMenu();
                   }
                 } else {
-                  // Para bono-vacacional, abrir el menú
-                  handleOpenMenu();
+                  // Para bono-vacacional, abrir/cerrar el menú
+                  handleToggleMenu();
                 }
               }}
-              onMouseEnter={() => {
-                if (section.key === 'bono-vacacional') {
-                  setIsHoveringBonoVacacional(true);
-                }
-              }}
-              className={`relative z-10 rounded-full font-medium theme-transition transition-all duration-150 px-4 py-3 text-center text-sm sm:text-sm md:text-base lg:text-base ${
-                selectedSection === section.key
-                  ? isDarkTheme ? 'toggle-text-selected-dark' : 'toggle-text-selected-light'
-                  : isDarkTheme ? 'toggle-text-unselected-dark' : 'toggle-text-unselected-light'
-              } ${
-                section.key === 'bono-vacacional' ? 'cursor-pointer' : 'cursor-pointer'
-              }`}
-              whileHover={{ 
-                scale: 1.05 
-              }}
-              whileTap={{ 
-                scale: 0.95 
-              }}
-              transition={{ duration: 0.05 }}
+                             className={`relative z-10 rounded-full font-medium theme-transition transition-all duration-150 px-4 py-3 text-center text-sm sm:text-sm md:text-base lg:text-base ${
+                 selectedSection === section.key
+                   ? isDarkTheme ? 'toggle-text-selected-dark' : 'toggle-text-selected-light'
+                   : isDarkTheme ? 'toggle-text-unselected-dark' : 'toggle-text-unselected-light'
+               } ${
+                 section.key === 'bono-vacacional' ? 'cursor-pointer ' : 'cursor-pointer'
+               } ${
+                 section.key === 'bono-vacacional' 
+                   ? 'border-2 box-border' 
+                   : ''
+               } ${
+                 section.key === 'bono-vacacional' && isMenuOpen 
+                   ? isDarkTheme ? 'border-gray-100' : 'border-gray-900/50'
+                   : 'border-transparent'
+               }`}
             >
               {section.label}
+              {/* Icono de flecha para Bono Vacacional */}
+              {section.key === 'bono-vacacional' && (
+                <motion.div
+                  className="ml-2 relative"
+                  transition={{ duration: 0.1 }}
+                >
+                  <motion.svg
+                    className={`w-4 h-4 transition-all duration-200 ${
+                      isMenuOpen 
+                        ? isDarkTheme ? 'text-gray-100' : 'text-gray-900'
+                        : isDarkTheme ? 'text-gray-100' : 'text-gray-900'
+                    }`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    animate={{
+                      rotate: isMenuOpen ? 180 : 0,
+                      y: isMenuOpen ? 1 : 0
+                    }}
+                    transition={{ 
+                      duration: 0.1,
+                    }}
+                  >
+                    <path 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round" 
+                      strokeWidth={2} 
+                      d="M19 9l-7 7-7-7" 
+                    />
+                  </motion.svg>
+                </motion.div>
+              )}
             </motion.button>
           ))}
         </div>
@@ -219,27 +246,19 @@ export const Toggle = ({
 
       {/* Panel desplegable para Bono Vacacional */}
       <AnimatePresence>
-        {(isHoveringBonoVacacional || isMenuOpen) && (
-          <motion.div
-            ref={menuRef}
-            className={`absolute top-full left-0 right-0 mt-4 p-6 rounded-2xl border ${
-              isDarkTheme 
-                ? 'bg-black border-gray-700/50 backdrop-blur-sm' 
-                : 'bg-white/95 border-gray-200/50 backdrop-blur-sm'
-            } shadow-2xl z-30`}
-            exit={{ opacity: 0, y: -10, scale: 0.50 }}
-            transition={{ duration: 0.2 }}
-            onMouseEnter={() => {
-              setIsHoveringBonoVacacional(true);
-              setIsMenuOpen(true);
-            }}
-            onMouseLeave={() => {
-              // Cerrar el menú cuando el mouse sale
-              setIsHoveringBonoVacacional(false);
-              setIsMenuOpen(false);
-              setHoveredDepartment(null);
-            }}
-          >
+        {isMenuOpen && (
+                                <motion.div
+             ref={menuRef}
+             className={`absolute top-full left-1/2 transform -translate-x-1/2 mt-4 p-6 rounded-2xl border min-w-[600px] ${
+               isDarkTheme 
+                 ? 'bg-black border-gray-700/50 backdrop-blur-sm' 
+                 : 'bg-white/95 border-gray-200/50 backdrop-blur-sm'
+             } shadow-2xl z-30`}
+             exit={{ opacity: 0}}
+             transition={{ duration: 0.2 }}
+             onMouseLeave={handleCloseMenu}
+             // El panel se cierra con click fuera, haciendo click otra vez en el botón, o cuando el mouse sale
+           >
             <div className="flex gap-8">
               {/* Lista de Departamentos */}
               <div className="flex-1">
