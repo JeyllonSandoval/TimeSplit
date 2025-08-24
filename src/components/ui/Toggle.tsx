@@ -26,6 +26,7 @@ export const Toggle = ({
   const [hoveredDepartment, setHoveredDepartment] = useState<string | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobileDepartmentsOpen, setIsMobileDepartmentsOpen] = useState(false);
   
   const menuRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLDivElement>(null);
@@ -43,6 +44,7 @@ export const Toggle = ({
     onEmployeeSelection(employee);
     setIsMenuOpen(false);
     setIsMobileMenuOpen(false);
+    setIsMobileDepartmentsOpen(false);
     setHoveredDepartment(null);
     console.log('Toggle: Employee selection completed');
   };
@@ -66,6 +68,7 @@ export const Toggle = ({
     setIsMobileMenuOpen(!isMobileMenuOpen);
     if (isMobileMenuOpen) {
       setHoveredDepartment(null);
+      setIsMobileDepartmentsOpen(false);
     }
   };
 
@@ -73,6 +76,15 @@ export const Toggle = ({
   const handleCloseMobileMenu = () => {
     setIsMobileMenuOpen(false);
     setHoveredDepartment(null);
+    setIsMobileDepartmentsOpen(false);
+  };
+
+  // Función para manejar la vista de departamentos en móvil
+  const handleMobileDepartmentsToggle = () => {
+    setIsMobileDepartmentsOpen(!isMobileDepartmentsOpen);
+    if (!isMobileDepartmentsOpen) {
+      setHoveredDepartment(null);
+    }
   };
 
   // Función para manejar el hover del departamento
@@ -135,17 +147,22 @@ export const Toggle = ({
       <div className="lg:hidden mb-4">
         <motion.button
           onClick={handleMobileMenuToggle}
-          className={`px-6 py-3 rounded-full font-medium transition-all duration-200 ${
+          className={`px-4 py-2 rounded-full font-medium transition-all duration-200 ${
             isDarkTheme 
-              ? 'bg-gray-800 text-gray-100 hover:bg-gray-700 border border-gray-600' 
-              : 'bg-white text-gray-800 hover:bg-gray-100 border border-gray-300'
+              ? 'text-lg text-gray-100 hover:bg-gradient-to-br hover:from-gray-100 hover:to-gray-400 hover:text-black' 
+              : 'bg-white text-gray-800 hover:bg-gray-100'
           } shadow-lg`}
-          whileHover={{ scale: 1.05 }}
+          whileHover={{
+            scale: 1.05,
+            background: isDarkTheme 
+              ? 'linear-gradient(to right, #1a1a1a, #333333)'
+              : 'linear-gradient(to right, #f0f0f0, #e0e0e0)'
+          }}
           whileTap={{ scale: 0.95 }}
         >
           <div className="flex items-center gap-2">
             <svg 
-              className="w-5 h-5" 
+              className="w-6 h-6" 
               fill="none" 
               stroke="currentColor" 
               viewBox="0 0 24 24"
@@ -167,11 +184,11 @@ export const Toggle = ({
         {isMobileMenuOpen && (
           <motion.div
             ref={mobileMenuRef}
-            className={`absolute top-full left-1 transform -translate-x-1/2 mt-2 p-4 rounded-2xl border w-[280px] max-h-[80vh] overflow-y-auto z-50 ${
+            className={`absolute top-full left-1 transform -translate-x-1/2 mt-2 p-4 rounded-2xl border w-[295px] max-h-[80vh] overflow-y-auto z-50 ${
               isDarkTheme 
                 ? 'bg-black border-gray-700/50 backdrop-blur-sm' 
                 : 'bg-white/95 border-gray-200/50 backdrop-blur-sm'
-            } shadow-2xl z-30 lg:hidden`}
+            } shadow-2xl lg:hidden`}
             initial={{ opacity: 0, y: -10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
@@ -179,7 +196,7 @@ export const Toggle = ({
           >
             {/* Secciones en móvil */}
             <div className="mb-6">
-              <h3 className={`text-base font-bold mb-3 ${
+              <h3 className={`text-lg font-medium mb-3 ${
                 isDarkTheme ? 'text-gray-100' : 'text-gray-800'
               }`}>
                 Secciones
@@ -188,108 +205,92 @@ export const Toggle = ({
                 {sections.map((section) => (
                   <motion.button
                     key={section.key}
-                    onClick={() => handleMobileSectionChange(section.key)}
+                    onClick={() => {
+                      if (section.key === 'bono-vacacional') {
+                        // Para bono-vacacional, abrir/cerrar el menú de departamentos
+                        handleMobileDepartmentsToggle();
+                      } else {
+                        // Para otras secciones, cambiar la sección y cerrar el menú móvil
+                        handleMobileSectionChange(section.key);
+                      }
+                    }}
                     className={`p-3 rounded-xl text-left transition-all duration-200 ${
                       selectedSection === section.key
                         ? isDarkTheme 
-                          ? 'bg-gray-100 text-black' 
-                          : 'bg-gray-800 text-white'
+                          ? 'bg-gradient-to-br from-gray-100 to-gray-400 text-black' 
+                          : 'bg-gradient-to-br from-gray-800 to-gray-600 text-white'
                         : isDarkTheme 
-                          ? 'bg-gray-800 hover:bg-gray-700 text-gray-200' 
-                          : 'bg-gray-100 hover:bg-gray-200 text-gray-800'
+                          ? 'bg-black hover:bg-gradient-to-br hover:from-gray-500 hover:to-gray-700 hover:text-white text-gray-200' 
+                          : 'bg-white hover:bg-gray-200 text-gray-800'
+                    } ${
+                      section.key === 'bono-vacacional' && isMobileDepartmentsOpen
+                        ? isDarkTheme 
+                          ? 'ring-2 ring-gray-400 ring-opacity-50' 
+                          : 'ring-2 ring-gray-600 ring-opacity-50'
+                        : ''
                     }`}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
-                    <span className="font-medium">{section.label}</span>
+                    <div className="flex items-center justify-between">
+                      <span className="font-medium">{section.label}</span>
+                      {/* Icono de flecha para Bono Vacacional */}
+                      {section.key === 'bono-vacacional' && (
+                        <motion.div
+                          className="ml-2 relative"
+                          transition={{ duration: 0.2 }}
+                        >
+                          {isMobileDepartmentsOpen ? (
+                            // Icono de flecha hacia arriba cuando los departamentos están abiertos
+                            <motion.svg
+                              className={`w-4 h-4 transition-all duration-200 ${
+                                isDarkTheme ? 'text-gray-300' : 'text-gray-700'
+                              }`}
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                              initial={{ rotate: 0 }}
+                              animate={{ rotate: 180 }}
+                              transition={{ duration: 0.2 }}
+                            >
+                              <path 
+                                strokeLinecap="round" 
+                                strokeLinejoin="round" 
+                                strokeWidth={2} 
+                                d="M19 9l-7 7-7-7" 
+                              />
+                            </motion.svg>
+                          ) : (
+                            // Icono de flecha hacia la derecha cuando los departamentos están cerrados
+                            <motion.svg
+                              className={`w-4 h-4 transition-all duration-200 ${
+                                isDarkTheme ? 'text-gray-400' : 'text-gray-600'
+                              }`}
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                              initial={{ rotate: 0 }}
+                              animate={{ rotate: 0 }}
+                              transition={{ duration: 0.2 }}
+                            >
+                              <path 
+                                strokeLinecap="round" 
+                                strokeLinejoin="round" 
+                                strokeWidth={2} 
+                                d="M9 5l7 7-7 7" 
+                              />
+                            </motion.svg>
+                          )}
+                        </motion.div>
+                      )}
+                    </div>
                   </motion.button>
                 ))}
               </div>
             </div>
 
-            {/* Departamentos y empleados en móvil */}
-            <div className="mb-6">
-              <h3 className={`text-base font-bold mb-3 ${
-                isDarkTheme ? 'text-gray-100' : 'text-gray-800'
-              }`}>
-                Departamentos
-              </h3>
-              <div className="flex flex-col gap-2">
-                {DEPARTMENTS.map((department) => (
-                  <motion.div
-                    key={department.id}
-                    className={`p-3 rounded-xl transition-all duration-200 ${
-                      hoveredDepartment === department.id
-                        ? isDarkTheme 
-                          ? 'bg-gray-200/20' 
-                          : 'bg-gray-400/30'
-                        : isDarkTheme 
-                          ? 'bg-gray-800 hover:bg-gray-700/50' 
-                          : 'bg-gray-100 hover:bg-gray-200/80'
-                    }`}
-                    onMouseEnter={() => handleDepartmentHover(department.id)}
-                  >
-                    <div className="flex items-center justify-between gap-2">
-                      <span className={`font-medium text-sm ${
-                        hoveredDepartment === department.id
-                          ? isDarkTheme ? 'text-gray-100' : 'text-gray-800'
-                          : isDarkTheme ? 'text-gray-200' : 'text-gray-800'
-                      }`}>
-                        {department.name}
-                      </span>
-                      <span className={`text-xs px-2 py-1 rounded-full ${
-                        hoveredDepartment === department.id
-                          ? isDarkTheme 
-                            ? 'bg-white text-black font-bold' 
-                            : 'bg-black/60 text-white font-bold'
-                          : isDarkTheme 
-                            ? 'bg-white/15 text-gray-400 font-bold' 
-                            : 'bg-gray-200/90 text-gray-600 font-bold'
-                      }`}>
-                        {department.employees.length}
-                      </span>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-
-            {/* Empleados del departamento seleccionado */}
-            {hoveredDepartment && (
-              <div className="mb-4">
-                <h3 className={`text-base font-bold mb-3 ${
-                  isDarkTheme ? 'text-gray-100' : 'text-gray-800'
-                }`}>
-                  Integrantes
-                </h3>
-                <div className="flex flex-col gap-2">
-                  {DEPARTMENTS
-                    .find(d => d.id === hoveredDepartment)
-                    ?.employees.map((employee) => (
-                      <motion.button
-                        key={employee.id}
-                        onClick={() => handleEmployeeSelection(employee)}
-                        className={`p-3 rounded-xl text-left transition-all duration-200 ${
-                          selectedEmployee?.id === employee.id
-                            ? isDarkTheme 
-                              ? 'bg-gradient-to-br from-gray-100 to-gray-400 text-black' 
-                              : 'bg-gradient-to-br from-gray-900 to-gray-700 text-white'
-                            : isDarkTheme 
-                              ? 'bg-gray-800 hover:bg-gray-700 text-gray-200' 
-                              : 'bg-gray-100 hover:bg-gray-200 text-gray-800'
-                        }`}
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                      >
-                        <span className="font-medium text-sm">{employee.name}</span>
-                      </motion.button>
-                    ))}
-                </div>
-              </div>
-            )}
-
-            {/* Mensaje cuando no hay departamento seleccionado */}
-            {!hoveredDepartment && (
+            {/* Mensaje informativo - solo visible cuando no hay departamentos abiertos */}
+            {!isMobileDepartmentsOpen && (
               <div className={`text-center p-4 ${
                 isDarkTheme ? 'text-gray-500' : 'text-gray-400'
               }`}>
@@ -302,10 +303,143 @@ export const Toggle = ({
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
                 </div>
-                <p className="text-sm">Toca un departamento</p>
-                <p className="text-xs mt-1">para ver sus empleados</p>
+                {selectedSection === 'bono-vacacional' ? (
+                  <>
+                    <p className="text-sm font-medium">Sección activa: Bono Vacacional</p>
+                    <p className="text-xs mt-1">Toca para ver departamentos e integrantes</p>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-sm">Sección activa: {sections.find(s => s.key === selectedSection)?.label}</p>
+                    <p className="text-xs mt-1">Toca "Bono Vacacional" para ver departamentos</p>
+                  </>
+                )}
               </div>
             )}
+
+            {/* Panel de Departamentos en móvil */}
+            <AnimatePresence>
+              {isMobileDepartmentsOpen && (
+                <motion.div
+                  className={`mt-4 p-4 rounded-2xl border w-full ${
+                    isDarkTheme ? 'bg-black border-gray-700/50' : 'bg-white border-gray-200'
+                  } shadow-2xl`}
+                  initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <h3 className={`text-base font-bold mb-4 ${
+                    isDarkTheme ? 'text-gray-100' : 'text-gray-800'
+                  }`}>
+                    Departamentos
+                  </h3>
+                  <div className="flex flex-col gap-2">
+                    {DEPARTMENTS.map((department) => (
+                      <motion.div
+                        key={department.id}
+                        className={`group p-2 rounded-xl cursor-pointer transition-all duration-300 ${
+                          hoveredDepartment === department.id
+                            ? isDarkTheme 
+                              ? 'bg-gray-200/20 shadow-lg shadow-gray-300/10' 
+                              : 'bg-gray-400/30 shadow-lg shadow-gray-300/30'
+                            : isDarkTheme 
+                              ? 'bg-black hover:bg-gray-700/50 ' 
+                              : 'bg-white hover:bg-gray-100/80 '
+                        }`}
+                        onMouseEnter={() => handleDepartmentHover(department.id)}
+                      >
+                        <div className="flex items-center justify-between gap-1">
+                          <span className={`font-medium text-sm ${
+                            hoveredDepartment === department.id
+                              ? isDarkTheme ? 'text-gray-100' : 'text-gray-800'
+                              : isDarkTheme ? 'text-gray-200' : 'text-gray-800'
+                          }`}>
+                            {department.name}
+                          </span>
+                          <span className={`text-xs px-2 py-1 rounded-full ${
+                            hoveredDepartment === department.id
+                              ? isDarkTheme 
+                                ? 'bg-white text-black font-bold' 
+                                : 'bg-black/60 text-white font-bold'
+                              : isDarkTheme 
+                                ? 'bg-white/15 text-gray-400 font-bold' 
+                                : 'bg-gray-200/90 text-gray-600 font-bold'
+                          }`}>
+                            {department.employees.length}
+                          </span>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+
+                  {/* Empleados del departamento seleccionado */}
+                  {hoveredDepartment && (
+                    <motion.div
+                      className="mt-4"
+                      initial={{ opacity: 0, y: 5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -5 }}
+                      transition={{ duration: 0.1 }}
+                    >
+                      <h3 className={`text-base font-bold mb-3 ${
+                        isDarkTheme ? 'text-gray-100' : 'text-gray-800'
+                      }`}>
+                        Integrantes
+                      </h3>
+                      <div className="flex flex-col items-start gap-2">
+                        {DEPARTMENTS
+                          .find(d => d.id === hoveredDepartment)
+                          ?.employees.map((employee) => (
+                            <motion.button
+                              key={employee.id}
+                              onClick={() => handleEmployeeSelection(employee)}
+                              className={`group p-2 rounded-xl cursor-pointer transition-all duration-300 ${
+                                selectedEmployee?.id === employee.id
+                                  ? isDarkTheme 
+                                    ? 'bg-gradient-to-br from-gray-100 to-gray-400 border-gray-400 shadow-lg' 
+                                    : 'bg-gradient-to-br from-gray-900 to-gray-700 border-gray-400 shadow-lg'
+                                  : isDarkTheme 
+                                    ? 'bg-black border-gray-600/50 hover:bg-white/10 hover:border-gray-500/50' 
+                                    : 'bg-white border-gray-200/50 hover:bg-black/10 hover:border-gray-300/50'
+                              }`}
+                              whileHover={{ scale: 1.02 }}
+                              whileTap={{ scale: 0.98 }}
+                            >
+                              <div className={`font-medium text-sm ${
+                                selectedEmployee?.id === employee.id
+                                  ? isDarkTheme ? 'text-black' : 'text-white'
+                                  : isDarkTheme ? 'text-gray-200' : 'text-gray-800'
+                              }`}>
+                                {employee.name}
+                              </div>
+                            </motion.button>
+                          ))}
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {/* Mensaje cuando no hay departamento seleccionado */}
+                  {!hoveredDepartment && (
+                    <div className={`text-center p-4 ${
+                      isDarkTheme ? 'text-gray-500' : 'text-gray-400'
+                    }`}>
+                      <div className={`w-12 h-12 mx-auto mb-3 rounded-full flex items-center justify-center ${
+                        isDarkTheme ? 'bg-gray-800/50' : 'bg-gray-100/80'
+                      }`}>
+                        <svg className={`w-6 h-6 ${
+                          isDarkTheme ? 'text-gray-600' : 'text-gray-400'
+                        }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                      </div>
+                      <p className="text-sm">Toca un departamento</p>
+                      <p className="text-xs mt-1">para ver sus empleados</p>
+                    </div>
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </motion.div>
         )}
       </AnimatePresence>
