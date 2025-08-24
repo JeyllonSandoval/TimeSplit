@@ -14,6 +14,7 @@ import { useEasterEgg } from '../../hooks/useEasterEgg';
 import { containerVariants } from '../../utils/animations';
 import type { SectionType } from '../../constants/dates';
 import type { Employee } from '../../types/index';
+import type { EasterEggSequence } from '../../hooks/useEasterEgg';
 
 export interface DualCounterProps {
   // Fechas personalizables
@@ -51,7 +52,9 @@ export default function DualCounter({
     showUnlockAnimation,
     closeEasterEgg, 
     handleAnimationComplete,
-    sequenceProgress 
+    sequenceProgress,
+    isMobileMode,
+    currentSequence
   } = useEasterEgg();
   
   // Determinar la fecha objetivo basada en la sección seleccionada
@@ -160,6 +163,9 @@ export default function DualCounter({
         isVisible={showEasterEgg}
         onBack={closeEasterEgg}
         isDarkTheme={isDarkTheme}
+        isMobileMode={isMobileMode}
+        currentSequence={currentSequence}
+        sequenceProgress={sequenceProgress}
       />
     );
   }

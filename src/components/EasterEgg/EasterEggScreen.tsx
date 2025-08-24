@@ -1,19 +1,31 @@
 import { motion } from 'framer-motion';
-import { FaArrowLeft, FaKeyboard } from 'react-icons/fa';
+import { FaArrowLeft, FaKeyboard, FaHandPointer, FaMobile } from 'react-icons/fa';
 import { useTimeAdder } from '../../hooks/useTimeAdder';
 import { TimeDigit } from '../counter/TimeDigit';
 import { useCallback, useMemo } from 'react';
 import { loadSlim } from "@tsparticles/slim";
 import type { Engine } from "@tsparticles/engine";
 import Particles from "@tsparticles/react";
+import type { EasterEggSequence } from '../../hooks/useEasterEgg';
+import type { TouchGesture } from '../../hooks/useTouchGestures';
 
 interface EasterEggScreenProps {
   isVisible: boolean;
   onBack: () => void;
   isDarkTheme: boolean;
+  isMobileMode?: boolean;
+  currentSequence?: EasterEggSequence;
+  sequenceProgress?: number;
 }
 
-export const EasterEggScreen = ({ isVisible, onBack, isDarkTheme }: EasterEggScreenProps) => {
+export const EasterEggScreen = ({ 
+  isVisible, 
+  onBack, 
+  isDarkTheme, 
+  isMobileMode = false,
+  currentSequence = [],
+  sequenceProgress = 0
+}: EasterEggScreenProps) => {
   const { timeUnits } = useTimeAdder();
 
   const particlesInit = useCallback(async (engine: Engine) => {
@@ -46,6 +58,74 @@ export const EasterEggScreen = ({ isVisible, onBack, isDarkTheme }: EasterEggScr
       opacity: 0.1 + Math.random() * 0.3
     }));
   }, []);
+
+  // Función para obtener el icono del gesto
+  const getGestureIcon = (gesture: string | TouchGesture) => {
+    switch (gesture) {
+      case 'swipeUp':
+        return '⬆️';
+      case 'swipeDown':
+        return '⬇️';
+      case 'swipeLeft':
+        return '⬅️';
+      case 'swipeRight':
+        return '➡️';
+      case 'doubleTap':
+        return '👆👆';
+      case 'longPress':
+        return '👆⏱️';
+      case 'ArrowUp':
+        return '⬆️';
+      case 'ArrowDown':
+        return '⬇️';
+      case 'ArrowLeft':
+        return '⬅️';
+      case 'ArrowRight':
+        return '➡️';
+      case 'KeyB':
+        return 'B';
+      case 'KeyA':
+        return 'A';
+      case 'Enter':
+        return '↵';
+      default:
+        return '❓';
+    }
+  };
+
+  // Función para obtener el texto del gesto
+  const getGestureText = (gesture: string | TouchGesture) => {
+    switch (gesture) {
+      case 'swipeUp':
+        return 'Arriba';
+      case 'swipeDown':
+        return 'Abajo';
+      case 'swipeLeft':
+        return 'Izquierda';
+      case 'swipeRight':
+        return 'Derecha';
+      case 'doubleTap':
+        return 'Doble Tap';
+      case 'longPress':
+        return 'Mantener';
+      case 'ArrowUp':
+        return 'Arriba';
+      case 'ArrowDown':
+        return 'Abajo';
+      case 'ArrowLeft':
+        return 'Izquierda';
+      case 'ArrowRight':
+        return 'Derecha';
+      case 'KeyB':
+        return 'Tecla B';
+      case 'KeyA':
+        return 'Tecla A';
+      case 'Enter':
+        return 'Enter';
+      default:
+        return 'Desconocido';
+    }
+  };
 
   const screenVariants = {
     hidden: {
@@ -223,15 +303,98 @@ export const EasterEggScreen = ({ isVisible, onBack, isDarkTheme }: EasterEggScr
         </motion.button>
       </div>
 
-      {/* Instrucciones de teclas */}
+      {/* Instrucciones de teclas o gestos */}
       <div className="absolute top-6 right-6 z-10">
-        <div className="p-3 m-2 rounded-full bg-red-800/50 border border-red-600/50 backdrop-blur-sm">
-          <FaKeyboard className="text-xl text-red-300" />
-        </div>
-        <div className="mt-2 text-xs text-center text-red-300">
-          ESC
-        </div>
+        {isMobileMode ? (
+          <div className="text-center">
+            <div className="p-3 m-2 rounded-full bg-red-800/50 border border-red-600/50 backdrop-blur-sm">
+              <FaMobile className="text-xl text-red-300" />
+            </div>
+            <div className="mt-2 text-xs text-center text-red-300">
+              GESTOS
+            </div>
+          </div>
+        ) : (
+          <div className="text-center">
+            <div className="p-3 m-2 rounded-full bg-red-800/50 border border-red-600/50 backdrop-blur-sm">
+              <FaKeyboard className="text-xl text-red-300" />
+            </div>
+            <div className="mt-2 text-xs text-center text-red-300">
+              ESC
+            </div>
+          </div>
+        )}
       </div>
+
+      {/* Indicador de secuencia táctil para móviles */}
+      {isMobileMode && currentSequence.length > 0 && (
+        <div className="absolute top-24 left-6 right-6 z-10">
+          <motion.div
+            initial={{ y: -20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.3, duration: 0.6 }}
+            className="bg-red-900/30 backdrop-blur-sm rounded-lg p-4 border border-red-600/30"
+          >
+            <div className="text-center mb-3">
+              <h3 className="text-red-200 text-sm font-semibold mb-2">
+                Secuencia Táctil para Desbloquear
+              </h3>
+              <div className="w-full bg-red-800/30 rounded-full h-2">
+                <motion.div
+                  className="bg-red-500 h-2 rounded-full transition-all duration-300"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${sequenceProgress * 100}%` }}
+                />
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-5 gap-2">
+              {currentSequence.map((gesture, index) => {
+                const isCompleted = index < Math.floor(sequenceProgress * currentSequence.length);
+                const isCurrent = index === Math.floor(sequenceProgress * currentSequence.length);
+                
+                return (
+                  <motion.div
+                    key={index}
+                    className={`text-center p-2 rounded-lg transition-all duration-300 ${
+                      isCompleted 
+                        ? 'bg-green-600/50 border-green-500/50' 
+                        : isCurrent 
+                        ? 'bg-yellow-600/50 border-yellow-500/50 animate-pulse' 
+                        : 'bg-red-800/30 border-red-600/30'
+                    } border backdrop-blur-sm`}
+                    whileHover={{ scale: 1.05 }}
+                  >
+                    <div className="text-lg mb-1">
+                      {getGestureIcon(gesture)}
+                    </div>
+                    <div className={`text-xs ${
+                      isCompleted ? 'text-green-200' : isCurrent ? 'text-yellow-200' : 'text-red-300'
+                    }`}>
+                      {getGestureText(gesture)}
+                    </div>
+                    {isCompleted && (
+                      <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        className="text-green-400 text-lg"
+                      >
+                        ✅
+                      </motion.div>
+                    )}
+                  </motion.div>
+                );
+              })}
+            </div>
+            
+            <div className="text-center mt-3">
+              <p className="text-red-300 text-xs">
+                {isMobileMode ? 'Usa gestos táctiles para desbloquear' : 'Usa el teclado para desbloquear'}
+              </p>
+            </div>
+          </motion.div>
+        </div>
+      )}
 
       {/* Contenido principal */}
       <div className="text-center max-w-6xl px-6 relative z-10">

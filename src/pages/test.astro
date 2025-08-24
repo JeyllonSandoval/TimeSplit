@@ -2,11 +2,156 @@
 import Layout from '../layouts/Layout.astro';
 ---
 
-<Layout title="Test Page">
+<Layout title="Test Page - Gestos Táctiles">
 	<div class="min-h-screen bg-gray-900 flex items-center justify-center">
 		<div class="text-center">
 			<h1 class="text-4xl font-bold text-white mb-4">Test Page</h1>
-			<p class="text-gray-300">Esta es una página de prueba</p>
+			<p class="text-gray-300 mb-8">Esta es una página de prueba para gestos táctiles</p>
+			
+			<div class="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20 max-w-md mx-auto">
+				<h2 class="text-2xl font-bold text-white mb-4">🎮 Demo de Gestos Táctiles</h2>
+				<p class="text-white/80 text-sm mb-6">
+					Prueba los gestos táctiles en esta área:
+				</p>
+				
+				<div 
+					class="w-64 h-64 mx-auto bg-white/5 border-2 border-dashed border-white/30 rounded-xl flex items-center justify-center cursor-pointer"
+					id="touch-area"
+				>
+					<div class="text-center">
+						<div class="text-4xl mb-2">👆</div>
+						<p class="text-white/60 text-sm">Toca aquí</p>
+					</div>
+				</div>
+				
+				<div id="gesture-display" class="mt-6 hidden">
+					<div class="bg-green-500/20 border border-green-400/30 rounded-lg p-4">
+						<p class="text-green-300 text-center font-semibold">
+							Último gesto: <span id="gesture-text" class="text-green-200"></span>
+						</p>
+					</div>
+				</div>
+				
+				<div class="grid grid-cols-2 gap-3 text-sm mt-6">
+					<div class="bg-white/5 rounded-lg p-3 text-center">
+						<div class="text-2xl mb-1">⬆️</div>
+						<p class="text-white/70">Swipe Arriba</p>
+					</div>
+					<div class="bg-white/5 rounded-lg p-3 text-center">
+						<div class="text-2xl mb-1">⬇️</div>
+						<p class="text-white/70">Swipe Abajo</p>
+					</div>
+					<div class="bg-white/5 rounded-lg p-3 text-center">
+						<div class="text-2xl mb-1">⬅️</div>
+						<p class="text-white/70">Swipe Izquierda</p>
+					</div>
+					<div class="bg-white/5 rounded-lg p-3 text-center">
+						<div class="text-2xl mb-1">➡️</div>
+						<p class="text-white/70">Swipe Derecha</p>
+					</div>
+					<div class="bg-white/5 rounded-lg p-3 text-center">
+						<div class="text-2xl mb-1">👆👆</div>
+						<p class="text-white/70">Doble Tap</p>
+					</div>
+					<div class="bg-white/5 rounded-lg p-3 text-center">
+						<div class="text-2xl mb-1">👆⏱️</div>
+						<p class="text-white/70">Mantener</p>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </Layout>
+
+<script>
+	// Demo simple de detección de gestos táctiles
+	let touchStartX: number = 0;
+	let touchStartY: number = 0;
+	let touchStartTime: number = 0;
+	let lastTapTime: number = 0;
+	let longPressTimer: NodeJS.Timeout | null = null;
+	
+	const touchArea = document.getElementById('touch-area');
+	const gestureDisplay = document.getElementById('gesture-display');
+	const gestureText = document.getElementById('gesture-text');
+	
+	if (!touchArea || !gestureDisplay || !gestureText) {
+		console.error('Elementos no encontrados');
+	} else {
+		function showGesture(gesture: string) {
+			gestureText.textContent = gesture;
+			gestureDisplay.classList.remove('hidden');
+			
+			// Ocultar después de 3 segundos
+			setTimeout(() => {
+				gestureDisplay.classList.add('hidden');
+			}, 3000);
+		}
+		
+		function detectSwipe(startX: number, startY: number, endX: number, endY: number, duration: number): string | null {
+			const deltaX = endX - startX;
+			const deltaY = endY - startY;
+			const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+			
+			if (distance < 50 || duration > 300) return null;
+			
+			const absDeltaX = Math.abs(deltaX);
+			const absDeltaY = Math.abs(deltaY);
+			
+			if (absDeltaX > absDeltaY) {
+				return deltaX > 0 ? 'Swipe Derecha' : 'Swipe Izquierda';
+			} else {
+				return deltaY > 0 ? 'Swipe Abajo' : 'Swipe Arriba';
+			}
+		}
+		
+		touchArea.addEventListener('touchstart', (e: TouchEvent) => {
+			e.preventDefault();
+			const touch = e.touches[0];
+			touchStartX = touch.clientX;
+			touchStartY = touch.clientY;
+			touchStartTime = Date.now();
+			
+			// Iniciar timer para long press
+			longPressTimer = setTimeout(() => {
+				showGesture('Long Press');
+			}, 500);
+		});
+		
+		touchArea.addEventListener('touchend', (e: TouchEvent) => {
+			e.preventDefault();
+			const touch = e.changedTouches[0];
+			const endX = touch.clientX;
+			const endY = touch.clientY;
+			const duration = Date.now() - touchStartTime;
+			
+			// Limpiar timer de long press
+			if (longPressTimer) {
+				clearTimeout(longPressTimer);
+				longPressTimer = null;
+			}
+			
+			// Detectar swipe
+			const swipe = detectSwipe(touchStartX, touchStartY, endX, endY, duration);
+			if (swipe) {
+				showGesture(swipe);
+				return;
+			}
+			
+			// Detectar double tap
+			const now = Date.now();
+			if (now - lastTapTime < 300) {
+				showGesture('Doble Tap');
+			}
+			lastTapTime = now;
+		});
+		
+		touchArea.addEventListener('touchmove', (e: TouchEvent) => {
+			// Si se mueve el dedo, cancelar long press
+			if (longPressTimer) {
+				clearTimeout(longPressTimer);
+				longPressTimer = null;
+			}
+		});
+	}
+</script>
