@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { HiOutlineTag, HiTag, HiOutlineSun, HiOutlineMoon } from 'react-icons/hi';
 import { IconButton } from '../ui/IconButton';
+import { DateTooltip } from '../ui/DateTooltip';
 import { buttonVariants } from '../../utils/animations';
 
 interface ControlButtonsProps {
@@ -11,6 +12,7 @@ interface ControlButtonsProps {
   waveAnimation: number;
   showLabelsToggle?: boolean;
   showThemeToggle?: boolean;
+  targetDate?: string;
 }
 
 export const ControlButtons = ({ 
@@ -20,7 +22,8 @@ export const ControlButtons = ({
   onToggleTheme, 
   waveAnimation,
   showLabelsToggle = true,
-  showThemeToggle = true
+  showThemeToggle = true,
+  targetDate
 }: ControlButtonsProps) => {
   return (
     <motion.div 
@@ -33,6 +36,15 @@ export const ControlButtons = ({
         delayChildren: 0.6
       }}
     >
+      {/* Tooltip de fecha esperada */}
+      {targetDate && (
+        <DateTooltip
+          targetDate={targetDate}
+          isDarkTheme={isDarkTheme}
+          position="left"
+        />
+      )}
+
       {/* Botón para mostrar/ocultar etiquetas */}
       {showLabelsToggle && onToggleLabels && (
         <IconButton

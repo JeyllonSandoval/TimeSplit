@@ -209,6 +209,7 @@ export default function DualCounter({
         waveAnimation={waveAnimation}
         showLabelsToggle={showLabelsToggle}
         showThemeToggle={showThemeToggle}
+        targetDate={targetDate}
       />
 
       {/* Display del tiempo */}
