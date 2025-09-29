@@ -82,7 +82,7 @@ export const ControlButtons = ({
           isDarkTheme={isDarkTheme}
           waveAnimation={waveAnimation}
           className={isDarkTheme 
-            ? 'bg-gradient-to-br from-gray-100 to-white/30 text-gray-800 hover:text-white/70 shadow-2xl hover:shadow-gray-300/50' 
+            ? 'bg-gradient-to-br from-gray-100 to-gray-800 text-gray-800 hover:text-white/70 shadow-2xl hover:shadow-gray-300/50' 
             : 'bg-gradient-to-br from-gray-600 to-gray-800 text-white hover:text-black/70 shadow-2xl hover:shadow-gray-700/50'
           }
         >

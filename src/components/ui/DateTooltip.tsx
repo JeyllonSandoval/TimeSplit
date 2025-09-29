@@ -121,12 +121,12 @@ export const DateTooltip = ({
         onMouseLeave={handleMouseLeave}
         className={`p-2 rounded-full transition-all duration-200 hover:scale-105 focus:outline-none ${
           isDarkTheme 
-            ? 'bg-gray-700/50 text-gray-300 hover:bg-gray-600/60 hover:text-gray-200' 
-            : 'bg-gray-200/50 text-gray-600 hover:bg-gray-300/60 hover:text-gray-700'
+            ? ' text-gray-300 hover:bg-gray-600/60 hover:text-gray-200' 
+            : ' text-gray-600 hover:bg-gray-300/60 hover:text-gray-700'
         } ${className}`}
         title="Ver fecha esperada"
       >
-        <HiInformationCircle className="w-4 h-4" />
+        <HiInformationCircle className="w-6 h-6" />
       </button>
 
       <AnimatePresence>
@@ -136,7 +136,7 @@ export const DateTooltip = ({
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
-            transition={{ duration: 0.15, ease: "easeOut" }}
+            transition={{ duration: 0.1, ease: "easeOut" }}
             style={{
               position: 'fixed',
               left: tooltipPosition.x,
@@ -145,18 +145,18 @@ export const DateTooltip = ({
             }}
             className={`px-3 py-2 rounded-lg shadow-lg text-sm whitespace-nowrap ${
               isDarkTheme
-                ? 'bg-gray-800 text-gray-200 border border-gray-700'
+                ? 'bg-black text-gray-200 border border-gray-700'
                 : 'bg-gray-100 text-gray-700 border border-gray-300'
             }`}
           >
             <div className="flex items-center gap-2">
               <div className={`w-1.5 h-1.5 rounded-full ${
-                isDarkTheme ? 'bg-gray-400' : 'bg-gray-500'
+                isDarkTheme ? 'bg-white' : 'bg-black'
               }`} />
               <span className="text-xs font-medium">Fecha esperada:</span>
             </div>
             <div className={`text-xs font-mono mt-1 px-2 py-1 rounded ${
-              isDarkTheme ? 'bg-gray-700 text-gray-300' : 'bg-gray-200 text-gray-600'
+              isDarkTheme ? 'bg-gray-900 text-gray-300' : 'bg-gray-200 text-gray-600'
             }`}>
               {formattedDate}
             </div>
@@ -164,7 +164,7 @@ export const DateTooltip = ({
             {/* Flecha del tooltip */}
             <div
               className={`absolute w-2 h-2 transform rotate-45 ${
-                isDarkTheme ? 'bg-gray-800' : 'bg-gray-100'
+                isDarkTheme ? 'bg-white' : 'bg-black'
               }`}
               style={{
                 [position === 'left' ? 'right' : position === 'right' ? 'left' : 'left']: '-4px',
