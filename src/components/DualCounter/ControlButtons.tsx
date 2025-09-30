@@ -12,7 +12,9 @@ interface ControlButtonsProps {
   waveAnimation: number;
   showLabelsToggle?: boolean;
   showThemeToggle?: boolean;
-  targetDate?: string;
+  sectionType?: 'doble-sueldo' | 'bono-anual' | 'bono-vacacional';
+  bonoAnualPart?: 'first' | 'second';
+  selectedEmployeeDate?: string;
 }
 
 export const ControlButtons = ({ 
@@ -23,7 +25,9 @@ export const ControlButtons = ({
   waveAnimation,
   showLabelsToggle = true,
   showThemeToggle = true,
-  targetDate
+  sectionType,
+  bonoAnualPart,
+  selectedEmployeeDate
 }: ControlButtonsProps) => {
   return (
     <motion.div 
@@ -37,11 +41,13 @@ export const ControlButtons = ({
       }}
     >
       {/* Tooltip de fecha esperada */}
-      {targetDate && (
+      {sectionType && (
         <DateTooltip
-          targetDate={targetDate}
+          sectionType={sectionType}
           isDarkTheme={isDarkTheme}
           position="left"
+          bonoAnualPart={bonoAnualPart}
+          selectedEmployeeDate={selectedEmployeeDate}
         />
       )}
 

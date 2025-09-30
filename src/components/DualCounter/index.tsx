@@ -184,7 +184,9 @@ export default function DualCounter({
         waveAnimation={waveAnimation}
         showLabelsToggle={showLabelsToggle}
         showThemeToggle={showThemeToggle}
-        targetDate={targetDate}
+        sectionType={selectedSection}
+        bonoAnualPart={bonoAnualPart}
+        selectedEmployeeDate={selectedEmployee?.date}
       />
 
       {/* Display del tiempo */}

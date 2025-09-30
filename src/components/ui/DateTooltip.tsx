@@ -1,28 +1,48 @@
 import { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HiInformationCircle } from 'react-icons/hi';
+import { DATES } from '../../constants/dates';
 
 interface DateTooltipProps {
-  targetDate: string;
+  sectionType: 'doble-sueldo' | 'bono-anual' | 'bono-vacacional';
   isDarkTheme: boolean;
   className?: string;
   position?: 'left' | 'right' | 'top' | 'bottom';
+  bonoAnualPart?: 'first' | 'second';
+  selectedEmployeeDate?: string;
 }
 
 export const DateTooltip = ({ 
-  targetDate, 
+  sectionType,
   isDarkTheme, 
   className = '',
-  position = 'left'
+  position = 'left',
+  bonoAnualPart = 'first',
+  selectedEmployeeDate
 }: DateTooltipProps) => {
   const [isVisible, setIsVisible] = useState(false);
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
   const buttonRef = useRef<HTMLButtonElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
 
+  // Obtener la fecha objetivo basada en el tipo de sección
+  const getTargetDate = useCallback(() => {
+    switch (sectionType) {
+      case 'doble-sueldo':
+        return DATES.DOBLE_SUELDO;
+      case 'bono-anual':
+        return bonoAnualPart === 'second' ? DATES.BONO_ANUAL_MARZO : DATES.BONO_ANUAL;
+      case 'bono-vacacional':
+        return selectedEmployeeDate || DATES.DOBLE_SUELDO; // Fallback si no hay empleado seleccionado
+      default:
+        return DATES.DOBLE_SUELDO;
+    }
+  }, [sectionType, bonoAnualPart, selectedEmployeeDate]);
+
   // Formatear la fecha para mostrar (memoizado para evitar re-renderizados)
   const formattedDate = useMemo(() => {
     try {
+      const targetDate = getTargetDate();
       const date = new Date(targetDate);
       const options: Intl.DateTimeFormatOptions = {
         year: 'numeric',
@@ -38,7 +58,7 @@ export const DateTooltip = ({
       console.error('Error formatting date:', error);
       return 'Fecha inválida';
     }
-  }, [targetDate]);
+  }, [getTargetDate]);
 
   // Calcular posición del tooltip (memoizado)
   const updateTooltipPosition = useCallback(() => {
