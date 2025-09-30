@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { HiInformationCircle } from 'react-icons/hi';
+import { HiOutlineInformationCircle  } from 'react-icons/hi';
 import { DATES } from '../../constants/dates';
 
 interface DateTooltipProps {
@@ -144,9 +144,8 @@ export const DateTooltip = ({
             ? ' text-gray-300 hover:bg-gray-600/60 hover:text-gray-200' 
             : ' text-gray-600 hover:bg-gray-300/60 hover:text-gray-700'
         } ${className}`}
-        title="Ver fecha esperada"
       >
-        <HiInformationCircle className="w-6 h-6" />
+        <HiOutlineInformationCircle className="w-6 h-6" />
       </button>
 
       <AnimatePresence>
