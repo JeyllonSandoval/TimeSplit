@@ -22,7 +22,6 @@ export const TimeDisplay = ({
   showLabels,
   selectedEmployee
 }: TimeDisplayProps) => {
-  console.log('TimeDisplay renderizando:', { selectedSection, timeUnits, selectedEmployee });
   
   const timeUnitsArray = [
     { key: 'months', value: timeUnits.months, previousValue: previousTimeUnits.months, unit: 'MESES' },

@@ -40,13 +40,11 @@ export const Toggle = ({
 
   // Función para manejar la selección de empleado
   const handleEmployeeSelection = (employee: Employee) => {
-    console.log('Toggle: handleEmployeeSelection called with:', employee);
     onEmployeeSelection(employee);
     setIsMenuOpen(false);
     setIsMobileMenuOpen(false);
     setIsMobileDepartmentsOpen(false);
     setHoveredDepartment(null);
-    console.log('Toggle: Employee selection completed');
   };
 
   // Función para abrir/cerrar el menú (toggle)

@@ -9,7 +9,6 @@ export interface TimeCounterConfig {
 }
 
 export const useTimeCounter = (config: TimeCounterConfig) => {
-  console.log('useTimeCounter called with config:', config);
   
   const [timeUnits, setTimeUnits] = useState<TimeUnits>({
     seconds: 0,
@@ -36,8 +35,6 @@ export const useTimeCounter = (config: TimeCounterConfig) => {
     const now = Math.floor(Date.now() / 1000);
     const target = Math.floor(new Date(targetDate).getTime() / 1000);
     const elapsed = target - now;
-    
-    console.log('calculateRemainingTime:', { now, target, elapsed, targetDate });
     
     if (elapsed > 0) {
       const units = calculateTimeUnits(elapsed);

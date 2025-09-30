@@ -32,7 +32,6 @@ export const useEasterEgg = () => {
                       ('ontouchstart' in window) ||
                       (navigator.maxTouchPoints > 0);
       setIsMobileMode(isMobile);
-      console.log(`📱 Dispositivo detectado: ${isMobile ? 'Móvil' : 'Desktop'}`);
     };
 
     checkMobile();
@@ -50,17 +49,13 @@ export const useEasterEgg = () => {
       const newIndex = sequenceIndex + 1;
       setSequenceIndex(newIndex);
       
-      console.log(`✅ Tecla correcta: ${event.code} (${newIndex}/${EASTER_EGG_SEQUENCE.length})`);
-      
       if (newIndex === EASTER_EGG_SEQUENCE.length) {
-        console.log('🎉 ¡Secuencia completada! Activando animación...');
         setShowUnlockAnimation(true);
         setIsUnlocked(true);
         setSequenceIndex(0);
       }
     } else {
       if (sequenceIndex > 0) {
-        console.log(`❌ Tecla incorrecta: ${event.code}. Reseteando secuencia.`);
       }
       setSequenceIndex(0);
     }
@@ -71,7 +66,6 @@ export const useEasterEgg = () => {
     if (isUnlocked || !isMobileMode) return;
 
     if (gesture === 'longPress7s') {
-      console.log('🎉 ¡Long press de 7 segundos completado! Activando animación...');
       setShowUnlockAnimation(true);
       setIsUnlocked(true);
       setSequenceIndex(0);
@@ -89,7 +83,6 @@ export const useEasterEgg = () => {
   // Agregar tecla Escape para volver a la interfaz principal
   const handleEscapeKey = useCallback((event: KeyboardEvent) => {
     if (event.code === 'Escape' && isUnlocked) {
-      console.log('🔙 Tecla ESC presionada, cerrando easter egg');
       setShowEasterEgg(false);
     }
   }, [isUnlocked]);
@@ -122,12 +115,10 @@ export const useEasterEgg = () => {
   }, [isMobileMode, handleTouchStart, handleTouchEnd, handleTouchMove]);
 
   const closeEasterEgg = () => {
-    console.log('🔙 Cerrando easter egg manualmente');
     setShowEasterEgg(false);
   };
 
   const resetEasterEgg = () => {
-    console.log('🔄 Reseteando easter egg');
     setIsUnlocked(false);
     setSequenceIndex(0);
     setShowEasterEgg(false);
@@ -135,26 +126,10 @@ export const useEasterEgg = () => {
   };
 
   const handleAnimationComplete = () => {
-    console.log('✨ Animación completada, mostrando easter egg');
     setShowUnlockAnimation(false);
     setShowEasterEgg(true);
   };
 
-  // Debug: Log del estado actual
-  useEffect(() => {
-    const currentSequence = isMobileMode ? MOBILE_EASTER_EGG_SEQUENCE : EASTER_EGG_SEQUENCE;
-    console.log('🔄 Estado del Easter Egg:', {
-      sequenceIndex,
-      isUnlocked,
-      showEasterEgg,
-      showUnlockAnimation,
-      isMobileMode,
-      currentSequence: currentSequence.map((item, index) => 
-        index < sequenceIndex ? `✅ ${item}` : `⏳ ${item}`
-      ),
-      progress: sequenceIndex / currentSequence.length
-    });
-  }, [sequenceIndex, isUnlocked, showEasterEgg, showUnlockAnimation, isMobileMode]);
 
   return {
     isUnlocked,

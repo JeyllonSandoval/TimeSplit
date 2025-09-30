@@ -40,7 +40,6 @@ export const useTouchGestures = (config: Partial<TouchGestureConfig> = {}) => {
       if (touchStartRef.current) {
         isLongPressRef.current = true;
         setLastGesture('longPress7s');
-        console.log('📱 Long press de 7 segundos detectado - Easter Egg activado!');
       }
     }, finalConfig.longPressDelay);
   }, [finalConfig.longPressDelay]);

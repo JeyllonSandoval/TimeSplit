@@ -71,20 +71,10 @@ export default function DualCounter({
       targetDate = dobleSueldoDate;
     }
     
-    console.log('getTargetDate result:', {
-      selectedSection,
-      selectedEmployee: selectedEmployee?.name,
-      targetDate,
-      isEmployeeSelected: !!selectedEmployee
-    });
-    
     return targetDate;
   };
 
   const targetDate = getTargetDate();
-  console.log('Target date:', targetDate);
-  console.log('Selected section:', selectedSection);
-  console.log('Selected employee:', selectedEmployee);
 
   const { timeUnits, previousTimeUnits } = useTimeCounter({
     targetDate: targetDate,
@@ -92,7 +82,6 @@ export default function DualCounter({
     bonoAnualPart
   });
 
-  console.log('Time units from hook:', timeUnits);
 
   // Debug: Mostrar etiquetas por defecto para ver el toggle
   useEffect(() => {
@@ -118,11 +107,9 @@ export default function DualCounter({
   };
 
   const handleEmployeeSelection = (employee: Employee) => {
-    console.log('handleEmployeeSelection called with:', employee);
     setSelectedEmployee(employee);
     setSelectedSection('bono-vacacional');
     setWaveAnimation(prev => prev + 1);
-    console.log('Employee selection completed');
   };
 
   const toggleLabels = () => {
@@ -135,18 +122,9 @@ export default function DualCounter({
     setWaveAnimation(prev => prev + 1);
   };
 
-  console.log('DualCounter renderizando:', { isDarkTheme, showLabels, selectedSection });
-
-  // Debug: Log del estado del easter egg
-  console.log('🎮 Estado del Easter Egg en DualCounter:', {
-    showUnlockAnimation,
-    showEasterEgg,
-    sequenceProgress
-  });
 
   // Si la animación de desbloqueo está activa, mostrarla
   if (showUnlockAnimation) {
-    console.log('🎬 Mostrando animación de desbloqueo');
     return (
       <EasterEggUnlockAnimation
         isVisible={showUnlockAnimation}
@@ -157,7 +135,6 @@ export default function DualCounter({
 
   // Si el Easter Egg está activo, mostrar solo la pantalla del Easter Egg
   if (showEasterEgg) {
-    console.log('🥚 Mostrando pantalla del Easter Egg');
     return (
       <EasterEggScreen
         isVisible={showEasterEgg}
@@ -169,8 +146,6 @@ export default function DualCounter({
       />
     );
   }
-
-  console.log('🏠 Mostrando interfaz principal normal');
 
   // Interfaz principal normal
   return (
