@@ -67,14 +67,14 @@ export const DateTooltip = ({
       const tooltipRect = tooltipRef.current.getBoundingClientRect();
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
-      const margin = 10;
+      const margin = 1;
 
       let x = 0;
       let y = 0;
 
       switch (position) {
         case 'left':
-          x = buttonRect.left - tooltipRect.width - margin;
+          x = buttonRect.left - tooltipRect.width - margin - 10;
           y = buttonRect.top + (buttonRect.height - tooltipRect.height) / 2;
           break;
         case 'right':
@@ -153,9 +153,9 @@ export const DateTooltip = ({
         {isVisible && (
           <motion.div
             ref={tooltipRef}
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 5 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 10 }}
+            exit={{ opacity: 0, y: 5 }}
             transition={{ duration: 0.1, ease: "easeOut" }}
             style={{
               position: 'fixed',
