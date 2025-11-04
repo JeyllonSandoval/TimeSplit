@@ -13,7 +13,7 @@ import { useTheme } from '../../hooks/useTheme';
 import { useTimeCounter } from '../../hooks/useTimeCounter';
 import { useEasterEgg } from '../../hooks/useEasterEgg';
 import { containerVariants } from '../../utils/animations';
-import type { SectionType } from '../../constants/dates';
+import { DATES, type SectionType } from '../../constants/dates';
 import type { Employee } from '../../types/index';
 import type { EasterEggSequence } from '../../hooks/useEasterEgg';
 
@@ -31,9 +31,9 @@ export interface DualCounterProps {
 }
 
 export default function DualCounter({
-  dobleSueldoDate = '2025-12-01T13:00:00',
-  bonoAnualDate = '2025-12-13T13:00:00',
-  bonoAnualMarzoDate = '2026-03-27T16:00:00',
+  dobleSueldoDate = DATES.DOBLE_SUELDO,
+  bonoAnualDate = DATES.BONO_ANUAL,
+  bonoAnualMarzoDate = DATES.BONO_ANUAL_MARZO,
   defaultSection = 'doble-sueldo',
   showThemeToggle = true,
   showLabelsToggle = true,

@@ -63,7 +63,7 @@ export const BonoVacacionalCounter = ({
         >
           <h2 className="text-xl font-semibold">{selectedEmployee.name}</h2>
           <p className={`text-sm ${isDarkTheme ? 'text-gray-400' : 'text-gray-600'}`}>
-            {selectedEmployee.position}
+            {selectedEmployee.date}
           </p>
         </motion.div>
 

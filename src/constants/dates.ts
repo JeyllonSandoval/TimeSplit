@@ -16,7 +16,7 @@ export const DEPARTMENTS = [
       { id: '3', name: 'Alisson Almonte', date: '2026-06-12T16:00:00' },
       { id: '4', name: 'Genesis Diaz', date: '2026-06-12T16:00:00' },
       { id: '5', name: 'Ariel De Leon', date: '2026-01-12T16:00:00' },
-      { id: '6', name: 'Jeyllon Sandoval', date: '2025-11-03T19:45:20' }
+      { id: '6', name: 'Jeyllon Sandoval', date: '2026-04-13T16:00:00' }
     ]
   },
   {
