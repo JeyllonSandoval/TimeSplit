@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ExpandingWaves } from '../animations/ExpandingWaves';
 import { BackgroundEffects } from '../animations/BackgroundEffects';
+import { CelebrationAnimation } from '../animations/CelebrationAnimation';
 import { ToggleSection } from './ToggleSection';
 import { ControlButtons } from './ControlButtons';
 import { TimeDisplay } from './TimeDisplay';
@@ -76,7 +77,7 @@ export default function DualCounter({
 
   const targetDate = getTargetDate();
 
-  const { timeUnits, previousTimeUnits } = useTimeCounter({
+  const { timeUnits, previousTimeUnits, isCounterAtZero } = useTimeCounter({
     targetDate: targetDate,
     sectionType: selectedSection,
     bonoAnualPart
@@ -162,6 +163,9 @@ export default function DualCounter({
 
       {/* Efectos de fondo */}
       <BackgroundEffects isDarkTheme={isDarkTheme} />
+
+      {/* Animación de celebración cuando el contador llega a 0 */}
+      {isCounterAtZero && <CelebrationAnimation isDarkTheme={isDarkTheme} />}
 
       {/* Toggle de secciones */}
       <ToggleSection

@@ -31,7 +31,7 @@ export const ControlButtons = ({
 }: ControlButtonsProps) => {
   return (
     <motion.div 
-      className="absolute top-2 right-2 sm:right-4 flex gap-1 sm:gap-2 md:gap-3 lg:gap-4 z-20"
+      className="absolute top-2 right-2 sm:right-4 flex gap-1 sm:gap-2 md:gap-3 lg:gap-4 z-[9999]"
       variants={buttonVariants}
       initial="hidden"
       animate="visible"

@@ -77,8 +77,18 @@ export const useTimeCounter = (config: TimeCounterConfig) => {
     };
   }, [config.targetDate]);
 
+  // Detectar si el contador está en 0
+  const isCounterAtZero = 
+    timeUnits.seconds === 0 &&
+    timeUnits.minutes === 0 &&
+    timeUnits.hours === 0 &&
+    timeUnits.days === 0 &&
+    timeUnits.weeks === 0 &&
+    timeUnits.months === 0;
+
   return {
     timeUnits,
-    previousTimeUnits
+    previousTimeUnits,
+    isCounterAtZero
   };
 };
