@@ -21,6 +21,14 @@ export const DEPARTMENTS = [
   },
   {
     id: '2',
+    name: 'Programacion',
+    employees: [
+      { id: '16', name: 'Jefferson Rodriguez', date: '2026-09-27T16:00:00' },
+      { id: '17', name: 'Albert Hernandez', date: '2026-11-27T16:00:00' },
+    ]
+  },
+  {
+    id: '3',
     name: 'Banca Electrónica',
     employees: [
       { id: '7', name: 'Estiven Mendoza', date: '2026-06-12T16:00:00' },
@@ -29,7 +37,7 @@ export const DEPARTMENTS = [
     ]
   },
   {
-    id: '3',
+    id: '4',
     name: 'Soporte Técnico',
     employees: [
       { id: '10', name: 'Darlin Marte', date: '2026-07-12T16:00:00' },
@@ -39,5 +47,5 @@ export const DEPARTMENTS = [
       { id: '14', name: 'Jonas Leonardo', date: '2026-04-27T16:00:00' },
       { id: '15', name: 'Luis Breton', date: '2025-11-12T16:00:00' }
     ]
-  }
+  },
 ] as const;
