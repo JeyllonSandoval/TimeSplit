@@ -1,5 +1,40 @@
 import type { TimeUnits } from '../types';
 
+// Constante para 72 horas en segundos
+export const CELEBRATION_WINDOW_SECONDS = 72 * 60 * 60; // 259,200 segundos
+
+/**
+ * Calcula la fecha del mismo día del próximo año
+ * @param dateString - Fecha en formato ISO string
+ * @returns Fecha del próximo año en formato ISO string
+ */
+export const getNextYearDate = (dateString: string): string => {
+  const date = new Date(dateString);
+  const nextYear = date.getFullYear() + 1;
+  date.setFullYear(nextYear);
+  return date.toISOString();
+};
+
+/**
+ * Verifica si estamos dentro de la ventana de 72 horas después de la fecha objetivo
+ * @param targetDate - Fecha objetivo en formato ISO string
+ * @returns true si estamos dentro de las 72 horas, false en caso contrario
+ */
+export const isWithinCelebrationWindow = (targetDate: string): boolean => {
+  const now = Date.now();
+  const target = new Date(targetDate).getTime();
+  const elapsed = now - target;
+  
+  // Si la fecha aún no ha llegado, no estamos en la ventana de celebración
+  if (elapsed < 0) {
+    return false;
+  }
+  
+  // Verificar si estamos dentro de las 72 horas (259,200,000 ms)
+  const celebrationWindowMs = CELEBRATION_WINDOW_SECONDS * 1000;
+  return elapsed <= celebrationWindowMs;
+};
+
 export const calculateTimeUnits = (totalSeconds: number): TimeUnits => {
   
   // Si el tiempo ya pasó, retornar todo en 0

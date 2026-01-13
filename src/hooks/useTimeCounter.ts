@@ -1,6 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import type { TimeUnits } from '../types';
-import { calculateTimeUnits } from '../utils/timeCalculations';
+import { 
+  calculateTimeUnits, 
+  isWithinCelebrationWindow, 
+  getNextYearDate,
+  CELEBRATION_WINDOW_SECONDS 
+} from '../utils/timeCalculations';
 
 export interface TimeCounterConfig {
   targetDate: string;
@@ -28,20 +33,54 @@ export const useTimeCounter = (config: TimeCounterConfig) => {
     months: 0
   });
 
+  const [adjustedDate, setAdjustedDate] = useState<string | null>(null);
+  const [shouldShowCelebration, setShouldShowCelebration] = useState(false);
+  const adjustedDateRef = useRef<string | null>(null);
+
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Función para calcular el tiempo restante
+  // Función para calcular el tiempo restante y ajustar la fecha si es necesario
   const calculateRemainingTime = (targetDate: string) => {
     const now = Math.floor(Date.now() / 1000);
-    const target = Math.floor(new Date(targetDate).getTime() / 1000);
-    const elapsed = target - now;
+    const originalTarget = Math.floor(new Date(targetDate).getTime() / 1000);
+    const originalElapsed = originalTarget - now;
     
-    if (elapsed > 0) {
-      const units = calculateTimeUnits(elapsed);
+    // Verificar si estamos dentro de la ventana de celebración (72 horas después de la fecha original)
+    const isInCelebrationWindow = isWithinCelebrationWindow(targetDate);
+    setShouldShowCelebration(isInCelebrationWindow);
+    
+    // Determinar qué fecha usar para el cálculo
+    let effectiveDate = targetDate;
+    
+    // Si la fecha original pasó y estamos fuera de la ventana de 72 horas, usar el próximo año
+    if (originalElapsed < 0 && !isInCelebrationWindow) {
+      const nextYearDate = getNextYearDate(targetDate);
+      effectiveDate = nextYearDate;
+      
+      // Actualizar el ref y el estado si es necesario
+      if (adjustedDateRef.current !== nextYearDate) {
+        adjustedDateRef.current = nextYearDate;
+        setAdjustedDate(nextYearDate);
+      }
+    } else {
+      // Si estamos antes de la fecha o en la ventana de celebración, resetear adjustedDate
+      if (adjustedDateRef.current !== null) {
+        adjustedDateRef.current = null;
+        setAdjustedDate(null);
+      }
+    }
+    
+    // Calcular tiempo restante usando la fecha efectiva
+    const effectiveTarget = Math.floor(new Date(effectiveDate).getTime() / 1000);
+    const effectiveElapsed = effectiveTarget - now;
+    
+    if (effectiveElapsed > 0) {
+      // Hay tiempo restante, mostrar contador
+      const units = calculateTimeUnits(effectiveElapsed);
       setPreviousTimeUnits(prev => prev);
       setTimeUnits(units);
     } else {
-      // Si el tiempo ya pasó, establecer todo en 0
+      // Estamos en el momento exacto o dentro de las 72 horas
       setPreviousTimeUnits(prev => prev);
       setTimeUnits({
         seconds: 0,
@@ -56,6 +95,10 @@ export const useTimeCounter = (config: TimeCounterConfig) => {
 
   // Efecto para manejar el intervalo de actualización
   useEffect(() => {
+    // Resetear cuando cambia la fecha objetivo
+    adjustedDateRef.current = null;
+    setAdjustedDate(null);
+    
     // Limpiar intervalo anterior si existe
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
@@ -77,7 +120,7 @@ export const useTimeCounter = (config: TimeCounterConfig) => {
     };
   }, [config.targetDate]);
 
-  // Detectar si el contador está en 0
+  // Detectar si el contador está en 0 (ya sea porque llegó la fecha o porque se reinició)
   const isCounterAtZero = 
     timeUnits.seconds === 0 &&
     timeUnits.minutes === 0 &&
@@ -89,6 +132,8 @@ export const useTimeCounter = (config: TimeCounterConfig) => {
   return {
     timeUnits,
     previousTimeUnits,
-    isCounterAtZero
+    isCounterAtZero,
+    shouldShowCelebration,
+    adjustedDate
   };
 };

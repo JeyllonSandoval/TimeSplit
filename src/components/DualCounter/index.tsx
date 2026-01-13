@@ -77,12 +77,21 @@ export default function DualCounter({
 
   const targetDate = getTargetDate();
 
-  const { timeUnits, previousTimeUnits, isCounterAtZero } = useTimeCounter({
+  const { timeUnits, previousTimeUnits, isCounterAtZero, shouldShowCelebration, adjustedDate } = useTimeCounter({
     targetDate: targetDate,
     sectionType: selectedSection,
     bonoAnualPart
   });
 
+  // Actualizar la fecha del empleado si se detecta un ajuste (después de 72 horas)
+  useEffect(() => {
+    if (adjustedDate && selectedEmployee && selectedSection === 'bono-vacacional' && selectedEmployee.date !== adjustedDate) {
+      setSelectedEmployee({
+        ...selectedEmployee,
+        date: adjustedDate
+      });
+    }
+  }, [adjustedDate, selectedSection, selectedEmployee]);
 
   // Debug: Mostrar etiquetas por defecto para ver el toggle
   useEffect(() => {
@@ -164,8 +173,8 @@ export default function DualCounter({
       {/* Efectos de fondo */}
       <BackgroundEffects isDarkTheme={isDarkTheme} />
 
-      {/* Animación de celebración cuando el contador llega a 0 */}
-      {isCounterAtZero && <CelebrationAnimation isDarkTheme={isDarkTheme} />}
+      {/* Animación de celebración solo durante las 72 horas después de la fecha */}
+      {shouldShowCelebration && <CelebrationAnimation isDarkTheme={isDarkTheme} />}
 
       {/* Toggle de secciones */}
       <ToggleSection
