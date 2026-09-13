@@ -33,7 +33,7 @@ const BASE_DEPARTMENTS = [
       { id: '3', name: 'Alisson Almonte', date: '2026-06-12T16:00:00' },
       { id: '4', name: 'Genesis Diaz', date: '2026-06-12T16:00:00' },
       { id: '5', name: 'Ariel De Leon', date: '2026-01-12T16:00:00' },
-      { id: '6', name: 'Jeyllon Sandoval', date: '2026-04-13T16:00:00' }
+      { id: '6', name: 'Miguel Concepcion', date: '2026-08-12T16:00:00' }
     ]
   },
   {
@@ -58,10 +58,9 @@ const BASE_DEPARTMENTS = [
     name: 'Soporte Técnico',
     employees: [
       { id: '10', name: 'Darlin Marte', date: '2026-07-12T16:00:00' },
-      { id: '11', name: 'Tomy Rafael de Leon', date: '2026-08-12T16:00:00' },
-      { id: '12', name: 'Jennsy Nuñez', date: '2026-11-12T16:00:00' },
-      { id: '13', name: 'Jonas Leonardo', date: '2026-04-27T16:00:00' },
-      { id: '14', name: 'Luis Breton', date: '2026-11-12T16:00:00' }
+      { id: '11', name: 'Jennsy Nuñez', date: '2026-11-12T16:00:00' },
+      { id: '12', name: 'Jonas Leonardo', date: '2026-04-27T16:00:00' },
+      { id: '13', name: 'Luis Breton', date: '2026-11-12T16:00:00' }
     ]
   },
 ] as const;
